@@ -1,0 +1,39 @@
+
+
+        #btnNext {
+            float: right;
+            margin-right: 8%;
+            margin-top: 1%;
+            margin-bottom: 0%;
+            border-radius: 500px;
+            background-color: #3378B9;
+            border: none;
+            color: #ffffff;
+            text-align: center;
+            font-size: 20px;
+            width: 150px;
+            transition: all 0.5s;
+            cursor: pointer;
+
+        }
+        #btnNext span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.4s;
+        }
+        #btnNext span:after {
+            content: '>>';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
+        #btnNext:hover span {
+            padding-right: 25px;
+        }
+        #btnNext:hover span:after {
+            opacity: 1;
+            right: 0;
+        }

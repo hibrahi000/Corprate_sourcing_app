@@ -1,25 +1,10 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
+var mogo = require('mongo');
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 var nodemailer = require('nodemailer');
 
-
-
-var Airtable = require('airtable');
-Airtable.configure({
-    endpointUrl: 'https://api.airtable.com',
-    apiKey: 'key5VS3vwOhMgKa6w'
-});
-var base = Airtable.base('appuLLVZYd6a8K1mD');
-
-
-
-
-var venNam = base('Table 1').find('Vendor Name', function(err, record) {
-    if (err) { console.error(err); return; }
-    console.log(record);
-});
 
 
 
@@ -33,41 +18,20 @@ app.use(express.static(__dirname + "/assets"))
 app.get('/', (req,res) =>{
     res.render( 'index');
 });
+app.get('/demo', (req,res) =>{
+    res.render( 'demo');
+});
+app.get('/test', (req,res) =>{
+    res.render( 'test');
+});
+app.get('/purchase', (req,res)=>{
+    res.render('purchaseFill');
+});
 //fire controlers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //airtable function assign
-
-
-
-
-
-
-
-
-
 
 //listen to port /
 app.listen(3000);

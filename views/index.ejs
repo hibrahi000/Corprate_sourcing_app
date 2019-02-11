@@ -55,7 +55,7 @@
             <div class="center">
                     <div class="vendName">
                         <h2 class="venNamLbl">Vendor: </h2>
-                        <h2 for= " venNamLbl" id="venNam"><%= venNam %>></h2>
+                        <h2 for= " venNamLbl" id="venNam"></h2>
                     </div>
                     <div class="main">
                         <div id="matName">
@@ -67,49 +67,36 @@
                             <label id="request">10 kg</label>
                         </div>
                         <div class="fillout">
-                            <div id="moq" class="form-group">
-                               
-                                <label for="moqIn">Min Order Quantity </label>
-                                <input type="text" class="form-control" id="moqIn"  placeholder="ex: 23">
-                            </div>
-                            <div id="measurments" class="form-group">
-                                <label id="measureLbl">Measurement</label>
-                                
-                                <div class="input-group">
-                                        <input type="text" class="form-control" aria-label="Text input with dropdown button">
-                                        <div class="input-group-append">
-                                          <select id="unit" id="mesurement" placeholder = "Units">
-                                                <option value="kg">Kilograms</option>
-                                                <option value="lb">Pounds</option>
-                                                </select>
+                                <div id="moq" class="form-group">
+                                    <input type="number" class="form-control" id="moqIn"  placeholder="Min Order Quantity">
+                                </div>
+
+                                <div id="measurments" class="form-group">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Amount In Each Order">
+                                            <div class="input-group-append">
+                                                <select id="unit" id="mesurement" placeholder = "Units">
+                                                    <option value="kg">Kilograms</option>
+                                                    <option value="lb">Pounds</option>
+                                                    </select>
+                                            </div>
                                         </div>
+                
+                                </div>
+
+                            
+                                <div class="input-group">
+                                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="Quote Price">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">$(USD)</span>
+                                            </div>
+                                    </div>
+                
+                                    <label for= "checkboxArea" id="inStockLbl">In Stock</label>   
+                                    <div id="checkboxArea">
+                                        <input type="checkbox"  id="stockCheck" checked>
                                     </div>
                                 
-                                
-            
-                            </div>
-                            <div id="price" class="form-group">
-                                <label for="priceIn">Price</label>
-                                
-                                
-                                <div class="input-group">
-                                        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn">
-                                        <div class="input-group-append">
-                                          <span class="input-group-text">$(USD)</span>
-                                        </div>
-                                      </div>
-
-
-
-                            </div>
-                            <div id="inStock" class="form-group">
-                                <label id="inStockLbl">In Stock</label>
-                                <form id="btnYN">
-                                    <input type="radio" name="aval" value="yes" checked id="btnY"> Yes<br>
-                                    <input type="radio" name="aval" value="no" id="btnN"> No<br>
-                            </div>
-                          
-
                             <div id="dateSelect" class="form-group">
                                 <label for="dateIn" id="caseNo">If No then when will you have it available?</label>
                                 <input type="date" id="dateIn" class="form-group">

@@ -4,7 +4,8 @@
 body{
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
-    background-color: rgb(47, 48, 48);
+    background-image: url('/images/abh-background1.jpg');
+    background-position: center right;
     font-size: 1rem;
     /* border-style: none;
     border-color: red; */
@@ -136,11 +137,13 @@ body{
 
     #formLoc{
         margin-top: 15%;
+       
     }
 
 #title{
     margin-bottom: 30px;
     font-size: 20px;
+    color: white;
 }
     #msform {
         width: 50%;
@@ -149,12 +152,13 @@ body{
         height: 50px ;
         text-align: center;
         position: relative;
+        
     }
     #msform fieldset {
-        background: white;
+        background:rgb(65, 70, 90);
         border: 0 none;
         border-radius: 3px;
-        box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 0 15px 1px rgba(170, 164, 164, 0.863);
         padding: 20px 30px;
         box-sizing: border-box;
         width: 80%;

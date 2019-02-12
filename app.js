@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/assets"))
 
 app.get('/', (req,res) =>{
-    res.render( 'index');
+    res.render( 'vendor/vendorFill');
 });
 app.get('/demo', (req,res) =>{
     res.render( 'demo');
@@ -25,7 +25,7 @@ app.get('/test', (req,res) =>{
     res.render( 'test');
 });
 app.get('/purchase', (req,res)=>{
-    res.render('purchaseFill');
+    res.render('purchase/purchaseFill');
 });
 //fire controlers
 

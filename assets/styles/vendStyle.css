@@ -4,7 +4,8 @@
 body{
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
-    background-color: rgb(47, 48, 48);
+    background-image: url('/images/abh-background1.jpg');
+    background-position: center right;
     font-size: 1rem;
     /* border-style: none;
     border-color: red; */
@@ -98,12 +99,15 @@ body{
 .mainBody{
     border-radius: 5px;
     background-position: center;
-    background-color: #FFFFFF;
-    border-style: outset ;
-    border-color: rgb(173, 207, 238, 0.705);
+    background-color: #D7D8DD;
+    -moz-box-shadow:    outset .4px .0px 10px rgb(113, 113, 116);
+    -webkit-box-shadow: outset .3px .0px 10px rgb(65, 65, 66);
+    box-shadow:         inset .2px .0px 10px rgb(113, 113, 116);
+    /* border-style: outset ;
+    border-color: #D7D8DD; */
     color: #1a1a1a;
     
-    border-style: outset;
+
     
     height: 10%;
     
@@ -113,8 +117,7 @@ body{
     float: center;
     
 
-    border-style: outset;
-    border-color: none;
+    
     margin-top: 10%;
    
     margin-bottom: 2%;

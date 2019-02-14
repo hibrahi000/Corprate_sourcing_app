@@ -17,15 +17,6 @@ body{
 
 
 
-
-
-
-
-
-
-
-
-
 .mainHeader{
    background:#7bc659;
    border-color: gray;
@@ -108,10 +99,14 @@ body{
      
 }
 
-.center{
- 
-}
 
+
+
+#welcome_logo_img{
+    float: left;
+    border-radius: 3px;
+    box-shadow: 0 0 15px 1px rgba(170, 164, 164, 0.863);
+}
 
 
 
@@ -134,9 +129,17 @@ body{
 
 /* Request Form Design */
 
+.inputField{
+    background-color: white;
+}
 
+#sectionName{
+    text-align: right;
+    font-size: 35px;
+    color: white;
+}
     #formLoc{
-        margin-top: 15%;
+        margin-top: 10%;
        
     }
 
@@ -155,9 +158,11 @@ body{
         
     }
     #msform fieldset {
-        background:rgb(65, 70, 90);
+        background-image: url('/images/formBackground.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
         border: 0 none;
-        border-radius: 3px;
+        border-radius: 20px;
         box-shadow: 0 0 15px 1px rgba(170, 164, 164, 0.863);
         padding: 20px 30px;
         box-sizing: border-box;
@@ -184,18 +189,7 @@ body{
         font-size: 18px;
         float: initial;
     }
-    /*buttons*/
-    /* #msform .action-button {
-        width: 100px;
-        background: #7bc659;
-        color: white;
-        border: 0 none;
-        border-radius: 20px;
-        cursor: pointer;
-        padding: 10px 5px;
-        margin: 10px 5px;
-
-    } */
+  
     #msform .action-button:hover, #msform .action-button:focus {
         box-shadow: 0 0 0 2px white, 0 0 0 3px #7bc659;
 
@@ -213,6 +207,26 @@ body{
         color: #666;
         margin-bottom: 20px;
     }
+
+
+
+    .form-label{
+        color: white;
+        font-size: 18px;
+        text-align: left;
+        margin-left: 0;
+    }
+
+
+    #rushOrder{
+        color: white;
+        font-size:18px;
+        text-align: left;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+
     
 
 

@@ -4,7 +4,7 @@ var bodyParser = require('body-parser')
 var mogo = require('mongo');
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 var nodemailer = require('nodemailer');
-
+var todoController = require('./controllers/controller');
 
 
 
@@ -15,20 +15,9 @@ app.set('view engine', 'ejs');
 //static files 
 app.use(express.static(__dirname + "/assets"))
 
-app.get('/', (req,res) =>{
-    res.render( 'vendor/vendorFill');
-});
-app.get('/demo', (req,res) =>{
-    res.render( 'demo');
-});
-app.get('/test', (req,res) =>{
-    res.render( 'test');
-});
-app.get('/purchase', (req,res)=>{
-    res.render('purchase/purchaseFill');
-});
-//fire controlers
 
+//fire controlers
+todoController(app);
 
 
 //airtable function assign

@@ -1,0 +1,84 @@
+
+<fieldset>
+    <h1 id="sectionName"><em>Request Quote</em> <br><br> </h1>
+    <h1 id="title" class="fs-title">Material</h2>
+
+    <input type="text" class="inputField" name="material" placeholder="Alpha...." / required>
+    <div id="nxtBtn">
+    <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
+    </div>
+    </fieldset>
+    <fieldset>
+        <h1 id="title" class="fs-title">Request Details</h1>
+        <div class="fillout">
+
+                <div id="moq" class="form-group">
+                    <label for="oqIn" id="moqInLbl" class="form-label" ><en>Order Quantity</en></label>
+
+                    <input type="number" class="form-control" id="oqIn"  placeholder="Ex: 12" required> 
+                </div>
+
+                <div id="measurments" class="form-group">
+
+                        <label for="ammount" id="ammountLbl" class="form-label" ><en>Ammount In Each Order</en></label>
+
+                        <div class="input-group">
+                            <input id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                            <div class="input-group-append">
+                                <select id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
+                                    <option value="kg">Kilograms</option>
+                                    <option value="lb">Pounds</option>
+                                    </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div>
+                            <label for="tPrice" id="tPriceLbl" class="form-label" ><en>Target Price</en></label>
+
+                    </div>
+
+                <div id="tPrice" class="input-group">
+                      
+                    <input id="tPrice" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
+                    
+                    <div class="input-group-append">
+                        <span class="input-group-text">$(USD)</span>
+                    </div>
+                </div>
+
+                <div id="rushOrder" class="glowing">
+                    <!-- <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en>Rush Order?</en></label> -->
+                    <label>
+                        <input type="checkbox" id="checkBoxNot"><span id="rushSpan">Rush Order</span>
+                    </label>    
+                            
+                </div>
+                <div>
+                    <h3 class="form-label" >Notes:</h3>
+                </div>
+                <div id="extraNotes">
+                        <input type="text" class="notes" class='form-control' placeholder="Extra Notes you want to leave the vendor"></input>
+                </div>
+                  
+        </div>
+   <div class="submit">
+
+    <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
+    <button type="submit" id="formComplete"><span>Form Completed </span></button>
+        
+    </div>
+    </fieldset>
+
+
+    
+    <script
+     src="https://code.jquery.com/jquery-3.3.1.js"
+     integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+     crossorigin="anonymous"></script>
+  
+    
+   
+   <script src="/scripts/purchaseScript.js"></script>
+   <script src='/scripts/otherScripts/sideNavScript.js'></script>

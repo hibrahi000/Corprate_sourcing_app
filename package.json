@@ -13,11 +13,14 @@
   "author": "Hashmat Ibrahimi",
   "license": "ISC",
   "dependencies": {
-    "airtable": "^0.5.8",
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
+    "emailjs": "^2.2.0",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "mongo": "^0.1.0",
-    "nodemailer": "^5.1.1"
+    "mongoose": "^5.4.11",
+    "nodemailer": "^5.1.1",
+    "passwordless": "^1.1.3"
   }
 }

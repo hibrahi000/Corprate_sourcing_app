@@ -8,8 +8,9 @@ body {
   }
   
   .side-nav {
+    visibility: visible;
       float:left;
-    background-color: rgb(65, 70, 90);
+  
     width: 250px !important;
     height: 450px;
     text-align: center;
@@ -38,7 +39,7 @@ body {
     padding-top: 28px;
     padding-bottom: 30px;
     font-size: 25px;
-    color: rgb(61, 155, 192);
+    color: #172936;
     transition: color .5s ease;
   }
   
@@ -48,11 +49,12 @@ body {
   
   .side-nav .sections li:hover {
     cursor: pointer;
-    color: #FFF;
+    color: rgb(76, 192, 238);
   }
   
   
   .menu-icon {
+    display: none;
     height: 24px;
     width: 40px;
     position: absolute;
@@ -82,6 +84,7 @@ body {
   }
   
   .x-bar {
+    visibility: visible;
     position: absolute;
     top: -30px;
     left: 270px;
@@ -99,7 +102,7 @@ body {
   }
   
   .x-bar > div {
-    background-color: rgb(61, 155, 192);
+    background-color:#a12626;
     width: 100%;
     height: 4px;
     margin-bottom: 6px;

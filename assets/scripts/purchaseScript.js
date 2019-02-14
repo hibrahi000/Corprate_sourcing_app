@@ -79,6 +79,18 @@ $(".previous").click(function(){
 	});
 });
 
+$('#loginBtn').click(function() {
+	$("form").load('/partials/partial-purch/quote.ejs').css({
+		 opacity: 0 }).delay( 100 ).fadeTo("normal",1);
+		
+		 
+	$(".menu-icon").css('display','inline');
+});
+
+
+
 $(".submit").click(function(){
 	return true;
 });
+
+

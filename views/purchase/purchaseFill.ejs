@@ -9,14 +9,18 @@
 
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
        
-        <link rel="stylesheet" type="text/css" href="/styles/purchaseStyle.css">
-        <link rel="stylesheet" type="text/css" href="/styles/otherProperties/nextBtn.css">
-        <link rel="stylesheet" type="text/css" href="/styles/otherProperties/prevBtn.css">
-        <link rel="stylesheet" type="text/css" href="/styles/otherProperties/submitBtn.css">
-        <link rel="stylesheet" type="text/css" href="/styles/otherProperties/checkBoxes.css">
-        <link rel="stylesheet" type="text/css" href="/styles/otherProperties/sideNav.css">
-  
-  
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/purchaseStyle.css">
+       
+    
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/sideNav.css">
+
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/loginStyle.css">
+        
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/btns.css">
+
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/checkBoxes.css">
+
+      
 
         
     </head>  
@@ -66,7 +70,7 @@
 
          <div class="side-nav">
                 <ul class="sections">
-                  <li><a class="reqQuote" href="#">Request Quote</a></li>
+                  <li><a class="reqQuote">Request Quote</a></li>
                   <li><a href="#" class="addVend" >Add Vendor </a></li>
                   <li><a href="#" class="modVend">Modify Vendor Info</a></li>
                 </ul>
@@ -84,62 +88,35 @@
 
          <div id="formLoc">
             <form id="msform" method="POST" action="/purchase">
-                    <fieldset>
-                    <h1 id="title" class="fs-title">Material</h2>
-
-                    <input type="text" name="material" placeholder="Alpha...." / required>
-                    <div id="nxtBtn">
-                    <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
-                    </div>
-                    </fieldset>
-                    <fieldset>
-                        <h1 id="title" class="fs-title">Request Details</h1>
-                        <div class="fillout">
-
-                                <div id="moq" class="form-group">
-                                    <input type="number" class="form-control" id="moqIn"  placeholder="Order Quantity" required> 
-                                </div>
-
-                                <div id="measurments" class="form-group">
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Amount in Each Order" required>
-                                            <div class="input-group-append">
-                                                <select id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
-                                                    <option value="kg">Kilograms</option>
-                                                    <option value="lb">Pounds</option>
-                                                    </select>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                <div id="tPrice" class="input-group">
-                                    <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="Target Price (Optional)">
-                                    
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">$(USD)</span>
-                                    </div>
-                                </div>
-
-                                <div id="rushOrder" class="form-group">
-                                        <div id="checkboxArea">
-                                                <input type="checkbox"  id="checkGlow">
-                                            </div>
-                                            
-                                </div>
-
-                                <div id="extraNotes">
-
-                                </div>
-                                  
+                   <div class="welcome_page">
+                       <h1 id="loginHeader">ABH Purchasing Application</h1>
+                          <div class="container">
+                             <div class="col-lg-8 login-form">
+                                 <div class="col-lg-12 login-form">
+                                     <form>
+                                          <div class="form-group">
+                                               <label class="form-control-label">USERNAME</label>
+                                               <input  type="text" id="username" class="form-control">
+                                          </div>
+                                          <div class="form-group">
+                                               <label class="form-control-label">PASSWORD</label>
+                                              <input type="password" id ="password"  class="form-control" >
+                                           </div>
+                
+                                          <div class="col-lg-12 loginbttm">
+                                                <div class="col-lg-6 login-btm login-text">
+                                                    <!-- Error Message -->
+                                              </div>
+                                               <div class="col-lg-6 login-btm login-button">
+                                                    <button type="button" id="loginBtn" class="btn btn-outline-primary">LOGIN</button>
+                                             </div>
+                                         </div>
+                                     </form>
+                                 </div>
+                             </div>
+                          </div>
                         </div>
-                   <div class="submit">
-
-                    <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
-                    <button type="submit" id="abhBtn"><span>Form Completed </span></button>
-                        
-                    </div>
-                    </fieldset>
+                   </div>
             </form>
         </div>
 
@@ -150,13 +127,11 @@
 
 
 
- <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>   
- <script
-  src="https://code.jquery.com/jquery-3.3.1.js"
+ 
+ <script src="https://code.jquery.com/jquery-3.3.1.js"
   integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
   crossorigin="anonymous"></script>
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
- </script>
+
  <script src="/scripts/purchaseScript.js"></script>
 
 <script src="/scripts/purchaseScript.js"></script>

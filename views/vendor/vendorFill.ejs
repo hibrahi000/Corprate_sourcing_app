@@ -11,109 +11,117 @@
     </head>  
     
     <body >
-    <div class="mainHeader">
 
-        <div class="contact">
+
+        <div class="mainHeader">
+
+            <div class="contact">
+            
+                <label class="address">131 Heartland Boulevard, Edgewood, New York, U.S </label>
+                <label class = "number">866-282-4729</label>
+
         
-            <label class="address">131 Heartland Boulevard, Edgewood, New York, U.S </label>
-            <label class = "number">866-282-4729</label>
+                <div class="link">
+                    <a id="facebook"  class="linkSpacing"        href="https://www.facebook.com/abhpharma/n">Facebook</a>
+        
 
-       
-            <div class="link">
-                <a id="facebook"  class="linkSpacing"        href="https://www.facebook.com/abhpharma/n">Facebook</a>
+                    <a id="twitter" class="linkSpacing" 
+                    href="https://twitter.com/ABHPharma?lang=en">Twitter</a>
+
+
+
+                    <a id="instagram" class="linkSpacing" href="https://www.instagram.com/abhpharma/?hl=en">Instagram</a>
     
 
-                <a id="twitter" class="linkSpacing" 
-                href="https://twitter.com/ABHPharma?lang=en">Twitter</a>
+    
+                    <a id="google+" class="linkSpacing" 
+                    href="https://plus.google.com/+Abhpharma">Google+</a>
+            
 
-
-
-                <a id="instagram" class="linkSpacing" href="https://www.instagram.com/abhpharma/?hl=en">Instagram</a>
- 
-
- 
-                <a id="google+" class="linkSpacing" 
-                href="https://plus.google.com/+Abhpharma">Google+</a>
         
+                <a id="linkedIn"class="linkSpacing"  href="https://www.linkedin.com/company/abh-pharma-inc/">LinkedIn</a>
 
-       
-             <a id="linkedIn"class="linkSpacing"  href="https://www.linkedin.com/company/abh-pharma-inc/">LinkedIn</a>
-
+                </div>
+            
             </div>
+                <div class="logoLoc">
+                    <a href="https://abhpharma.com"><img src="images/headerv1.jpg"></a> 
+                </div>
+    
+                
         
         </div>
-            <div class="logoLoc">
-                <a href="https://abhpharma.com"><img src="images/headerv1.jpg"></a> 
-            </div>
    
-            
-    
-    </div>
+        
+        <div class="mainBody" class="container-fluid">
+            <form class="container" class="form-group" method="POST" action="/"> 
 
-    <div class="mainBody">
-        <div class="container-fluid"> 
-            <div class="center">
-                    <div class="vendName">
-                        <h2 class="venNamLbl">Vendor: </h2>
-                        <h2 for= " venNamLbl" id="venNam"></h2>
+
+                <h1>Vendor: </h1> <!-- add js call back <%= %>-->
+
+
+                <div class="material">
+                    <h5>Material: Alpha GPC 50%</h5>  <!-- add js call back <%= %>-->
+                    <label>Abh Request: 10kg</label>
+                </div>
+
+
+                <div class="fillout" class="form-group" >
+
+                    <input type="number" class="form-control" id="moqIn" placeholder="Vendors Min Order Quantity">
+
+                    <div class="inLoc">
+                        <div class="input-group" class="form-group" >
+                            <input type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Amount In Each Order">
+                            <div class="input-group-append">
+                                <select id="unit" id="mesurement" placeholder = "Units">
+                                    <option value="kg">Kilograms</option>
+                                    <option value="lb">Pounds</option>
+                                    </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="main">
-                        <div id="matName">
-                            
-                            <h5 for="matLbl" id="matNam">Alpha GPC 50%</h5>
+        
+                    <div class="inLoc">
+                        <div class="input-group" id="priceInput">
+                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="Quote Price">
+                            <div class="input-group-append">
+                                <span class="input-group-text">$(USD)</span>
+                            </div>
                         </div>
-                        <div id="abhRequest">
-                            <label id="requestLbl">ABH Request: </label>
-                            <label id="request">10 kg</label>
+                    </div>
+
+                    <div class="inLoc">
+                        <label for= "checkboxArea" id="inStockLbl">In Stock</label>   
+                        <div id="checkboxArea">
+                            <input type="checkbox"  id="stockCheck" checked>
                         </div>
-                        <div class="fillout">
-                                <div id="moq" class="form-group">
-                                    <input type="number" class="form-control" id="moqIn"  placeholder="Min Order Quantity">
-                                </div>
+                    </div>
 
-                                <div id="measurments" class="form-group">
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Amount In Each Order">
-                                            <div class="input-group-append">
-                                                <select id="unit" id="mesurement" placeholder = "Units">
-                                                    <option value="kg">Kilograms</option>
-                                                    <option value="lb">Pounds</option>
-                                                    </select>
-                                            </div>
-                                        </div>
-                
-                                </div>
 
-                            
-                                <div class="input-group">
-                                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="Quote Price">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">$(USD)</span>
-                                            </div>
-                                    </div>
-                
-                                    <label for= "checkboxArea" id="inStockLbl">In Stock</label>   
-                                    <div id="checkboxArea">
-                                        <input type="checkbox"  id="stockCheck" checked>
-                                    </div>
-                                
-                            <div id="dateSelect" class="form-group">
+                    <div class="inLoc">
+                        <div id="dateSelect" class="form-group">
                                 <label for="dateIn" id="caseNo">If No then when will you have it available?</label>
                                 <input type="date" id="dateIn" class="form-group">
+                        </div>
+                    </div>
+
+                    <div class="inLoc">
+                        <div id="shipLoc" class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="shipping">Shipping Address</span>
                             </div>
-                          
-                            <div id="shipLoc" class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="shipping">Shipping Address</span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="131 Heartland Blvd Edgewood, NY 11717, United States " aria-label="Username" aria-describedby="shipping">
-                            </div>
-                    <div class="submit">
-                        <button type="button" class="formComp"><span>Form Completed </span></button>
-                    </div> 
-            </div>
-        </div>
-    </div>
+                            <input type="text" class="form-control" placeholder="131 Heartland Blvd Edgewood, NY 11717, United States " aria-label="Username" aria-describedby="shipping">
+                        </div>
+                     </div>
+                </div>
+
+
+                <div class="submit">
+                    <button type="subject" class="formComp"><span>Form Completed </span></button>
+                </div>
+            </form> 
+         </div>
     
     
     </body>

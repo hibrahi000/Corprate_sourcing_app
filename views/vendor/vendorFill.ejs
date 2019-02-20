@@ -5,9 +5,21 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
         <title>ABH Invoice Form</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">  
-         <link href ="styles/vendStyle.css" rel="stylesheet" type="text/css" >
+
+
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+       
+         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/btns.css"> 
+
+         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/checkBoxes.css">
+
+         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/vendStyle.css">
+       
+
+
     </head>  
     
     <body >
@@ -53,87 +65,215 @@
         </div>
    
         
-        <div class="mainBody" class="container-fluid">
-            <form class="container" class="form-group" method="POST" action="/"> 
-
-
-                <h1>Vendor: </h1> <!-- add js call back <%= %>-->
-
-
-                <div class="material">
-                    <h5>Material: Alpha GPC 50%</h5>  <!-- add js call back <%= %>-->
-                    <label>Abh Request: 10kg</label>
-                </div>
-
-
-                <div class="fillout" class="form-group" >
-
-                    <input type="number" class="form-control" id="moqIn" placeholder="Vendors Min Order Quantity">
-
-                    <div class="inLoc">
-                        <div class="input-group" class="form-group" >
-                            <input type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Amount In Each Order">
-                            <div class="input-group-append">
-                                <select id="unit" id="mesurement" placeholder = "Units">
-                                    <option value="kg">Kilograms</option>
-                                    <option value="lb">Pounds</option>
-                                    </select>
-                            </div>
-                        </div>
+        <div id="formLoc">
+            <form id="msform" method="POST" action="/ABH_Invoice_Form"> 
+                <fieldset>
+                    <div id="materialSection">
+                    <h5 id="title" class="fs-title">Material: </h5>
+                    <h5 id="material" name='material' class="fs-title"><%=material%></h5>
                     </div>
+                    <div class="fillout">
+
+                        <div id="abhReq" class="form-group">
+                            <h5 class="form-label" id="reqLabel">ABH Requested:</h5>
+                            <h5 class="form-label" id="abhRequest" name="abhRequest"> <%=abhRequest%> </h5>
+                        </div>
+
+                            <div id="moq" class="form-group">
+                                <label for="moqIn" id="moqInLbl" class="form-label" ><en>Minimum Order Quantity</en></label>
+
+                                <input type="number" class="form-control" name="moqIn" id="moqIn"  placeholder="Ex: 12" required> 
+                            </div>
+
+                            <div id="measurments" class="form-group">
+
+                                    <label for="ammount" id="ammountLbl" class="form-label" ><en>Ammount In Each Order</en></label>
+
+                                    <div class="input-group">
+                                        <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                                        <div class="input-group-append">
+                                            <select name="measurement" id="unit" class="input-group-text" 
+                                            
+                                            id="measurement" 
+                                            
+                                            
+                                            placeholder = "Units" required>
+                                                <option value="kg">Kilograms</option>
+                                                <option value="lb">Pounds</option>
+                                                </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div>
+                                        <label for="Price" id="PriceLbl" class="form-label" ><en>Price</en></label>
+
+                                </div>
+
+                            <div id="Price" class="input-group" >
+                                
+                                <input id="Price" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn"  
+                                name="priceIn" placeholder="Ammount to the nearest dollar">
+                                
+                                <div class="input-group-append">
+                                    <span class="input-group-text" name='currency' >$(USD)</span>
+                                </div>
+                            </div>
+
+                            <div id="inStock" class="form-group" class="glowing">
+                                    <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en> Do You Have It In Stock?</en></label>
+                                    <p id='checkboxlook' class="onoff"><input type="checkbox" name="inStock" id="checkboxID" checked><label for="checkboxID"></label></p>  
+                                            
+                                </div>
         
-                    <div class="inLoc">
-                        <div class="input-group" id="priceInput">
-                            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="Quote Price">
-                            <div class="input-group-append">
-                                <span class="input-group-text">$(USD)</span>
+                            <div id="dateSelect" class="form-group">
+                                    <label for="dateIn" id="caseNo">If No then when will you have it available?</label>
+                                    <input name="dateInStock" type="date" id="dateIn"  class="form-group">
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="inLoc">
-                        <label for= "checkboxArea" id="inStockLbl">In Stock</label>   
-                        <div id="checkboxArea">
-                            <input type="checkbox"  id="stockCheck" checked>
-                        </div>
+                          
+                            
                     </div>
 
 
-                    <div class="inLoc">
+                    <div id="nxtBtn">
+                        <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
+                    </div>
+
+
+
+                </fieldset>
+
+                <fieldset>
+                    <h5 id="title" class="fs-title">Payment & Shipping</h5>
+
+                    <div class="fillout">
+
+                        <div id="payType" class="form-group">
+                            <label>Payment Type</label>
+                            <!-- CHECK THIS -->
+                            <select name="payType" value='advancePay' id="pType">
+                            
+                            
+                                <option value="advancePay" class="input-group-text">Advance Payment Before Shipping</option>
+                                <option value="terms">Terms</option>
+                              
+                            </select>
+                        </div>
+
+                        <div id="terms" class="form-group">
+                            <label>Pick your payment terms</label>
+                            <select name="payTerms" id="pTerms">
+                                <option value="n/a">--Days</option>
+                                <option value="30"> 30 Days</option>
+                                <option value="60">60 Days</option>
+                                <option value="90">90 Days</option>
+                            </select>
+                        </div>
+
                         <div id="dateSelect" class="form-group">
-                                <label for="dateIn" id="caseNo">If No then when will you have it available?</label>
-                                <input type="date" id="dateIn" class="form-group">
+                                <label>Estimated Shipping Date</label>
+                                <input name="shippingDate" type="date" id="dateIn" class="form-group" required>
                         </div>
+
+
                     </div>
 
-                    <div class="inLoc">
-                        <div id="shipLoc" class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="shipping">Shipping Address</span>
+                    
+
+
+
+
+                    <div class="nav">
+                        <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
+                    </div>
+
+                    <div class='nav' id="nxtBtn">
+                        <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
+                    </div>
+                </fieldset>
+
+
+
+
+                <fieldset>
+                    <h5 id="title" class="fs-title">Shipping Information</h5>
+                    <div class="fillout">
+
+                        <div class="form-group">
+                                <label for="compNam" id="compNamLbl" class="form-label" ><en>Shipping Company Name</en></label>
+
+                                <input type="text" name="shipCompName" class="form-group" id="compNam"  placeholder="Ex: 2Bros Shipping LLC" required> 
+                         </div>
+
+                         <div id="shipAddress" class="form-group">
+                            
+
+                            <div class="row one">
+                                    <div class="address-one">
+                                        <label class='addLabel' for="address-one">Address Line 1</label>
+                                        <input class='addInput' name="shipAddress1" placeholder="" id="address-one" type="text" />
+                                    </div>
+                                    <div class="address-two">
+                                        <label class='addLabel' for="address-two">Address Line 2</label>
+                                        <input class='addInput' name='shipAddress2' class="form-group" id="address-two" type="text" />
+                                    </div>
+                                </div>
+                                <div class="row two">
+                                    <div class="city">
+                                        <label class='addLabel' for="city">City</label>
+                                        <input class='addInput' name="shipCity" placeholder="" id="city" type="text" />
+                                    </div>
+                                    <div class="state">
+                                        <label class='addLabel'for="state">State / Province / Region</label>
+                                        <input class='addInput' name="shipState" placeholder="" id="state" type="text" />
+                                    </div>
+                                </div>
+                                <div class="row three">
+                                    <div class="zip">
+                                        <label class='addLabel' for="zip">Zip / Postal Code</label>
+                                        <input class='addInput' name="shipZip" placeholder="" id="zip" type="number" />
+                                    </div>
+                                    <div class="country">
+                                        <label class='addLabel' for="country">Country</label>
+                                        <input class='addInput' name="shipCountry" value='United States'  id="country" type="text" disabled/>
+                                    </div>
+                                </div>
+                                <div class="row four">
+                                        <div class="startHour">
+                                            <label class='addLabel' for="startHour">Open From:</label>
+                                            <input class='addInput' name="shipStartHour" placeholder="" id="startHour" type="time" />
+                                        </div>
+                                        <div class="endHour">
+                                            <label class='addLabel' for="endHour">Closes At:</label>
+                                            <input class='addInput' name="shipEndHour" placeholder="" id="endHour" type="time" />
+                                        </div>
+                                 </div>
                             </div>
-                            <input type="text" class="form-control" placeholder="131 Heartland Blvd Edgewood, NY 11717, United States " aria-label="Username" aria-describedby="shipping">
-                        </div>
-                     </div>
-                </div>
+                    </div>
+                                 
+                    <div class="submit">
+                        <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
+                        <button type="submit" id="formComplete"><span>Submit Quote </span></button>
+                    </div>
+                </fieldset>
 
 
-                <div class="submit">
-                    <button type="subject" class="formComp"><span>Form Completed </span></button>
-                </div>
-            </form> 
-         </div>
+            </form>       
+        </div>
+                
+        
     
-    
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
+        <script src="/scripts/vendorScript.js"></script>
+      
     </body>
 
    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script> 
-    <script src="http://momentjs.com/downloads/moment.min.js"></script>
-    <link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAn1s6adm2F_xKl-7cEKlOaK_lShnsPpUs&callback=initMap" async defer></script>
  
 
 </html>

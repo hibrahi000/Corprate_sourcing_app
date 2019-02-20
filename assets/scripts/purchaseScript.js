@@ -13,8 +13,6 @@ $(".next").click(function(){
 	current_fs = $(this).parent().parent();
 	next_fs = $(this).parent().parent().next();
 	
-	//activate next step on progressbar using the index of next_fs
-	$("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 	
 	//show the next fieldset
 	next_fs.show(); 
@@ -34,7 +32,7 @@ $(".next").click(function(){
       });
 			next_fs.css({'left': left, 'opacity': opacity});
 		}, 
-		duration: 800, 
+		duration: 500, 
 		complete: function(){
 			current_fs.hide();
 			animating = false;

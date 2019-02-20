@@ -121,7 +121,7 @@
             padding-right: 45px;
         }
         .proceedBtn:hover span:after {
-            opacity: 1;
+            /* opacity: 1; */
             right: 0;
         }
         .proceedBtn:focus {outline:0;}
@@ -177,7 +177,8 @@
     .submit{
         border-style: none;
         border-color: black;
-        margin-top: 10%;
+        margin-top: 2%;
+        padding-bottom: 2%;
     }
         #formComplete {
             float: right;

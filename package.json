@@ -17,6 +17,7 @@
     "ejs": "^2.6.1",
     "emailjs": "^2.2.0",
     "express": "^4.16.4",
+    "jquery-html5-validity": "^1.1.2",
     "lodash": "^4.17.11",
     "mongo": "^0.1.0",
     "mongoose": "^5.4.11",

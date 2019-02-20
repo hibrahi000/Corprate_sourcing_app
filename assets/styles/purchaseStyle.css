@@ -1,6 +1,8 @@
 *,*::before, *::after{box-sizing: border-box;}
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
+
+
 body{
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
@@ -10,6 +12,7 @@ body{
     /* border-style: none;
     border-color: red; */
     zoom: 100%;
+    overflow-anchor: auto;
 
     
 }
@@ -227,6 +230,5 @@ body{
     }
 
 
-    
-
+   
 

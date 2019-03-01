@@ -7,9 +7,13 @@ const MaterialSchema = new mongoose.Schema({
     },
     Vendor : {
         type : String,
-        required : true,
+        required : false,
+    },
+    DateCreated: {
+        type: String,
+        default : Date
     }
 },{collection : 'Materials'});
 
 const Material = mongoose.model('Material', MaterialSchema);
-module.exports = Material;
+module.exports = {Material};

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongooseUniqueValidator = require('mongoose-unique-validator');
+
 var Schema = mongoose.Schema;
 const EmployeeSchema = new Schema({
 
@@ -9,12 +9,12 @@ const EmployeeSchema = new Schema({
     },
      LastName : {
         type: String,
-        required : false
+        required : true
         },
     Email : {
         type: String,
         required : true,
-        unique : true
+       
         },
     Cell : {
         type: Number,
@@ -29,27 +29,28 @@ const EmployeeSchema = new Schema({
         required : true
         },
     Scheduel : {
+    
         type : Array,
         default : null
     },
     Username : {
         type : String,
-        default : null
+        required : true
         },
     Password : {
         type : String,
-        default : null
+        required: true
         },
     DateCreated: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default : Date
         }
-        
+
 });
 
-EmployeeSchema.plugin(mongooseUniqueValidator);
 
-const Employee = mongoose.model('Employee', EmployeeSchema);
+
+const Employee = mongoose.model('Employee', EmployeeSchema, 'Employee');
 
 module.exports ={Employee};
 

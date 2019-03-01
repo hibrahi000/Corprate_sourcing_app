@@ -33,7 +33,10 @@ const VendorSchema = new mongoose.Schema({
         type : String,
         default : null
     },
-
+    DateCreated :{
+        type: String,
+        default : Date
+    }
 
 
 
@@ -44,4 +47,4 @@ const VendorSchema = new mongoose.Schema({
 },{collection : 'VendorInfo'});
 
 const Vendor = mongoose.model('Vendor', VendorSchema);
-module.exports = Vendor;
+module.exports = {Vendor};

@@ -1,0 +1,198 @@
+
+<html lang="en" >
+
+        <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+                <title>Purchasing Request</title>
+
+                <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+                
+
+                <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/sideNav.css">
+
+                <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/loginStyle.css">
+                
+                <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/btns.css">
+
+                <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/checkBoxes.css">
+
+                
+                <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/purchaseStyle.css">
+                
+
+                
+        </head>  
+
+        <body >
+
+                <div class="mainHeader">
+
+                <div class="contact">
+                
+                <label class="address">131 Heartland Boulevard, Edgewood, New York, U.S </label>
+                <label class = "number">866-282-4729</label>
+
+                
+                <div class="link">
+                        <a id="facebook"  class="linkSpacing"        href="https://www.facebook.com/abhpharma/n">Facebook</a>
+
+
+                        <a id="twitter" class="linkSpacing" 
+                        href="https://twitter.com/ABHPharma?lang=en">Twitter</a>
+
+
+
+                        <a id="instagram" class="linkSpacing" href="https://www.instagram.com/abhpharma/?hl=en">Instagram</a>
+
+
+
+                        <a id="google+" class="linkSpacing" 
+                        href="https://plus.google.com/+Abhpharma">Google+</a>
+                
+
+                
+                        <a id="linkedIn"class="linkSpacing"  href="https://www.linkedin.com/company/abh-pharma-inc/">LinkedIn</a>
+
+                </div>
+                
+                
+                <div class="logoLoc">
+                        <a href="https://abhpharma.com"><img src="../images/headerv1.jpg"></a> 
+                </div>
+
+                
+                </div>
+                
+                
+                </div>
+
+                <div class="side-nav">
+                        <ul class="sections">
+                        <li><a class="reqQuote">Request Quote</a></li>
+                        <li><a href="#" class="addVend" >Add Vendor </a></li>
+                        <li><a href="#" class="modVend">Modify Vendor Info</a></li>
+                        <li><a href="#" class="logout">Logout</a></li>
+                        </ul>
+                </div>
+           
+                <div class="menu-icon">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+                </div>
+           
+                <div class="x-bar">
+                <div class="side-bar1"></div>
+                <div class="side-bar2"></div>
+                </div>
+        
+                 <div id="formLoc">
+                        <fieldset>
+                        <h1 id="sectionName"><em>Request Quote</em> <br><br> </h1>
+                        <h1 id="title" class="fs-title">Material</h2>
+
+                        <input type="text" class="inputField" name="material" placeholder="Alpha...." / required>
+                        <div id="nxtBtn">
+                        <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
+                        </div>
+            
+                        </fieldset>
+            
+                        <fieldset>
+                            <h1 id="title" class="fs-title">Request Details</h1>
+                            <div class="fillout">
+
+                                    <div id="moq" class="form-group">
+                                        <label for="oqIn" id="moqInLbl" class="form-label" ><en>Order Quantity</en></label>
+
+                                        <div class="input-group-append">
+                                                <select id="unit" class="input-group-text"  id='reqType' placeholder = "Request Type" required>
+                                                    <option value="oneTime">One Time</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                    <option value="Yearly">Yearly</option>
+                                                    </select>
+                                            </div>
+                                    </div>
+
+                                    <div id="measurments" class="form-group">
+
+                                            <label for="ammount" id="ammountLbl" class="form-label" ><en>Requested Material Amount</en></label>
+
+                                            <div class="input-group">
+                                                <input id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                                                <div class="input-group-append">
+                                                    <select id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
+                                                        <option value="kg">Kilograms</option>
+                                                        <option value="kg">Kilograms</option>
+                                                        <option value="lb">Pounds</option>
+                                                        </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div>
+                                                <label for="tPrice" id="tPriceLbl" class="form-label" ><en>Target Price</en></label>
+
+                                        </div>
+
+                                    <div id="tPrice" class="input-group">
+                                        
+                                        <input id="tPrice" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
+                                        
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">$(USD)</span>
+                                        </div>
+                                    </div>
+
+                                    <div id="rushOrder" class="glowing">
+                                        <!-- <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en>Rush Order?</en></label> -->
+                                        <label>
+                                            <input type="checkbox" id="checkBoxNot"><span id="rushSpan">Rush Order</span>
+                                        </label>    
+                                                
+                                    </div>
+                                    <div>
+                                        <h3 class="form-label" >Notes:</h3>
+                                    </div>
+                                    <div id="extraNotes">
+                                            <input type="text" class="notes" class='form-control' placeholder="Extra Notes you want to leave the vendor"></input>
+                                    </div>
+                                    
+                            </div>
+                    <div class="submit">
+
+                        <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
+                        <button type="submit" id="formComplete"><span>Form Completed </span></button>
+                            
+                        </div>
+                        </fieldset>
+                 </div>
+
+                    <!-- <form class="form-group" method="POST" action="/purchase" id="addVend" class="tab-pane fade in active">
+                    </form> -->
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+    integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+
+    <script src="/scripts/purchaseScript.js"></script>
+
+
+    <script src='/scripts/otherScripts/sideNavScript.js'></script>
+
+    </body>  
+
+</html>  
+
+
+
+
+
+
+

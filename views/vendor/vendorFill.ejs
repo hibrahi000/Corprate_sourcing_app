@@ -80,14 +80,14 @@
                         </div>
 
                             <div id="moq" class="form-group">
-                                <label for="moqIn" id="moqInLbl" class="form-label" ><en>Minimum Order Quantity</en></label>
+                                <label for="moqIn" id="moqInLbl" class="form-label" ><en>Vendor Item Code</en></label>
 
-                                <input type="number" class="form-control" name="moqIn" id="moqIn"  placeholder="Ex: 12" required> 
+                                <input type="number" class="form-control" name="moqIn" id="moqIn"  placeholder="CODE#" required> 
                             </div>
 
                             <div id="measurments" class="form-group">
 
-                                    <label for="ammount" id="ammountLbl" class="form-label" ><en>Ammount In Each Order</en></label>
+                                    <label for="ammount" id="ammountLbl" class="form-label" ><en>Amount In Stock</en></label>
 
                                     <div class="input-group">
                                         <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
@@ -114,15 +114,23 @@
                             <div id="Price" class="input-group" >
                                 
                                 <input id="Price" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn"  
-                                name="priceIn" placeholder="Ammount to the nearest dollar">
+                                name="priceIn" placeholder="$(USD)">
                                 
                                 <div class="input-group-append">
-                                    <span class="input-group-text" name='currency' >$(USD)</span>
-                                </div>
+                                        <select name="measurement" id="unit" class="input-group-text" 
+                                        
+                                        id="measurement" 
+                                        
+                                        
+                                        placeholder = "Units" required>
+                                            <option value="kg">Delivered Price</option>
+                                            <option value="lb">Pick Up Needed</option>
+                                            </select>
+                                    </div>
                             </div>
 
                             <div id="inStock" class="form-group" class="glowing">
-                                    <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en> Do You Have It In Stock?</en></label>
+                                    <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en> Do You Have It In Stock (USA)?</en></label>
                                     <p id='checkboxlook' class="onoff"><input type="checkbox" name="inStock" id="checkboxID" checked><label for="checkboxID"></label></p>  
                                             
                                 </div>
@@ -172,7 +180,7 @@
                             </select>
                         </div>
 
-                        <div id="dateSelect" class="form-group">
+                        <div  id="shipdateSelect" class="form-group">
                                 <label>Estimated Shipping Date</label>
                                 <input name="shippingDate" type="date" id="dateIn" class="form-group" required>
                         </div>

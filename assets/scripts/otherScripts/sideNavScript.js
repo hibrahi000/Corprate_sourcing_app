@@ -55,6 +55,17 @@ $xBar.click(function() {
 
 $(document).ready(function(){
 
+  $addUser.click(function() {
+    $("form").load('/partials/partial-purch/quote.ejs').css({
+       opacity: 0 ,}).delay( 150 ).fadeTo("normal",1);
+});
+
+
+
+$removeUser.click(function() {
+  $("form").load('/partials/partial-admin/remove.ejs').css({
+    opacity: 0 ,}).delay( 150 ).fadeTo("normal",1);
+});
 
 
 

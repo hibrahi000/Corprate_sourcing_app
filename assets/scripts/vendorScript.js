@@ -133,7 +133,7 @@ var form = $('#msform');
 		}
 		else if (this.value == 'advancePay') {
 				$("#terms").slideUp();
-		
+			
 			
 		}
 		});

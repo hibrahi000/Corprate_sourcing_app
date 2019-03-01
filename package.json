@@ -4,7 +4,7 @@
   "description": "ABH Vendor/Purchase automation system",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "ABH",
@@ -13,15 +13,28 @@
   "author": "Hashmat Ibrahimi",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
-    "emailjs": "^2.2.0",
     "express": "^4.16.4",
+    "express-ejs-layouts": "^2.5.0",
+    "express-messages": "^1.0.1",
+    "express-validator": "^5.3.1",
     "jquery-html5-validity": "^1.1.2",
+    "js-alert": "^1.0.4",
     "lodash": "^4.17.11",
     "mongo": "^0.1.0",
     "mongoose": "^5.4.11",
+    "mongoose-unique-validator": "^2.0.2",
+    "node-input-validator": "^3.1.0",
     "nodemailer": "^5.1.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "passwordless": "^1.1.3"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.1"
   }
 }

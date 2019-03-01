@@ -102,10 +102,46 @@ body{
      
 }
 
+#welcome-top{
+    visibility: hidden;
+}
+
+#welcome-Box{
+    padding-top: 5%;
+}
+
+#welcome_page{
+  
+}
+
+#routeHeader, #direction{
+    color: white;
+    text-align: left;
+}
+
+#routeHeader{
+  
+    font-style: italic;
+}
+
+#direction{
+    padding-top: 2%;
+    font-size: 22px;
+}
+
+#admin,#purchase{
+    width: 30%;
+    
+    margin-left: 5px;
+    position: relative;
+    margin-top: 5%;
+}
+
 
 
 
 #welcome_logo_img{
+    
     float: left;
     border-radius: 3px;
     box-shadow: 0 0 15px 1px rgba(170, 164, 164, 0.863);
@@ -123,7 +159,9 @@ body{
     height: 38px;
 }
 
-
+#shipdateSelect{
+    display: hidden;
+}
 
 
 

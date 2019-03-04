@@ -225,9 +225,9 @@ body{
         margin-bottom: 10px;
         width: 70%;
         box-sizing: border-box;
-        font-family: montserrat;
-        color: #2C3E50;
-        font-size: 18px;
+        font-family: unset;
+        color: #D1EFF8;
+        font-size: 16px;
         float: initial;
     }
   

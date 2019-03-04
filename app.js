@@ -1,11 +1,27 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts')
 var app = express();
-var bodyParser = require('body-parser')
-var mongo = require('mongo');
-var urlencodedParser = bodyParser.urlencoded({ extended : false});
-var todoController = require('./controllers/controller');
+const flash = require('connect-flash');
+var controller = require('./controllers/controller');
+const passport = require('passport');
+const sessions = require('cookie-session');
+const keys = require('./controllers/config/keys');
 
+// app.use(flash());
+
+// //global
+// app.use((req,res,next) =>{
+//     res.locals.success_msg = req.flash('success_msg');
+//     res.locals.error_msg = req.flash('error_msg');
+//     res.locals.error = req.flash('error');
+//     next();
+
+// });
+
+
+
+//passport config
+require('./controllers/config/passport')(passport);
 
 
 
@@ -13,16 +29,30 @@ var todoController = require('./controllers/controller');
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 
+
+
+//Sessions
+app.use(sessions({
+    maxAge: 1000   *   60   * 60   *  2,
+         //miliSec    sec     min    hours     days           
+    keys: [keys.session.cookieKey]
+}));
+
+
+// initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 //static files 
 app.use(express.static(__dirname + "/assets"));
 
 
-
 //fire controlers
-todoController(app);
+controller(app);
 
 
-//airtable function assign
+
 
 //listen to port /
 app.listen(3000);

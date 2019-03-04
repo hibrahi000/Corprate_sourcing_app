@@ -1,63 +1,34 @@
-//This is a file designed to supply utility functions to mongo db Manipulation
 
+/////////////////////////////////////////Export////////////////////////////////////
 
+module.exports = {
+    docManipEnable,
+    dbAddToEmployee,
+    connectABHPharmaDB,
+    disconnectABHPharmaDB,
+    passwordENCRYPT
 
-
-
-//Function that searches for a text
-
-
-
-//function that returns a list of info
-
-
-
-//function that adds stuff to the database 
-
-
-//get collection
-
-
-//add to collection
-
-
-
-//add to document in collection
-
-
-
-//add document to colection
-
-
-
-//deleate document
-
-
-//deleate collection
-
-
-
-module.exports = () =>{
-    
 }
-
-
-
-
-
-
+/////////////////////////////////////////Require////////////////////////////////////
 var key = require('../controllers/config/keys');
 var Employee = require('./models/Employee');
 var Vendor = require('./models/Vendor');
 var Material = require('./models/Material');
 var mongoose = require('mongoose');
+var bcrypt = require('bcryptjs');
 
 var employee = Employee.Employee;
 var material = Material.Material;
 var vendor = Vendor.Vendor;
 
-//Connect To DB
 
+
+
+
+
+/////////////////////////////////////////Connection Functions////////////////////////////////////
+
+                        //CLEAR
 function connectABHPharmaDB(theFunction){
     mongoose.connect(key.ABHPHARMA_DB_CONNECT_URI, {useNewUrlParser: true})
         .then(() => 
@@ -68,6 +39,8 @@ function connectABHPharmaDB(theFunction){
 
 
 //Disconnect to DB
+
+                        //CLEAR
 function disconnectABHPharmaDB(){
     mongoose.disconnect(key.ABHPHARMA_DB_CONNECT_URI)
         .then(() => console.log('Disconnected From ABH Pharma DB.....'))
@@ -75,77 +48,102 @@ function disconnectABHPharmaDB(){
 }
 
 
-//Search and return collection
-
+/////////////////////////////////////////Searching Employee Collection Functions////////////////////////////////////
 
 //searches for EMPLOYEE collection by passing the key value u want then sends it back as a json object that you can search throught using the object.<key value>
-function searchEmployeeBy_FirstName(collection, keyValue){
-    return collection.find({FirstName : keyValue},function(err,data){
-        if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
-    })
-}
+// function searchEmployeeBy_FirstName(collection, keyValue){
+//     return collection.find({FirstName : keyValue},function(err,data){
+//         if(err) throw err;
+//         var dat1 = {data};
+//         console.log(dat1);
+//     })
+// }                                                                                    This is just a referance of how i originally wantes this function to work
+
+
+
+
+
+                    //CLEAR
 function searchEmployeeBy_FirstName(firstName){
-    return employee.find({FirstName : firstName},function(err,data){
+     employee.find({FirstName : firstName},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info.Cell) // info.(whatever the key is in mongoDB)
+       
     })
 }
+                    //CLEAR
 function searchEmployeeBy_LastName(lastName){
     return employee.find({LastName: lastName},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info.Scheduel) // info.(whatever the key is in mongoDB)
+       
     })
 }
+                    //CLEAR
 function searchEmployeeBy_UserName(userName){
+    connectABHPharmaDB();
      employee.find({Username : userName},function(err,data){
         if(err) throw err;
-       var info = (docManipEnable({data}));
-        console.log(info.Email)
-        console.log('hello world');
+        var info = (docManipEnable({data}));
+        console.log(info) // info.(whatever the key is in mongoDB)
+      disconnectABHPharmaDB(); 
     });
     
 }
+                    //CLEAR
 function searchEmployeeBy_Email(email){
     return employee.find({Email : email},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info.Admin) // info.(whatever the key is in mongoDB)
+       
     })
-}
+}   
+                    //CLEAR
 function searchEmployeeBy_Cell(cellphone){
-    return employee.find({FirstName : cellphone},function(err,data){
+    return employee.find({Cell : cellphone},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info) // info.(whatever the key is in mongoDB)
+       
     })
 }
 
+
+
+
+/////////////////////////////////////////Searching Material Collection Functions////////////////////////////////////
 
 //searches for MATERIAL collection by passing the key value u want then sends it back as a json object that you can search throught using the object.<key value>
 
 function searchMaterialBy_Material(materialName){
     return material.find({MaterialName : materialName},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info) // info.(whatever the key is in mongoDB)
     })
 }
 
+
+
+
+/////////////////////////////////////////Searching Vendor Collection Functions////////////////////////////////////
 
 //searches for MATERIAL collection by passing the key value u want then sends it back as a json object that you can search throught using the object.<key value>
 
 function searchVendorBy_VendorName(vendorName){
-    return vendor.find({VendorName : vendorName},function(err,data){
+        vendor.find({VendorName : vendorName},function(err,data){
         if(err) throw err;
-        var dat1 = {data};
-        return docManipEnable(dat1);
+        var info = (docManipEnable({data}));
+        console.log(info) // info.(whatever the key is in mongoDB)
     })
 }
 
+
+
+/////////////////////////////////////////DB Reading Functions////////////////////////////////////
 
 
 //make enable to manipulate
@@ -158,30 +156,19 @@ function docManipEnable(data){
 }
 
 
-//Search and return Document in Collection
 
 
 
-//Search for Username in collection then return doc for search ( ie password, email, ....)
-function checkUserName (username){
-   var usernameValid = searchEmployeeBy_UserName(username);
-    console.log(usernameValid);
-}
-
-// get a field value 
-
-function getFieldValue(fieldVariable, collection){
-
-}
 
 
-//Add to Collection
+/////////////////////////////////////////Adding to DB Functions////////////////////////////////////
 
-function dbAddToEmployee(firstname, lastname, email, cell, department, admin, scheduel,username, password){
-    connectABHPharmaDB();
-console.log('begining addition to Employee Collection');
-        var createEmployee = Employee.Employee(
-                {FirstName : firstname,
+
+
+function createEmployee(firstname, lastname, email, cell, department, admin, scheduel,username, password){
+    console.log('begining addition to Employee Collection');
+    var createEmployee = Employee.Employee(
+            {FirstName : firstname,
                 LastName : lastname,
                 Email: email,
                 Cell : cell,
@@ -197,18 +184,48 @@ console.log('begining addition to Employee Collection');
                 Username : username,
                 Password : password,
               
-            });
-        createEmployee.save((err) =>{
-            if(err){console.log(err)}
-            else{
-                console.log('Material Profile Saved');
-                disconnectABHPharmaDB();
-               
-            }
-        });      
+        });
+        return createEmployee;
+    }
+
+function dbAddToEmployee(firstname, lastname, email, cell, department, admin, scheduel,username){
+    connectABHPharmaDB();
+   
+    console.log('begining addition to Employee Collection');
+    var createEmployee = Employee.Employee(
+            {FirstName : firstname,
+                LastName : lastname,
+                Email: email,
+                Cell : cell,
+                Department : department,
+                Admin : admin,
+                Scheduel : {
+                    Monday : scheduel[0],
+                    Tuesday : scheduel[1],
+                    Wedensday : scheduel[2],
+                    Thursday : scheduel[3],
+                    Friday : scheduel[4],
+                },
+                Username : username,
+                Password : 'null'                
+              
+        })
     
 
-}
+    createEmployee.save((err) =>{
+            if(err){console.log(err)}
+            else{
+                console.log('Employee Profile Saved');
+               
+                disconnectABHPharmaDB();
+            }
+    });     
+    
+    
+    
+
+};
+
 function dbAddToMaterial(materialName, vendor){
     connectABHPharmaDB();
 console.log('begining addition to Material collection');
@@ -229,6 +246,7 @@ console.log('begining addition to Material collection');
     
 
 }
+
 
 function dbAddToVendor(vendorName,material,repName,email,number,wareHouseAddress,website,notes){
     connectABHPharmaDB();
@@ -257,7 +275,37 @@ console.log('begining addition to Vendor collection');
 }
 
 
-//Modify The Doc in Collection
+
+//hash password
+ 
+  function passwordENCRYPT(pass,username){
+    var passwordENCRYPT = bcrypt.genSalt(10, (err, salt) => 
+         bcrypt.hash(pass, salt, (err,hash) =>{
+                if(err) throw err;
+                //set password to hash
+                connectABHPharmaDB();
+                var query = {Username: username };
+                var update = {Password : hash};
+
+                employee.findOneAndUpdate(query,update, (err, doc)=>{
+                  if(err)  throw err;
+                  console.log(doc.Password);
+                  disconnectABHPharmaDB();
+                });
+
+                // employee.find({Username : username},function(err,data){
+                //     if(err) throw err;
+                //     var info = (docManipEnable({data}));
+                //     info.Password = hash; // info.(whatever the key is in mongoDB)
+                //     console.log(hash);
+                //     console.log(info.Password)
+
+                //     disconnectABHPharmaDB();
+                // });
+               
+        }));
+    
+    }
 
 
 
@@ -282,71 +330,36 @@ console.log('begining addition to Vendor collection');
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////TESTING GROUNDS//////////////////////////////////////////////////////////////////////////////////////////////////
 var firstname = "test";
 var lastname = "test";
 var email = 'test@test.com';
 var cell = 1231231232;
 var department = 'test';
 var admin = false;
-var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
+ var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
 var username = 'test';
 var password = 'test123';
 
 
 
-// dbAddToEmployee(firstname,lastname,email,cell,department,admin,scheduel,username,password);
 
-
-
-// dbAddToVendor("vendorTest","AlphaGPC",'Martha',"test@test.com",3475766673,"test road, test, test",'www.test.test','this is a test vendor',Date);
-
-
-
-// dbAddToMaterial('Alpha GPC','TestVendor');
-
-
-
-// var Hashmat = searchForDoc(employee,"FirstName", 'Hashmat');
-
-connectABHPharmaDB();
+//  dbAddToEmployee('john','smith','test@test.com',1231231234,'debug',false,scheduel,username,password);
 
 
 
 
-// employee.find({FirstName : 'Hashmat'},function(err,data){
-//     if(err) throw err;
-//     var dat1 = {data};
-//     var dbDat = accessDBValue(dat1);
-//     console.log(dbDat.Email);
-
-// }); 
-
-
-// function accessDBValue( dbReturn ){
-//     var user = JSON.stringify(dbReturn);
-//     var start = 9;
-//     var end =  user.length -2;
-//     var sliceString = user.slice(start,end);
-//     return JSON.parse(sliceString);
-// };
-
-
-searchEmployeeBy_UserName('Hibrahi000');
-    
 
 
 
 
-///NOTE********* WHEN using the ASYNCRONOUS method employee.find you have to make sure that the function that needs to be done is done within the find method otherwise things will get messy so RECOMENDATION: make functions outside the find method and pull it in since we can use the variabls from the database in there.
+////////////////////////////////////////////////////////////////////////////////////////////Dev Notes Section//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///NOTE***DATE March 1st 2019****** WHEN using the ASYNCRONOUS method employee.find you have to make sure that the function that needs to be done is done within the find method otherwise things will get messy so RECOMENDATION: make functions outside the find method and pull it in since we can use the variabls from the database in there.
+
+
+
+

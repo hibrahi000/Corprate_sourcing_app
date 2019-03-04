@@ -39,7 +39,7 @@ const EmployeeSchema = new Schema({
         },
     Password : {
         type : String,
-        required: true
+        default : null
         },
     DateCreated: {
         type: String,

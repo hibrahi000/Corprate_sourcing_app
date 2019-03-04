@@ -53,25 +53,9 @@ $xBar.click(function() {
 });
 
 
-
-$(document).ready(function(){
-
-  $.ajax({
-    url: '/ABH_ADMIN/Dashboard/addUser/action/',
-    type: "POST",
-    data: 'your form data',
-    success: function(response){
-     alert('evaluate response and show alert');
-    }
-   }); 
-   
+   $('warningx').onclick = () => {
+    $('warning').slideUp('slow');
+  };
 
 
-
-  // $modVend.click(function() {
-  //   $("form").load('/partials/partial-purch/modvend.ejs').css({
-  //     opacity: 0 ,}).delay( 150 ).fadeTo("normal",1);
-  // });
-
-
-});
+  $('.alert').alert(close)

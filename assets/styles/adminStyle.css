@@ -54,7 +54,7 @@ body{
 .contact{
     color: #ffffff;
     border-color: orange;
-    border-style: 
+    
     /* border-style: dashed; */
     padding-top: 10px;
     font-size: 14px;
@@ -191,7 +191,7 @@ body{
         width: 70%;
         box-sizing: border-box;
         font-family: montserrat;
-        color: #2C3E50;
+        color: #D1EFF8;
         font-size: 18px;
         float: initial;
     }

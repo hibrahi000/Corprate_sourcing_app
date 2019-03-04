@@ -1,32 +1,25 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 /////////////////////////////////////////RREQUIRE SECTION////////////////////////////////////
 
 
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
-var mongo = require('mongo');
-var nodemailer = require('nodemailer');
-const v = require('node-input-validator');
-const key = require('./config/keys');
-const { check, validationResult } = require('express-validator/check');
-var passport = require('passport'),
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+
+const db = require('./config/keys').ABHPHARMA_DB_CONNECT_URI;
+const key =require('./config/keys');
+const passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
- 
 
-const User = require('./models/users');
-
+const mongoUtil = require('./mongoUtil.js');
 
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
 
 
-
+var employee = require('./models/Employee');
 
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
@@ -43,58 +36,24 @@ var urlencodedParser = bodyParser.urlencoded({ extended : false});
    
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////DATA BASE SECTION////////////////////////////////////////////////////////
 
 
-///////////////////////////////////////////DataBase Schemas//////////////////////////////
-
-    //Add User Schema
-
-    const purchSchema = new mongoose.Schema({
-        firstName: {
-            type: String,
-            required: true
-        },
-        lastName: {
-            type: String,
-            required: true
-        },
-        email: {
-            type: String,
-            required: true
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        date: {
-            type: Date,
-            required: Date.now
-        }
-        
-    });
-    const purchUser = mongoose.model('purchUser', purchSchema);
 
 
 
 
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////GET POST REQ SECTION////////////////////////////////////////////////////////
 
 
 module.exports = (app) =>{
+
+    
+
+
+
 //////////////////////ABH VENDOR SITE////////////////////////////////////////////////////////
 
 
@@ -192,10 +151,10 @@ module.exports = (app) =>{
 
         ///////////////////////////////ABH PURCHASE Welcome PAGE/////////////////////////////////
 
-                app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
+            app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
 
-                    res.render('welcome');
-                });
+                res.render('welcome');
+            });
 
         ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE/////////////////////////////////
             app.get('/ABH-Purchase/Login', urlencodedParser, (req,res) =>{
@@ -218,23 +177,8 @@ module.exports = (app) =>{
 
             
 
-            passport.use(new LocalStrategy(function(username, password, done) {
-                User.findOne({ username: username }, function(err, user) {
-                if (err) { return done(err); }
-                    if (!user)
-                    {
-                            return done(null, false, { message: 'Incorrect username.' });
-                    }
-            
-                        if (!user.validPassword(password))
-                {
-            
-                        return done(null, false, { message: 'Incorrect password.' });
-                        }
-                return done(null, false, { message: 'Incorrect password.' });
-                });
-                }
-            ));
+
+
             
 
 
@@ -242,94 +186,151 @@ module.exports = (app) =>{
 
         ///////////////////////////////ABH ADMIN LOGIN/////////////////////////////////////////////
 
-
+        
         //login
         app.get('/ABH-Admin/login', (req,res)=>{
             res.render('admin/login');
         });
 
-        app.post('/ADMIN/login', urlencodedParser, (req,res) =>{
+        app.post('/ADMIN/login', urlencodedParser, (req,res,next) =>{
             
-                res.render('admin/dashboard');
-            
+            passport.authenticate('local', {
+                successRedirect : 'admin/dashboard',
+                failureRedirect : 'admin/login',
+                failureFlash : true
+                
+            })(req,res,next);
         });
 
 
         ///////////////////////////////ABH ADMIN SITE/////////////////////////////////////////////
         // Dashboard
-
+        error = [];
             //add user link
+            
             app.get('/ABH_ADMIN/Dashboard/addUser', (req,res) =>{
-                res.render('admin/addUser');
+              
+                firstName = '',
+                lastName = '',
+                user_name = '',
+                Email = '',
+                department = '',
+                cell = '',
+        
+                res.render('admin/addUser',{error,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
+                console.log(firstName, lastName,user_name, Email, department, cell);
             });
 
-
-
             // handel add user post req
-            app.post('/ABH_ADMIN/Dashboard/addUser', urlencodedParser, (req,res) =>{
-                mongoose.connect(key.purchaseLoginMongoURI,{useNewUrlParser:true})
-                .then(() => console.log('Connected to Purchase Login DB.....'))
-                .catch(err => console.log(err));
-
-                const { firstName, lastName, Email, user_name, password1, password2} = req.body;
+            app.post('/ABH_ADMIN/Dashboard/addPassword', urlencodedParser, (req,res) =>{
                 
-            
-                let errors = [];
-                //check required fields
-                if(!firstName || !lastName || !Email || !user_name || !password1 || !password2){
-                    errors.push({msg: 'Please fill in all fields'});
-                }
-                
-                if(Email.search(".com") == -1){
-                    errors.push({msg: 'please put a .com or .net or .etc'});
-                }
 
-                if(password1 !== password2){
-                    errors.push({msg: "Passwords do not match"});
-                }
+                const { firstName, lastName,user_name, Email, department, cell } = req.body;
+                var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
+                console.log(req.body );
 
-                if(password1.length < 6) {
-                    errors.push({msg: 'Password should be at least 6 characters'}); 
-                }
-                
-                if(errors.length > 0){
-                    console.log(errors);
-                    res.render('admin/addUser',{
-                        errors,
-                        prevFirstName :firstName, 
-                        prevLastName :lastName, 
-                        prevEmail: Email,
-                        prevUserName: user_name, 
-                        prevPass1: password1, 
-                        prevPass2: password2
-                    });
-                }
-                else{
-                User.findOne({user_name: user_name})
-                .then(user =>{
-                    if(user){
-                       //user exists
-                       res.render('admin/addUser', {
-                          errors,
-                          firstName,
-                          lastName,
-                          Email,
-                          user_name
-                       }); 
+                mongoUtil.connectABHPharmaDB();
+
+                employee.Employee.findOne({Username : user_name},function(err,data){
+                    if(data === null){
+                         console.log('begining addition to Employee Collection');
+
+                         var createEmployee = employee.Employee(
+                                 {FirstName : firstName,
+                                LastName : lastName,
+                                Email: Email,
+                                Cell : cell,
+                                Department : department,
+                                Admin : true,
+                                Scheduel : {
+                                    Monday : scheduel[0],
+                                    Tuesday : scheduel[1],
+                                    Wedensday : scheduel[2],
+                                    Thursday : scheduel[3],
+                                    Friday : scheduel[4],
+                                },
+                                Username : user_name,
+                                Password : 'null'                
+                            
+                             })
+                    
+        
+                        createEmployee.save((err) =>{
+                                if(err){console.log(err)}
+                                else{
+                                console.log('Employee Profile Saved');
+                                // req.flash('succes_msg', `You Have now registered ${firstName} ${lastName}`)
+                                 mongoUtil.disconnectABHPharmaDB();
+                             }
+                           });     
+                           
+                           res.render('admin/userPassword',{user_name : user_name});
+                           
+                        
                     }
-
                     else{
-
+                    
+                        error.push({msg :'Username is already taken please pick another'});
+                        res.render('admin/addUser',{error,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
+                        error.pop();
+                        console.log(data);
+                        
                     }
                 });
-                res.render('admin/dashBoard');
-                console.log(req.body);
-                }
+
+              
+                
+            
+                // let errors = [];
+                // //check required fields
+                // if(!firstName || !lastName || !Email || !user_name ){
+                //     errors.push({msg: 'Please fill in all fields'});
+                // }
+                
+                // if(Email.search(".com") == -1){
+                //     errors.push({msg: 'please put a .com or .net or .etc'});
+                // }
 
                 
-               mongoose.disconnect(key.purchaseLoginMongoURI)
-               .then(() => console.log('Disconnected From Purchase Login DB.....'))
-                .catch(err => console.log(err));
+                
+                // if(errors.length > 0){
+                //     console.log(errors);
+                //     res.render('admin/addUser',{
+                //         errors,
+                //         prevFirstName :firstName, 
+                //         prevLastName :lastName, 
+                //         prevEmail: Email,
+                //         prevUserName: user_name, 
+                //         prevPass1: password1, 
+                //         prevPass2: password2
+                //     });
+                // }
+                // else{
+                // User.findOne({user_name: user_name})
+                // .then(user =>{
+                //     if(user){
+                //        //user exists
+                //        res.render('admin/addUser', {
+                //           errors,
+                //           firstName,
+                //           lastName,
+                //           Email,
+                //           user_name
+                //        }); 
+                //     }
+
+                //     else{
+
+                //     }
+                // });
+                // res.render('admin/userPassword');
+                // console.log(req.body);
+                // }
+
+                
+            //    mongoose.disconnect(db)
+            //    .then(() => console.log('Disconnected From Purchase Login DB.....'))
+            //     .catch(err => console.log(err));
 
                 
 
@@ -337,15 +338,23 @@ module.exports = (app) =>{
                 
             });
 
+            app.post('/ABH_ADMIN/Dashboard/', urlencodedParser, (req,res) =>{
+                const {password1, user_name} = req.body;
+                mongoUtil.passwordENCRYPT(password1,user_name);
+                res.render('admin/dashboard')
+                console.log(req.body);
+            });
+
             //remove user Link
             app.get('/ABH_ADMIN/Dashboard/removeUser', (req,res) =>{
                 res.render('admin/removeUser');
             });
 
-        app.post('/ABH_ADMIN/Dashboard', urlencodedParser, (req,res) =>{
+            app.post('/ABH_ADMIN/Dashboard', urlencodedParser, (req,res) =>{
             res.render('admin/dashboard');
             console.log(req.body);
 
-        });
+            });
 
 };
+

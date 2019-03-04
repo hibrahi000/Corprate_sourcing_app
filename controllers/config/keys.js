@@ -11,8 +11,10 @@ module.exports = {
 
     email_userName_authentication : email_userName_authentication,
 
-    ABHPHARMA_DB_CONNECT_URI : 'mongodb://Hibrahi000:TigerPass123@ds149905.mlab.com:49905/abhpharma'
+    ABHPHARMA_DB_CONNECT_URI : 'mongodb://Hibrahi000:TigerPass123@ds149905.mlab.com:49905/abhpharma',
 
-
+    session: {
+        cookieKey : "TigerPassSeasonPen0711!@#HashNat000"
+    }
      
 }

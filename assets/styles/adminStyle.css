@@ -126,8 +126,10 @@ body{
 
 
 
-#alert{
-    transition-delay: .5s ease;
+.flashAlerts{
+   float: left;
+   width: 100%;
+   
 }
 
 
@@ -191,7 +193,22 @@ body{
         width: 70%;
         box-sizing: border-box;
         font-family: montserrat;
-        color: #D1EFF8;
+        color: #2C3E50;
+        font-size: 18px;
+        float: initial;
+    }
+    
+
+    #msform #loginUsername ,#msform #loginPassword  {
+        background-color: #1B2125;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-bottom: 10px;
+        width: 70%;
+        box-sizing: border-box;
+        font-family: montserrat;
+        color: #0DB8DE;
         font-size: 18px;
         float: initial;
     }

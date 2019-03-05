@@ -72,7 +72,7 @@
                 <ul class="sections">
                   <li><a href="/ABH_ADMIN/Dashboard/addUser" class="addUser">Add User</a></li>
                   <li><a href="/ABH_ADMIN/Dashboard/removeUser" class="removeUser" >Remove User</a> </a></li>
-                  <li><a href="/ABH_Purchase_App" class="logOut">Log Out</a></li>
+                  <li><a href="/logout" class="logOut">Log Out</a></li>
                 </ul>
               </div>
               <div class="menu-icon">
@@ -89,8 +89,8 @@
          <div id="formLoc">
             <form id="msform" method="POST" action="/ABH_ADMIN/Dashboard">
                    <div class="welcome_page">
-                       <h1 id="loginHeader">Welcome Admin User</h1>
-                         
+                       <h1 id="loginHeader">Welcome <%=token.firstName%> ></h1>
+                         <%include ./partials/messages.ejs %>
                      </div>
                
             </form>

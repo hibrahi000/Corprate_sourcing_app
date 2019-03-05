@@ -9,14 +9,11 @@
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
        
     
-        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/sideNav.css">
+    
 
         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/loginStyle.css">
         
         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/btns.css">
-
-        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/checkBoxes.css">
-
       
         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/adminStyle.css">
        
@@ -68,20 +65,22 @@
          </div>
 
          <div id="formLoc">
-            <form id="msform" method="POST" action="/Admin/login">
+            <form id="msform" method="POST" action="/Admin_login">
                    <div class="welcome_page">
                        <h1 id="loginHeader">ABH ADMIN CONTROL PANEL</h1>
+                      
                           <div class="container">
+                         <div class= 'flashAlerts'><p><%include ./partials/messages.ejs %></p></div>
                              <div class="col-lg-8 login-form">
                                  <div class="col-lg-12 login-form">
                                      <form>
                                           <div class="form-group">
                                                <label class="form-control-label">USERNAME</label>
-                                               <input  type="text" id="username" name="username" class="form-control">
+                                               <input  type="text" name="userName" class="form-control" id="loginUsername">
                                           </div>
                                           <div class="form-group">
                                                <label class="form-control-label">PASSWORD</label>
-                                              <input type="password" id ="password" name="password"  class="form-control" >
+                                              <input type="password" id ="loginPassword" name="password"  class="form-control" >
                                            </div>
                 
                                           <div class="col-lg-12 loginbttm">
@@ -90,6 +89,7 @@
                                               </div>
                                                <div class="col-lg-6 login-btm login-button">
                                                     <input type="submit" id="loginBtn" value="Log In" class="btn btn-outline-primary"></input>
+                                                   
                                              </div>
                                          </div>
                                      </form>
@@ -115,6 +115,7 @@
 
  <script src="/scripts/adminScript.js"></script>
 
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <script src='/scripts/otherScripts/sideNavScript.js'></script>
 

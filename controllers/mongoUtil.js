@@ -338,14 +338,13 @@ var cell = 1231231232;
 var department = 'test';
 var admin = false;
  var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
-var username = 'test';
-var password = 'test123';
+var username = 'Hibrahi00';
+var password = '$2a$10$yI.peBzRZrXbVdSIVkBH0Oz6nAmBVeuJkQcKKZyFBm9qbzpQTwMRS';
 
 
 
 
 //  dbAddToEmployee('john','smith','test@test.com',1231231234,'debug',false,scheduel,username,password);
-
 
 
 

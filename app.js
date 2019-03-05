@@ -1,27 +1,18 @@
 var express = require('express');
 var expressLayouts = require('express-ejs-layouts')
 var app = express();
-const flash = require('connect-flash');
 var controller = require('./controllers/controller');
 const passport = require('passport');
+const flash = require('connect-flash');
 const sessions = require('cookie-session');
 const keys = require('./controllers/config/keys');
 
-// app.use(flash());
 
-// //global
-// app.use((req,res,next) =>{
-//     res.locals.success_msg = req.flash('success_msg');
-//     res.locals.error_msg = req.flash('error_msg');
-//     res.locals.error = req.flash('error');
-//     next();
-
-// });
 
 
 
 //passport config
-require('./controllers/config/passport')(passport);
+require('./controllers/config/adminPassport')(passport);
 
 
 
@@ -39,7 +30,19 @@ app.use(sessions({
 }));
 
 
-// initialize passport
+//connect flash
+app.use(flash());
+
+
+//global vars
+app.use((req,res,next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.admin_msg = req.flash('admin_msg');
+    next();
+})
+
+//  passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 

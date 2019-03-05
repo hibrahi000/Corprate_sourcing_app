@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//                                                                                         CONFIG/REQ/FUNCTIONS                                                                                             //
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 
 
 /////////////////////////////////////////RREQUIRE SECTION////////////////////////////////////
@@ -6,38 +15,87 @@
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
-
+const bcrypt = require('bcryptjs');
 const db = require('./config/keys').ABHPHARMA_DB_CONNECT_URI;
 const key =require('./config/keys');
 const passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
-
-const mongoUtil = require('./mongoUtil.js');
+const jwt = require('jsonwebtoken');
+const ensureAuthenticated = require('./config/auth');
 
 
 
 /////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
 
 
-var employee = require('./models/Employee');
+var employee = require('./models/Employee').Employee;
 
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
+const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
+const vend_name = 'test';
+const subject = `ABH Invoice From RECIEVED: FROM: ${vend_name}`;
+
+var abhRequest = '12 Orders Of 50 Kilograms';
+var material = 'Alpha GPC 50%';
+error = [];
 
 
 
- const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
- const vend_name = 'test';
- const subject = `ABH Invoice From RECIEVED: FROM: ${vend_name}`;
- 
- var abhRequest = '12 Orders Of 50 Kilograms';
- var material = 'Alpha GPC 50%';
+
+
+/////////////////////////////////////Functions////////////////////////////////////////////////////////
+
+//Encrypt Pass -- DEBUG : TRUE
+function passwordENCRYPT(pass,username){
+    bcrypt.genSalt(10, (err, salt) => 
+         bcrypt.hash(pass, salt, (err,hash) =>{
+                if(err) throw err;
+                //set password to hash
+                connectABHPharmaDB();
+                var query = {Username: username };
+                var update = {Password : hash};
+
+                employee.findOneAndUpdate(query,update, (err, doc)=>{
+                  if(err)  throw err;
+                  console.log(doc.Password);
+                  disconnectABHPharmaDB();
+                });
+
+                // employee.find({Username : username},function(err,data){
+                //     if(err) throw err;
+                //     var info = (docManipEnable({data}));
+                //     info.Password = hash; // info.(whatever the key is in mongoDB)
+                //     console.log(hash);
+                //     console.log(info.Password)
+
+                //     disconnectABHPharmaDB();
+                // });
+               
+        }));
     
-   
+    }
+
+//connect to db --DEBUG : TRUE
+function connectABHPharmaDB(theFunction){
+    mongoose.connect(key.ABHPHARMA_DB_CONNECT_URI, {useNewUrlParser: true})
+        .then(() => 
+        theFunction,
+        console.log('Connected to ABH Pharma DB.....'))
+        .catch(err => console.log(err));    
+}
+
+//Disconnect to DB --DEBUG :TRUE
+function disconnectABHPharmaDB(){
+    mongoose.disconnect(key.ABHPHARMA_DB_CONNECT_URI)
+        .then(() => console.log('Disconnected From ABH Pharma DB.....'))
+        .catch(err => console.log(err));
+}
+
+//validate user login username and password
 
 
 
-/////////////////DATA BASE SECTION////////////////////////////////////////////////////////
 
 
 
@@ -45,16 +103,37 @@ var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 
 
-/////////////////GET POST REQ SECTION////////////////////////////////////////////////////////
+
+
+
+
 
 
 module.exports = (app) =>{
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+//                                                                                             GET POST ROUTES                                                                                              //
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
-//////////////////////ABH VENDOR SITE////////////////////////////////////////////////////////
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                     //
+//                                                  Vendor Controls                                                    //
+//                                                                                                                     //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////////ABH VENDOR SITE////////////////////////////////////////
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
@@ -149,15 +228,18 @@ module.exports = (app) =>{
 
 
 
-        ///////////////////////////////ABH PURCHASE Welcome PAGE/////////////////////////////////
 
-            app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                     //
+//                                                  Purchase Controls                                                  //
+//                                                                                                                     //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                res.render('welcome');
-            });
 
-        ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE/////////////////////////////////
-            app.get('/ABH-Purchase/Login', urlencodedParser, (req,res) =>{
+
+
+        ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE//////////
+            app.get('/ABH_Purchase/Login', urlencodedParser, (req,res) =>{
                 res.render('purchase/purchaseFill');
             });
 
@@ -168,46 +250,118 @@ module.exports = (app) =>{
 
 
 
+        ///////////////////////////////ABH PURCHASE Welcome PAGE/////////////
 
-        ///////////////////////////////ABH PURCHASE SITE/////////////////////////////////////////////
+            app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
+
+                res.render('welcome');
+            });    
+
+
+
+
+        ///////////////////////////////ABH PURCHASE SITE/////////////////////
 
             // app.get('/ABH_Purchase_App', (req,res)=>{
             //     res.render('purchase/purchaseFill');
             // });
 
-            
+    
 
-
-
-            
-
-
-
-
-        ///////////////////////////////ABH ADMIN LOGIN/////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                                     //
+//                                                  ADMIN Controls                                                     //
+//                                                                                                                     //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         
+
+
+
+        ///////////////////////////////ABH ADMIN LOGIN///////////////////////
+
+        
+    
         //login
-        app.get('/ABH-Admin/login', (req,res)=>{
+        app.get('/ABH_Admin/Login', (req,res)=>{
             res.render('admin/login');
         });
 
-        app.post('/ADMIN/login', urlencodedParser, (req,res,next) =>{
-            
-            passport.authenticate('local', {
-                successRedirect : 'admin/dashboard',
-                failureRedirect : 'admin/login',
-                failureFlash : true
-                
-            })(req,res,next);
+        app.post('/ADMIN_login', urlencodedParser, async (req,res) =>{ 
+            console.log('recieved post req');
+            connectABHPharmaDB();    
+
+            let staff = await employee.find({Username : req.body.userName}, await function(err,data){return data;});
+            let empl = staff[0];
+            // console.log(staff.indexOf('Username: req.body.Username'));
+
+            if(typeof(empl) == 'undefined'){
+                console.log('did not find staff');
+                req.flash('error_msg',`Invalid username or password`);
+                disconnectABHPharmaDB();
+                 res.redirect('/ABH_ADMIN/Login');
+                 return;
+            }
+            else{
+                console.log('found staff')
+                const validPassword = await bcrypt.compare(req.body.password, empl.Password)
+                if(!validPassword){
+                    console.log('wrong pass')
+                    req.flash('error_msg',`Invalid username or password`);
+                    disconnectABHPharmaDB();
+                    return res.redirect('/ABH_ADMIN/Login');
+                }
+                else{
+                    console.log('pass is good')
+                    const isAdmin = await empl.Admin;
+                    if(!isAdmin){
+                        console.log('not admin')
+                        req.flash('admin_msg',`It seems like you don't have sufficient privlages`);
+                        disconnectABHPharmaDB();
+                       ;
+                         
+                         res.redirect('/ABH_ADMIN/Login');
+                    }
+                    else{
+                        console.log('is admin')
+                        const token = jwt.sign({firstName : empl.FirstName}, key.jwtPrivateKey)
+                        console.log(token);
+                        res.render('admin/dashboard',{token});
+                    }
+                }
+
+            }
+        
+            passport.serializeUser(function(user, done) {
+            done(null, user.id);
+        });
+        
+            passport.deserializeUser(function(id, done) {
+            User.findById(id, function(err, user) {
+            done(err, user);
+            });
+        });
+        
+
         });
 
+    
 
-        ///////////////////////////////ABH ADMIN SITE/////////////////////////////////////////////
-        // Dashboard
-        error = [];
+
+
+
+
+        ///////////////////////////////ABH ADMIN SITE////////////////////////
+
+        
+
+            // Dashboard
+            app.get('/ABH_ADMIN/Dashboard', (req,res) =>{
+                res.render('admin/dashboard');
+            });
+
             //add user link
-            
+                    //Add user profile
             app.get('/ABH_ADMIN/Dashboard/addUser', (req,res) =>{
               
                 firstName = '',
@@ -221,6 +375,9 @@ module.exports = (app) =>{
                 console.log(firstName, lastName,user_name, Email, department, cell);
             });
 
+
+            
+
             // handel add user post req
             app.post('/ABH_ADMIN/Dashboard/addPassword', urlencodedParser, (req,res) =>{
                 
@@ -229,13 +386,13 @@ module.exports = (app) =>{
                 var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
                 console.log(req.body );
 
-                mongoUtil.connectABHPharmaDB();
-
-                employee.Employee.findOne({Username : user_name},function(err,data){
+               connectABHPharmaDB();
+                        //Add User Profile then disconnect 
+                employee.findOne({Username : user_name},function(err,data){
                     if(data === null){
                          console.log('begining addition to Employee Collection');
 
-                         var createEmployee = employee.Employee(
+                         var createEmployee = employee(
                                  {FirstName : firstName,
                                 LastName : lastName,
                                 Email: Email,
@@ -259,8 +416,8 @@ module.exports = (app) =>{
                                 if(err){console.log(err)}
                                 else{
                                 console.log('Employee Profile Saved');
-                                // req.flash('succes_msg', `You Have now registered ${firstName} ${lastName}`)
-                                 mongoUtil.disconnectABHPharmaDB();
+                               
+                                disconnectABHPharmaDB();
                              }
                            });     
                            
@@ -277,72 +434,39 @@ module.exports = (app) =>{
                         
                     }
                 });
-
-              
-                
-            
-                // let errors = [];
-                // //check required fields
-                // if(!firstName || !lastName || !Email || !user_name ){
-                //     errors.push({msg: 'Please fill in all fields'});
-                // }
-                
-                // if(Email.search(".com") == -1){
-                //     errors.push({msg: 'please put a .com or .net or .etc'});
-                // }
-
-                
-                
-                // if(errors.length > 0){
-                //     console.log(errors);
-                //     res.render('admin/addUser',{
-                //         errors,
-                //         prevFirstName :firstName, 
-                //         prevLastName :lastName, 
-                //         prevEmail: Email,
-                //         prevUserName: user_name, 
-                //         prevPass1: password1, 
-                //         prevPass2: password2
-                //     });
-                // }
-                // else{
-                // User.findOne({user_name: user_name})
-                // .then(user =>{
-                //     if(user){
-                //        //user exists
-                //        res.render('admin/addUser', {
-                //           errors,
-                //           firstName,
-                //           lastName,
-                //           Email,
-                //           user_name
-                //        }); 
-                //     }
-
-                //     else{
-
-                //     }
-                // });
-                // res.render('admin/userPassword');
-                // console.log(req.body);
-                // }
-
-                
-            //    mongoose.disconnect(db)
-            //    .then(() => console.log('Disconnected From Purchase Login DB.....'))
-            //     .catch(err => console.log(err));
-
-                
-
-        
-                
             });
+
+
 
             app.post('/ABH_ADMIN/Dashboard/', urlencodedParser, (req,res) =>{
                 const {password1, user_name} = req.body;
-                mongoUtil.passwordENCRYPT(password1,user_name);
-                res.render('admin/dashboard')
-                console.log(req.body);
+                
+                bcrypt.genSalt(10, (err, salt) => 
+                    bcrypt.hash(password1, salt, (err,hash) =>{
+                        if(err) throw err;
+
+                        //set password to hash
+                        connectABHPharmaDB();
+                        var query = {Username: user_name };
+                        var update = {Password : hash};
+
+                        employee.findOneAndUpdate(query,update, (err, doc)=>{
+                        if(err) { 
+                            disconnectABHPharmaDB();
+                            throw err;
+                        }
+                        else{
+                            console.log(doc.Password);
+                            disconnectABHPharmaDB();
+                         
+                            req.flash('success_msg',`You succesfully added your password to ${doc.FirstName} ${doc.LastName}'s profile`);
+                            res.redirect('/ABH_ADMIN/Dashboard/')
+
+                            console.log(req.body);
+                        }
+                    });
+                }));
+            
             });
 
             //remove user Link
@@ -353,6 +477,14 @@ module.exports = (app) =>{
             app.post('/ABH_ADMIN/Dashboard', urlencodedParser, (req,res) =>{
             res.render('admin/dashboard');
             console.log(req.body);
+
+            });
+
+
+            app.get('/logout',(req,res) =>{
+                req.logout();
+                req.flash('success_msg',`You have logged out`);
+                res.redirect('/ABH_Admin/Login');
 
             });
 

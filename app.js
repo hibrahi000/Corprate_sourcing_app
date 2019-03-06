@@ -29,6 +29,10 @@ app.use(sessions({
     keys: [keys.session.cookieKey]
 }));
 
+//  passport middleware
+app.use(passport.initialize('./controllers/config/adminPassport.js')); // this initializes 
+app.use(passport.session());
+
 
 //connect flash
 app.use(flash());
@@ -38,13 +42,11 @@ app.use(flash());
 app.use((req,res,next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
-    res.locals.admin_msg = req.flash('admin_msg');
+    res.locals.error = req.flash('error');
     next();
 })
 
-//  passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 
 //static files 

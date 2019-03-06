@@ -1,9 +1,15 @@
-module.exports = {
-    ensureAuthenticated : function(req,res,next){
-        if(req.isAuthenticated()){
-            return next();
-        }
-        req.flash('error_msg', 'Please login to use you Admin Account');
-        res.redirect('/ABH_Admin/Login');
+
+
+  function ensureAuthenticated (req,res,next){
+    console.log('i started');
+    if(req.isAuthenticated()){
+        return next();
     }
+    req.flash('error_msg', 'Please log in to use your Admin Account');
+    res.redirect('/ABH_Admin/Login');
+}
+
+
+module.exports = {
+   ensureAuthenticated : ensureAuthenticated
 }

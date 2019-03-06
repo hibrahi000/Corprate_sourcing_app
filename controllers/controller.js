@@ -16,13 +16,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
-const db = require('./config/keys').ABHPHARMA_DB_CONNECT_URI;
 const key =require('./config/keys');
 const passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
-const ensureAuthenticated = require('./config/auth');
-
+const ensureAuthenticated = require('./config/auth').ensureAuthenticated;
 
 
 /////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
@@ -38,7 +36,7 @@ const subject = `ABH Invoice From RECIEVED: FROM: ${vend_name}`;
 
 var abhRequest = '12 Orders Of 50 Kilograms';
 var material = 'Alpha GPC 50%';
-error = [];
+formError = [];
 
 
 
@@ -287,62 +285,14 @@ module.exports = (app) =>{
             res.render('admin/login');
         });
 
-        app.post('/ADMIN_login', urlencodedParser, async (req,res) =>{ 
+        app.post('/ADMIN_login', urlencodedParser, async (req,res,next) =>{ 
             console.log('recieved post req');
             connectABHPharmaDB();    
-
-            let staff = await employee.find({Username : req.body.userName}, await function(err,data){return data;});
-            let empl = staff[0];
-            // console.log(staff.indexOf('Username: req.body.Username'));
-
-            if(typeof(empl) == 'undefined'){
-                console.log('did not find staff');
-                req.flash('error_msg',`Invalid username or password`);
-                disconnectABHPharmaDB();
-                 res.redirect('/ABH_ADMIN/Login');
-                 return;
-            }
-            else{
-                console.log('found staff')
-                const validPassword = await bcrypt.compare(req.body.password, empl.Password)
-                if(!validPassword){
-                    console.log('wrong pass')
-                    req.flash('error_msg',`Invalid username or password`);
-                    disconnectABHPharmaDB();
-                    return res.redirect('/ABH_ADMIN/Login');
-                }
-                else{
-                    console.log('pass is good')
-                    const isAdmin = await empl.Admin;
-                    if(!isAdmin){
-                        console.log('not admin')
-                        req.flash('admin_msg',`It seems like you don't have sufficient privlages`);
-                        disconnectABHPharmaDB();
-                       ;
-                         
-                         res.redirect('/ABH_ADMIN/Login');
-                    }
-                    else{
-                        console.log('is admin')
-                        const token = jwt.sign({firstName : empl.FirstName}, key.jwtPrivateKey)
-                        console.log(token);
-                        res.render('admin/dashboard',{token});
-                    }
-                }
-
-            }
-        
-            passport.serializeUser(function(user, done) {
-            done(null, user.id);
-        });
-        
-            passport.deserializeUser(function(id, done) {
-            User.findById(id, function(err, user) {
-            done(err, user);
-            });
-        });
-        
-
+            passport.authenticate('local', {
+                successRedirect : '/ABH_ADMIN/Dashboard',
+                failureRedirect: '/ABH_Admin/Login',
+                failureFlash : true
+            } )(req, res, next);
         });
 
     
@@ -356,13 +306,13 @@ module.exports = (app) =>{
         
 
             // Dashboard
-            app.get('/ABH_ADMIN/Dashboard', (req,res) =>{
+            app.get('/ABH_ADMIN/Dashboard',ensureAuthenticated,(req,res) =>{
                 res.render('admin/dashboard');
             });
 
             //add user link
                     //Add user profile
-            app.get('/ABH_ADMIN/Dashboard/addUser', (req,res) =>{
+            app.get('/ABH_ADMIN/Dashboard/addUser', ensureAuthenticated,(req,res) =>{
               
                 firstName = '',
                 lastName = '',
@@ -427,9 +377,9 @@ module.exports = (app) =>{
                     }
                     else{
                     
-                        error.push({msg :'Username is already taken please pick another'});
+                        formError.push({msg :'Username is already taken please pick another'});
                         res.render('admin/addUser',{error,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
-                        error.pop();
+                        formError.pop();
                         console.log(data);
                         
                     }
@@ -470,7 +420,7 @@ module.exports = (app) =>{
             });
 
             //remove user Link
-            app.get('/ABH_ADMIN/Dashboard/removeUser', (req,res) =>{
+            app.get('/ABH_ADMIN/Dashboard/removeUser',ensureAuthenticated, (req,res) =>{
                 res.render('admin/removeUser');
             });
 
@@ -482,10 +432,9 @@ module.exports = (app) =>{
 
 
             app.get('/logout',(req,res) =>{
-                req.logout();
-                req.flash('success_msg',`You have logged out`);
-                res.redirect('/ABH_Admin/Login');
-
+                    req.logout();
+                    req.flash('success_msg',`You have logged out`);
+                    res.redirect('/ABH_Admin/Login');    
             });
 
 };

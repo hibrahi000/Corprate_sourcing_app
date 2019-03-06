@@ -1,7 +1,7 @@
-<% if( typeof error != 'undefined') {%>
-    <% error.forEach( (error) =>{ %>
+<% if( typeof formError != 'undefined') {%>
+    <% formError.forEach( (error) =>{ %>
         <div id="warningx" class="alert alert-warning alert-dismissible fade show" role="alert" >
-                <%= error.msg %>
+                <%= formError.msg %>
                 <button id='warning' type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -28,9 +28,9 @@
 <%}%>
 
 
-<% if(admin_msg != '') { %>
+<% if(error != '') { %>
   <div class="alert alert-danger alert-dismissible fade show" role="alert" >
-    <%= admin_msg %>
+    <%= error %>
     <button id='warning' type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>

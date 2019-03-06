@@ -10,6 +10,7 @@
        
     
     
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/loginStyle.css">
         
@@ -57,20 +58,21 @@
             <div class="logoLoc">
                 <a href="https://abhpharma.com"><img src="../images/headerv1.jpg"></a> 
             </div>
-   
+            
             
         </div>
             
             
          </div>
+    
+         <button onclick="location.href = '/ABH_Purchase_App'; " id="homeBtn" class="btn"><i class="fa fa-home"></i> Home</button>
 
          <div id="formLoc">
             <form id="msform" method="POST" action="/Admin_login">
                    <div class="welcome_page">
                        <h1 id="loginHeader">ABH ADMIN CONTROL PANEL</h1>
-                      
                           <div class="container">
-                         <div class= 'flashAlerts'><p><%include ./partials/messages.ejs %></p></div>
+                         <div class= 'flashAlerts'><p><%include ../partials/messages.ejs %></p></div>
                              <div class="col-lg-8 login-form">
                                  <div class="col-lg-12 login-form">
                                      <form>

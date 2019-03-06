@@ -221,3 +221,12 @@
         }
 
 
+        #homeBtn{
+           float: left;
+           margin-top: 15%;
+           margin-left: 10%;
+          
+        
+           font-size: 25px; /* Set a font size */
+           cursor: pointer; /* Mouse pointer on hover */
+        }

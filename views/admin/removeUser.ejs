@@ -19,7 +19,6 @@
 
       
         <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/adminStyle.css">
-       
 
         
     </head>  
@@ -87,10 +86,14 @@
 
          <div id="formLoc">
             <form id="msform" method="POST" action="/ABH_ADMIN/Dashboard/removeUser">
-                <fieldset>
-
+              <fieldset>   
+                  
+                  <div class= 'flashAlerts'><p><%include ../partials/messages.ejs %></p></
                         <h1 id="sectionName"><em>Remove User</em> <br><br> </h1>
-                        <h1 id="title" class="fs-title">User Info</h2>
+                        
+                            
+                        
+                          <h1 id="title" class="fs-title">User Info</h2>
                     
                         
                         <input type="text" class="inputField" id="user_name" name="username" placeholder="User Name" required/>
@@ -120,6 +123,9 @@
  <script src="https://code.jquery.com/jquery-3.3.1.js"
   integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
   crossorigin="anonymous"></script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 
   <script src='/scripts/adminScript.js'></script>
 

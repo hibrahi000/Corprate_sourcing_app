@@ -6,13 +6,13 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const sessions = require('cookie-session');
 const keys = require('./controllers/config/keys');
-
+const pass = require('./controllers/config/passport');
 
 
 
 
 //passport config
-require('./controllers/config/adminPassport')(passport);
+require('./controllers/config/passport')(passport);
 
 
 
@@ -30,7 +30,7 @@ app.use(sessions({
 }));
 
 //  passport middleware
-app.use(passport.initialize('./controllers/config/adminPassport.js')); // this initializes 
+app.use(passport.initialize('/controllers/config/passport.js')); // this initializes 
 app.use(passport.session());
 
 

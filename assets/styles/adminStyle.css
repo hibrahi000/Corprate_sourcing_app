@@ -127,9 +127,16 @@ body{
 
 
 .flashAlerts{
-   float: left;
+   float: left !important;
    width: 100%;
    
+}
+
+#flashAlerts{
+    float: unset;
+    width: 100%;
+    z-index: 4;
+    display: hidden;
 }
 
 
@@ -197,8 +204,6 @@ body{
         font-size: 18px;
         float: initial;
     }
-    
-
     #msform #loginUsername ,#msform #loginPassword  {
         background-color: #1B2125;
         padding: 15px;
@@ -212,6 +217,8 @@ body{
         font-size: 18px;
         float: initial;
     }
+
+
   
     #msform .action-button:hover, #msform .action-button:focus {
         box-shadow: 0 0 0 2px white, 0 0 0 3px #7bc659;

@@ -1,13 +1,21 @@
 const mongoose = require('mongoose');
 
-const VendorSchema = new mongoose.Schema({
-    VendorName: {
+const Vendor = mongoose.model(
+   
+    'Vendors',  
+    
+    new mongoose.Schema({
+        VendorName: {
         type: String,
         required: true
     },
     Material:{  
-        type : Array,
-        default : null
+        Material : 
+        [{
+                type : String,
+                default : null
+        }]
+        
     },
     RepName: {
         type : String,
@@ -44,7 +52,6 @@ const VendorSchema = new mongoose.Schema({
 
 
 
-},{collection : 'VendorInfo'});
+}), 'Vendors');
 
-const Vendor = mongoose.model('Vendor', VendorSchema);
 module.exports = {Vendor};

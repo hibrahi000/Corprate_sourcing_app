@@ -1,0 +1,144 @@
+<% if(purchase == 'reqQuote') { %>
+    <form id="msform" method="POST" action="/Purchase_Request" >
+        <fieldset>
+        <h1 id="sectionName"><em>Request Quote</em> <br><br> </h1>
+        <h1 id="title" class="fs-title">Material</h2>
+
+        <input type="text" class="inputField" name="material" placeholder="Alpha...." / required list="matList">
+        <datalist id="matList">
+                <% for(let i =0; i < materials.length; i++){ %>
+                        <option value= "<%- materials[i] %>" > 
+                   
+                <% } %>
+        </datalist>
+        <div id="nxtBtn">
+        <button type="button" id="btnNext"  class="next action-button"  ><span>Next</span></button>
+        </div>
+
+        </fieldset>
+
+        <fieldset>
+        <h1 id="sectionName" ><em>Request Details</em></h1>
+        <div class="fillout">
+
+                <div id="moq" class="form-group">
+                        <label for="oqIn" id="moqInLbl" class="form-label" ><en>Order Quantity</en></label>
+
+                        <div class="input-group-append">
+                                <select id="reqType" class="input-group-text" name="reqType"  placeholder="Request Type" required>
+                                <option value="oneTime">One Time</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Yearly">Yearly</option>
+                                </select>
+                        </div>
+                </div>
+
+                <div id="measurments" class="form-group">
+
+                        <label for="ammount" id="ammountLbl" class="form-label" ><en>Requested Material Amount</en></label>
+
+                        <div class="input-group">
+                                <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                                <div class="input-group-append">
+                                <select name="units" id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
+                                        <option value="kg">Kilograms</option>
+                                        <option value="lb">Pounds</option>
+                                        </select>
+                                </div>
+                        </div>
+
+                        </div>
+
+                        <div>
+                                <label for="tPrice" id="tPriceLbl" class="form-label" ><en>Target Price</en></label>
+
+                        </div>
+
+                <div id="tPrice" class="input-group">
+                        
+                        <input name="price" id="tPrice" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
+                        
+                        <div class="input-group-append">
+                        <span class="input-group-text">$(USD)</span>
+                        </div>
+                </div>
+
+                <div id="rushOrder" class="glowing">
+                        <!-- <label for="checkboxArea" id="rushOrderLbl" class="form-label" ><en>Rush Order?</en></label> -->
+                        <label>
+                        <input name="rushOrder" type="checkbox" id="checkBoxNot"><span id="rushSpan">Rush Order</span>
+                        </label>    
+                                
+                </div>
+                <div>
+                        <h3 class="form-label" >Notes:</h3>
+                </div>
+                <div id="extraNotes">
+                        <input name="notes" type="text" class="notes" class='form-control' placeholder="Extra Notes you want to leave the vendor"></input>
+                </div>
+                
+        </div>
+<div class="submit">
+
+        <button type="button" id="btnPrev"  class="previous action-button" ><span>Back</span></button>
+        <button type="submit" id="formComplete"><span>Form Completed </span></button>
+        
+        </div>
+        </fieldset>
+    </form>
+<%}%>
+
+<% if(purchase == 'addVend') { %>
+    <form id="msform" method="POST" action="/Add_Vendor" >
+        <fieldset>
+
+                <h1 id="sectionName"><em>Add Vendor</em> <br><br> </h1>
+                <h1 id="title" class="fs-title">Contact Info</h2>
+        
+                <input type="text" class="inputField" id="vendNamIn" name="vendNamIn" placeholder="Vendor Name" / required>
+                
+        
+                <input type="text" class="inputField" id="matSupIn" name="matSupIn" placeholder="Material Supplied" / required>
+        
+                <input type="email" class="inputField" id="vendEmailIn" name="vendEmailIn" placeholder="Vendor Email" / required>
+                
+                <input type="number" class="inputField" id="vendNumIn" name="material" placeholder="Contact Number" / required>
+        
+                <input type="text" class="inputField" id="vendShipLocIn" name="vendShipLocIn" placeholder="Shipping Location ** Not required **" / >
+
+                <div id="nxtBtn">
+                <button type="submit"  name="next" id="formComplete"  ><span>Save</span></button>
+                </div>
+
+        </fieldset>
+    </form>
+<%}%>
+
+
+<% if(purchase == 'modVend') { %>
+    <form id="msform" method="POST" action="/Modify_Vendor" >           
+        <fieldset>
+        <h1 id="sectionName"><em>Modify Vendor Information</em> <br><br> </h1>
+        <h1 id="title" class="fs-title">Vendor Name</h2>
+
+        <input type="text" class="inputField" name="vendSearch" placeholder="Type Vendor Name you want to modify..." / required>
+        <div id="nxtBtn">
+        <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
+        </div>
+        </fieldset>
+
+        <fieldset>
+        <h1 id="title" class="fs-title">Specify</h1>
+        
+        <input type="text" class="inputField" name="mod" placeholder="Mod1.." / required>
+
+        
+        <div class="submit">
+
+                <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
+                <button type="submit" id="formComplete"><span>Modify Vendor</span></button>
+                
+        </div>
+        </fieldset>
+    </form>
+<%}%>

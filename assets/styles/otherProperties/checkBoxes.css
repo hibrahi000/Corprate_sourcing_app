@@ -123,8 +123,8 @@ transition: .5s;
 } */
 
 #checkBoxNot:checked + #rushSpan{
-    color: rgb(163, 255, 126);
-    border: 4px solid rgb(163, 255, 126);
+    color: aquamarine;
+    border: 4px solid aquamarine;
     text-shadow: 0 0 5px rgb(163, 255, 126);
     text-shadow: 0 0 20px rgb(163, 255, 126), inset 0 0 20px rgb(163, 255, 126);
 

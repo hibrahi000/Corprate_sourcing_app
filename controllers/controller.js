@@ -23,12 +23,15 @@ const jwt = require('jsonwebtoken');
 const adminEnsureAuthenticated = require('./config/auth').adminEnsureAuthenticated;
 const purchEnsureAuthenticated = require('./config/auth').purchEsureAuthenticated;
 errors = [];
-
+var admin = 'dashboard';
+var purchase = 'dashboard';
+var userName = '';
 /////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
 
 
 var employee = require('./models/Employee').Employee;
-
+var mat = require('./models/Material').Material;
+var vendor = require('./models/Vendor').Vendor;
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
@@ -90,7 +93,25 @@ function disconnectABHPharmaDB(){
         .then(() => console.log('Disconnected From ABH Pharma DB.....'))
         .catch(err => console.log(err));
 }
+console.log("Authenticating");
+var transporter = nodemailer.createTransport({
+    // service: 'gmail',
+    // auth: {
+    //     user: key.email_userName_authentication,
+    //     pass: key.email_password_authentication
+    // }
 
+    host: 'smtp.office365.com', // Office 365 server
+        port: 587,     // secure SMTP
+        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
+        auth: {
+            user: key.outlook_userName_authentication,
+            pass: key.outlook_password_authentication
+        },
+        tls: {
+            ciphers: 'SSLv3'
+        }
+});
 //validate user login username and password
 
 
@@ -168,15 +189,7 @@ module.exports = (app) =>{
 
 
 
-                    console.log("Authenticating");
-                    var transporter = nodemailer.createTransport({
-                        service: 'gmail',
-                        auth: {
-                            user: key.email_userName_authentication,
-                            pass: key.email_password_authentication
-                        }
-                
-                    });
+                 
                     console.log('authenticated');
                     const mailOptions = {
                         from: vend_name, // sender address
@@ -284,17 +297,80 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
         ///////////////////////////////ABH PURCHASE SITE/////////////////////
             
         app.get('/ABH_Purchase/Dashboard', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
-            res.render('purchase/quote');
-            
+            mat.find({}).then(material =>{
+                // console.log(material[1].MaterialName);
+                var materials = [];
+                for (let i = 0; i < material.length; i++) {
+                     materials.push(material[i].MaterialName);
+                }
+                console.log(materials);
+                 purchase = 'reqQuote';
+                 res.render('purchase/dashboard',{purchase,materials});
+           
+            })
         });
 
         app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
+            const {material,reqType,ammount,units,price,rushOrder,notes} = req.body;
+            console.log(material);
+            vendor.find({Material : material}).then(vendors =>{
+                var vendorContact = [];
+                for(let i =0; i< vendors.length; i++){
+                    vendorContact.push(vendors[i].Email);
+                }
+                console.log('------------------');
+                console.log(vendorContact)
+          
+                for(let i = 0; i< vendorContact.length; i++){
+                    vendor.find({Email :vendorContact[i]}).then(vendor =>{
+                      var vendorName = vendor[0].VendorName;
+                         console.log(vendorName);
+                        const mailOptions = {
+                            from: 'ABH-Pharma', // sender address
+                            to: vendorContact[i], // list of receivers
+                            subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
+                            html: 
+                            `
+                            Hello ${vendorName}, <br>
+                            <br><br>
 
+                            We at ABH Pharma have requested a quote for the following material: ${material}
+                            <br><br>
+
+                            Attached to this email is a link that will allow you to send us your quote.
+
+                            <br><br><br><br><br><br>
+
+                            We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+
+
+                            <br><br><br>
+                            <em>PS: this link will be availible for use for two days after it has been opened and is to be used only for the intended ${vendorName} employees only.<em>
+                            
+
+                            <br><br>
+                           <a href = 'http://localhost:3000/ABH_Invoice_Form/?'>ABH Invoice Form<a>
+                            `
+                        };
+
+                        transporter.sendMail(mailOptions, function (err, info) {
+                            if(err)
+                            console.log('Couldnt send email' +err)
+                            else
+                            console.log(info);
+                        });
+                })
+            }
+              
+                // req.flash('success_msg',`Request Has Been Sent`);
+                // res.redirect('/ABH_Purchase/Dashboard');
+            })
+            
         });
 
         app.get('/ABH_Purchase/Modify_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
-            res.render('purchase/modvend');
-            
+            purchase = 'modVend';
+            res.render('purchase/dashboard',{purchase});
         });
 
         app.post('/Modify_Vendor', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
@@ -302,7 +378,8 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
         });
 
         app.get('/ABH_Purchase/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
-            res.render('purchase/addvend');
+            purchase = 'addVend';
+            res.render('purchase/dashboard',{purchase});
             
         });
 
@@ -332,17 +409,16 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
 
 
 
-        ///////////////////////////////ABH ADMIN LOGIN///////////////////////
+                    ///////////////////////////////ABH ADMIN LOGIN///////////////////////
 
         
     
-        //login
+                                        //login
         app.get('/ABH_Admin/Login', (req,res)=>{
-            
-            
             res.render('admin/login');
         });
 
+                                        //login post
         app.post('/ADMIN_login', urlencodedParser, async (req,res,next) =>{ 
         
             console.log('recieved post req');
@@ -354,184 +430,169 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
             } )(req, res, next);
         });
 
-    
-
-
-
-
-
-        ///////////////////////////////ABH ADMIN SITE////////////////////////
+                                        // Dashboard
+        app.get('/ABH_ADMIN/Dashboard',adminEnsureAuthenticated,(req,res) =>{
+            admin = 'dashboard';
+            res.render('admin/dashboard', {admin});
+        });
 
         
+                                        //Add user profile
+        app.get('/ABH_ADMIN/Dashboard/addUser', adminEnsureAuthenticated,(req,res) =>{
+            
+            
+            firstName = '',
+            lastName = '',
+            user_name = '',
+            Email = '',
+            department = '',
+            cell = '',
 
-            // Dashboard
-            app.get('/ABH_ADMIN/Dashboard',adminEnsureAuthenticated,(req,res) =>{
-                res.render('admin/dashboard');
-            });
+            admin = 'addUser';
 
-            //add user link
-                    //Add user profile
-            app.get('/ABH_ADMIN/Dashboard/addUser', adminEnsureAuthenticated,(req,res) =>{
-                
-              
-                firstName = '',
-                lastName = '',
-                user_name = '',
-                Email = '',
-                department = '',
-                cell = '',
-        
-                res.render('admin/addUser',{errors,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
-                console.log(firstName, lastName,user_name, Email, department, cell);
-            });
+            res.render('admin/dashboard',{errors,admin,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
+            console.log(firstName, lastName,user_name, Email, department, cell);
+        });
 
-
+                                         // add user post
+        app.post('/ABH_ADMIN/Dashboard/addUser', urlencodedParser,adminEnsureAuthenticated, (req,res) =>{
             
 
-            // handel add user post req
-            app.post('/ABH_ADMIN/Dashboard/addPassword', urlencodedParser,adminEnsureAuthenticated, (req,res) =>{
-                
+            const { firstName, lastName,user_name, Email, department, cell } = req.body;
+            var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
+            console.log(req.body );
 
-                const { firstName, lastName,user_name, Email, department, cell } = req.body;
-                var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
-                console.log(req.body );
-
-               
-                        //Add User Profile then disconnect 
-                employee.findOne({Username : user_name},function(err,data){
-                    if(data === null){
-                         console.log('begining addition to Employee Collection');
-                         
-
-                         var createEmployee = employee(
-                                 {FirstName : firstName,
-                                LastName : lastName,
-                                Email: Email,
-                                Cell : cell,
-                                Department : department,
-                                Admin : false,
-                                Scheduel : {
-                                    Monday : scheduel[0],
-                                    Tuesday : scheduel[1],
-                                    Wedensday : scheduel[2],
-                                    Thursday : scheduel[3],
-                                    Friday : scheduel[4],
-                                },
-                                Username : user_name,
-                                Password : 'null'                
-                            
-                             })
-                    
-        
-                        createEmployee.save((err) =>{
-                                if(err){console.log(err)}
-                                else{
-                                console.log('Employee Profile Saved');
-                              
-                              
-                             }
-                           });     
-                           
-                           res.render('admin/userPassword',{user_name : user_name});
-                           
+            
+                    //Add User Profile then disconnect 
+            employee.findOne({Username : user_name},function(err,data){
+                if(data === null){
+                        console.log('begining addition to Employee Collection');
                         
+
+                        var createEmployee = employee(
+                                {FirstName : firstName,
+                            LastName : lastName,
+                            Email: Email,
+                            Cell : cell,
+                            Department : department,
+                            Admin : false,
+                            Scheduel : {
+                                Monday : scheduel[0],
+                                Tuesday : scheduel[1],
+                                Wedensday : scheduel[2],
+                                Thursday : scheduel[3],
+                                Friday : scheduel[4],
+                            },
+                            Username : user_name,
+                            Password : 'null'                
+                        
+                            })
+                
+    
+                    createEmployee.save((err) =>{
+                            if(err){console.log(err)}
+                            else{
+                            console.log('Employee Profile Saved');
+                            
+                            
+                            }
+                        });     
+                        admin = 'userPassword';
+                        res.render('admin/dashboard',{admin,user_name : user_name});
+                        
+                    
+                }
+                else{
+                    admin = 'addUser';
+                    errors.push({msg :'Username is already taken please pick another'});
+                    res.render('admin/dashboard',{errors,admin,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
+                    errors.pop();
+                    console.log(data);
+                    
+                }
+            });
+        });
+
+                                         //add password post
+        app.post('/ABH_ADMIN/PassAdded', urlencodedParser,adminEnsureAuthenticated, (req,res) =>{
+            const {password1, user_name} = req.body;
+            bcrypt.genSalt(10, (err, salt) => 
+                bcrypt.hash(password1, salt, (err,hash) =>{
+                    if(err) throw err;
+
+                    //set password to hash
+                    
+                    var query = {Username: user_name };
+                    var update = {Password : hash};
+
+                    employee.findOneAndUpdate(query,update, (err, doc)=>{
+                    if(err) { 
+                        console.log('err');
+                        
+                        throw err;
                     }
                     else{
+                        console.log(doc.Password);
                         
-                        errors.push({msg :'Username is already taken please pick another'});
-                        res.render('admin/addUser',{errors,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
-                        errors.pop();
-                        console.log(data);
                         
+                        req.flash('success_msg',`You succesfully added your password to ${doc.FirstName} ${doc.LastName}'s profile`);
+                        res.redirect('/ABH_ADMIN/Dashboard/')
+
+                        console.log(req.body);
                     }
                 });
-            });
+            }));
+        
+        });
 
+                                        //remove user get
+        app.get('/ABH_ADMIN/Dashboard/removeUser',adminEnsureAuthenticated, (req,res) =>{
+            admin = 'removeUser';
+            res.render('admin/removeUser',{admin});
+        });
 
-
-            app.post('/ABH_ADMIN/Dashboard/', urlencodedParser,adminEnsureAuthenticated, (req,res) =>{
-                const {password1, user_name} = req.body;
-                
-                bcrypt.genSalt(10, (err, salt) => 
-                    bcrypt.hash(password1, salt, (err,hash) =>{
+                                        //remove user post
+        app.post('/ABH_ADMIN/Dashboard/removeUser',urlencodedParser ,adminEnsureAuthenticated, (req,res) =>{
+            console.log(req.body);
+            var {username, password1} = req.body;
+            
+            employee.findOne({Username : username})
+                    .then(empl =>{
+                    if(!empl){
+                        console.log('not found');
+                        req.flash('error_msg',"Invalid Username");
+                            res.redirect('/ABH_ADMIN/Dashboard/removeUser');
+                    }
+                    else{
+                    //match password
+                    bcrypt.compare(password1, empl.Password, (err, isMatch) =>{
                         if(err) throw err;
 
-                        //set password to hash
-                       
-                        var query = {Username: user_name };
-                        var update = {Password : hash};
-
-                        employee.findOneAndUpdate(query,update, (err, doc)=>{
-                        if(err) { 
-                            console.log('err');
-                           
-                            throw err;
+                        if(isMatch){
+                                employee.findOneAndDelete({Username : username}).then(
+                                req.flash('success_msg','User has been REMOVED from ABH Data Base'),
+                                res.redirect('/ABH_ADMIN/Dashboard/removeUser'),
+                                )
+                                .catch(console.log(err));
                         }
                         else{
-                            console.log(doc.Password);
-                          
-                         
-                            req.flash('success_msg',`You succesfully added your password to ${doc.FirstName} ${doc.LastName}'s profile`);
-                            res.redirect('/ABH_ADMIN/Dashboard/')
-
-                            console.log(req.body);
-                        }
-                    });
-                }));
-            
-            });
-
-            //remove user Link
-            app.get('/ABH_ADMIN/Dashboard/removeUser',adminEnsureAuthenticated, (req,res) =>{
-                res.render('admin/removeUser');
-            });
-            app.post('/ABH_ADMIN/Dashboard/removeUser',urlencodedParser ,adminEnsureAuthenticated, (req,res) =>{
-                console.log(req.body);
-                var {username, password1} = req.body;
-                
-                employee.findOne({Username : username})
-                     .then(empl =>{
-                        if(!empl){
-                            console.log('not found');
-                            req.flash('error_msg',"Invalid Username");
-                                res.redirect('/ABH_ADMIN/Dashboard/removeUser');
-                        }
-                        else{
-                        //match password
-                        bcrypt.compare(password1, empl.Password, (err, isMatch) =>{
-                            if(err) throw err;
-
-                            if(isMatch){
-                                    employee.findOneAndDelete({Username : username}).then(
-                                    req.flash('success_msg','User has been REMOVED from ABH Data Base'),
-                                    res.redirect('/ABH_ADMIN/Dashboard/removeUser'),
-                                    )
-                                    .catch(console.log(err));
+                            req.flash('error_msg','Invalid Password');
+                            res.redirect('/ABH_ADMIN/Dashboard/removeUser');
                             }
-                            else{
-                                req.flash('error_msg','Invalid Password');
-                                res.redirect('/ABH_ADMIN/Dashboard/removeUser');
-                             }
-                        });
-                    }
-                })
-                .catch(err => console.log(err));
-            });
-            
+                    });
+                }
+            })
+            .catch(err => console.log(err));
+        });
 
-            app.post('/ABH_ADMIN/Dashboard', urlencodedParser,adminEnsureAuthenticated, (req,res) =>{
-            res.render('admin/dashboard');
-            console.log(req.body);
-
-            });
-
-
-            app.get('ABH_ADMIN/logout',(req,res) =>{
-                    req.logout();
-                    req.flash('success_msg',`You have logged out`);
-                    res.redirect('/ABH_Admin/Login');  
-                    disconnectABHPharmaDB();  
-            });
+                                        //admin Logout
+        app.get('/ABH_ADMIN/logout',(req,res) =>{
+                req.logout();
+                req.flash('success_msg',`You have logged out`);
+                admin = 'dashboard';
+                res.redirect('/ABH_Admin/Login');  
+                disconnectABHPharmaDB();  
+        });
 
 };
 

@@ -282,3 +282,6 @@ transition: .5s;
     left: 43.4px;
       border-radius: 100%;
   }
+  #checkboxID{
+      display: none;
+  }

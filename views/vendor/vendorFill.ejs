@@ -16,6 +16,9 @@
 
          <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/checkBoxes.css">
 
+        <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/otherProperties/topLevel.css">
+         
+
          <link rel="stylesheet"  charset=utf-8 type="text/css" href="/styles/vendStyle.css">
        
         
@@ -25,44 +28,7 @@
     <body >
 
 
-        <div class="mainHeader">
-
-            <div class="contact">
-            
-                <label class="address">131 Heartland Boulevard, Edgewood, New York, U.S </label>
-                <label class = "number">866-282-4729</label>
-
-        
-                <div class="link">
-                    <a id="facebook"  class="linkSpacing"        href="https://www.facebook.com/abhpharma/n">Facebook</a>
-        
-
-                    <a id="twitter" class="linkSpacing" 
-                    href="https://twitter.com/ABHPharma?lang=en">Twitter</a>
-
-
-
-                    <a id="instagram" class="linkSpacing" href="https://www.instagram.com/abhpharma/?hl=en">Instagram</a>
-    
-
-    
-                    <a id="google+" class="linkSpacing" 
-                    href="https://plus.google.com/+Abhpharma">Google+</a>
-            
-
-        
-                <a id="linkedIn"class="linkSpacing"  href="https://www.linkedin.com/company/abh-pharma-inc/">LinkedIn</a>
-
-                </div>
-            
-            </div>
-                <div class="logoLoc">
-                    <a href="https://abhpharma.com"><img src="images/headerv1.jpg"></a> 
-                </div>
-    
-                
-        
-        </div>
+        <% include ../partials/mainHeader.ejs%>
    
         
         <div id="formLoc">
@@ -80,9 +46,9 @@
                         </div>
 
                             <div id="moq" class="form-group">
-                                <label for="moqIn" id="moqInLbl" class="form-label" ><en>Vendor Item Code</en></label>
+                                <label for="itemCode" id="itemCodelbl" class="form-label" ><en>Vendor Item Code</en></label>
 
-                                <input type="number" class="form-control" name="moqIn" id="moqIn"  placeholder="CODE#" required> 
+                                <input type="text" class="form-control" name="itemCode" id="itemCode"  placeholder="CODE#" required> 
                             </div>
 
                             <div id="measurments" class="form-group">

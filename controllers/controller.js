@@ -157,80 +157,83 @@ module.exports = (app) =>{
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
+                    [Object: null prototype] {
+                        itemCode: '1231231122',
+                        ammount: '22',
+                        measurement: [ 'kg', 'kg' ],
+                        priceIn: '230000',
+                        inStock: 'on',
+                        dateInStock: '',
+                        payType: 'advancePay',
+                        payTerms: 'n/a',
+                        shippingDate: '2019-03-14',
+                        shipCompName: '2broa',
+                        shipAddress1: 'alksd',
+                        shipAddress2: 'alsdkn',
+                        shipCity: 'laksda',
+                        shipState: 'lkasdkml',
+                        shipZip: '1231',
+                        shipStartHour: '09:00',
+                        
+                        shipEndHour: '17:00' }
+                
+                    
+                    const{itemCode, ammount, measurement, priceIn,inStock,dateInStock,payType,payTerms,shippingDate, shipCompName,shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipStartHour, shipEndHour} = req.body
+                    
+                    
                     res.render( 'vendor/vendorFill',{abhRequest: abhRequest, material: material });
                     
                 });
                 
                 app.post('/ABH_Invoice_Form', urlencodedParser, (req,res) =>{
 
-                    var itemOne = Todo(
-                        {
-                                
-                                
-                            item : 'buy flowers'
-                        
-                        
-                        
-                        
-                        }).save((err)=>{
-                        if(err) {throw err;}
-                        else{
-                        console.log('item saved');}
-                        });
-                        
-                        var data = []
-                        var urlencodedParser = bodyParser.urlencoded({ extended: false });
-                        
-                        
-
-
-
+         
+                       
                     console.log(req.body);
 
 
 
                  
-                    console.log('authenticated');
-                    const mailOptions = {
-                        from: vend_name, // sender address
-                        to: purchaseEmail, // list of receivers
-                        subject: subject, // Subject line
-                        html: `
-                        Response from vendor:<br><br><br>
-                        Material: ${material}<br><br>
-                        ABH Requested: ${abhRequest}<br><br>
-                        Min Order Quantity: ${req.body.moqIn}  ${req.body.measurement}<br>
-                        Price: ${req.body.priceIn}<br>
-                        Date In Stock: ${req.body.dateInStock}<br><br><br><br>
+                    // console.log('authenticated');
+                    // const mailOptions = {
+                    //     from: vend_name, // sender address
+                    //     to: purchaseEmail, // list of receivers
+                    //     subject: subject, // Subject line
+                    //     html: `
+                    //     Response from vendor:<br><br><br>
+                    //     Material: ${material}<br><br>
+                    //     ABH Requested: ${abhRequest}<br><br>
+                    //     Min Order Quantity: ${req.body.moqIn}  ${req.body.measurement}<br>
+                    //     Price: ${req.body.priceIn}<br>
+                    //     Date In Stock: ${req.body.dateInStock}<br><br><br><br>
 
 
 
-                        Payment Terms: ${req.body.payTerms}<br>
-                        Shipping Date ${req.body.shippingDate}<br><br><br><br>
+                    //     Payment Terms: ${req.body.payTerms}<br>
+                    //     Shipping Date ${req.body.shippingDate}<br><br><br><br>
 
 
-                        Shipping Company Name:${req.body.shipCompName}<br>
-                        Shipping Company Address 1: ${req.body.shipAddress1}<br>
-                        Shipping Company Address 2: ${req.body.shipAddress2}<br>
-                        Shipping Company City: ${req.body.shipCity}<br>
-                        Shipping Company State: ${req.body.shipState}<br>
-                        Shipping Company Zip-Code: ${req.body.shipZip}<br>
-                        Shipping Company Start-Hour: ${req.body.shipStartHour}<br>
-                        Shipping Company End-Hour: ${req.body.shipEndHour}<br>
-                        `
-                    };
+                    //     Shipping Company Name:${req.body.shipCompName}<br>
+                    //     Shipping Company Address 1: ${req.body.shipAddress1}<br>
+                    //     Shipping Company Address 2: ${req.body.shipAddress2}<br>
+                    //     Shipping Company City: ${req.body.shipCity}<br>
+                    //     Shipping Company State: ${req.body.shipState}<br>
+                    //     Shipping Company Zip-Code: ${req.body.shipZip}<br>
+                    //     Shipping Company Start-Hour: ${req.body.shipStartHour}<br>
+                    //     Shipping Company End-Hour: ${req.body.shipEndHour}<br>
+                    //     `
+                    // };
                 
                 
-                    transporter.sendMail(mailOptions, function (err, info) {
-                        if(err)
-                        console.log('Couldnt send email' +err)
-                        else
-                        console.log(info);
-                    });
+                    // transporter.sendMail(mailOptions, function (err, info) {
+                    //     if(err)
+                    //     console.log('Couldnt send email' +err)
+                    //     else
+                    //     console.log(info);
+                    // });
                     
-                    res.redirect('http://abhpharma.com');
-
-                
+                    
+                   
 
 
 
@@ -325,6 +328,9 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
                     vendor.find({Email :vendorContact[i]}).then(vendor =>{
                       var vendorName = vendor[0].VendorName;
                          console.log(vendorName);
+
+
+
                         const mailOptions = {
                             from: 'ABH-Pharma', // sender address
                             to: vendorContact[i], // list of receivers

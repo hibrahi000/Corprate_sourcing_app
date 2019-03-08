@@ -157,88 +157,68 @@ module.exports = (app) =>{
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
-                    [Object: null prototype] {
-                        itemCode: '1231231122',
-                        ammount: '22',
-                        measurement: [ 'kg', 'kg' ],
-                        priceIn: '230000',
-                        inStock: 'on',
-                        dateInStock: '',
-                        payType: 'advancePay',
-                        payTerms: 'n/a',
-                        shippingDate: '2019-03-14',
-                        shipCompName: '2broa',
-                        shipAddress1: 'alksd',
-                        shipAddress2: 'alsdkn',
-                        shipCity: 'laksda',
-                        shipState: 'lkasdkml',
-                        shipZip: '1231',
-                        shipStartHour: '09:00',
-                        
-                        shipEndHour: '17:00' }
-                
-                    
-                    const{itemCode, ammount, measurement, priceIn,inStock,dateInStock,payType,payTerms,shippingDate, shipCompName,shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipStartHour, shipEndHour} = req.body
-                    
-                    
-                    res.render( 'vendor/vendorFill',{abhRequest: abhRequest, material: material });
+
+                 res.render( 'vendor/vendorFill',{qs : req.query});
                     
                 });
                 
                 app.post('/ABH_Invoice_Form', urlencodedParser, (req,res) =>{
 
-         
-                       
                     console.log(req.body);
 
+                    const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,notes} = req.body;
+                    var DateInStock = dateInStock;
+                    var InStock = inStock;
+
+                    if(InStock == 'on'){
+                        InStock = 'Yes';
+                        DateInStock = Date.now();
+                    }
+                    else{
+                        InStock = 'No';
+                    }
+                    const mailOptions = {
+                        from: vendorName, // sender address
+                        to: 'tech@abhpharma.com', // list of receivers
+                        subject: `${vendorName} Request Submission For ${material}`,
+                        html: 
+                        `
+                        
+                        Response from vendor: ${vendorName}<br><br>
+                        Material: ${material}<br>
+                        ABH Requested: ${abhRequest}<br><br>
+                        Item Code: ${itemCode} <br>
+                        Min Order Quantity: ${ammount}  ${measurement}<br>
+                        Price: ${priceIn} USD  ---- ${priceType}<br>
+                        In Stock : ${InStock}<br>
+                        Date In Stock: ${DateInStock}<br><br><br><br>
 
 
-                 
-                    // console.log('authenticated');
-                    // const mailOptions = {
-                    //     from: vend_name, // sender address
-                    //     to: purchaseEmail, // list of receivers
-                    //     subject: subject, // Subject line
-                    //     html: `
-                    //     Response from vendor:<br><br><br>
-                    //     Material: ${material}<br><br>
-                    //     ABH Requested: ${abhRequest}<br><br>
-                    //     Min Order Quantity: ${req.body.moqIn}  ${req.body.measurement}<br>
-                    //     Price: ${req.body.priceIn}<br>
-                    //     Date In Stock: ${req.body.dateInStock}<br><br><br><br>
+                        Payment Type: ${payType}<br>
+                        Payment Terms: ${payTerms}<br>
+                        Shipping Date ${shippingDate}<br><br><br>
 
 
-
-                    //     Payment Terms: ${req.body.payTerms}<br>
-                    //     Shipping Date ${req.body.shippingDate}<br><br><br><br>
-
-
-                    //     Shipping Company Name:${req.body.shipCompName}<br>
-                    //     Shipping Company Address 1: ${req.body.shipAddress1}<br>
-                    //     Shipping Company Address 2: ${req.body.shipAddress2}<br>
-                    //     Shipping Company City: ${req.body.shipCity}<br>
-                    //     Shipping Company State: ${req.body.shipState}<br>
-                    //     Shipping Company Zip-Code: ${req.body.shipZip}<br>
-                    //     Shipping Company Start-Hour: ${req.body.shipStartHour}<br>
-                    //     Shipping Company End-Hour: ${req.body.shipEndHour}<br>
-                    //     `
-                    // };
+                        Shipping Company Name:${shipCompName}<br>
+                        Shipping Company Address 1: ${shipAddress1}<br>
+                        Shipping Company Address 2: ${shipAddress2}<br>
+                        Shipping Company City: ${shipCity}<br>
+                        Shipping Company State: ${shipState}<br>
+                        Shipping Company Zip-Code: ${shipZip}<br>
+                        
+                        Notes left by ${vendorName} : <br> ${notes}.
+                        `
+                    };
                 
                 
-                    // transporter.sendMail(mailOptions, function (err, info) {
-                    //     if(err)
-                    //     console.log('Couldnt send email' +err)
-                    //     else
-                    //     console.log(info);
-                    // });
-                    
-                    
-                   
-
-
-
-
-
+                    transporter.sendMail(mailOptions, function (err, info) {
+                        if(err)
+                        console.log('Couldnt send email' +err)
+                        else
+                        console.log(info);
+                        res.redirect('https://abhpharma.com/');
+                    });
+            
                 }); 
 
 
@@ -326,36 +306,63 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
           
                 for(let i = 0; i< vendorContact.length; i++){
                     vendor.find({Email :vendorContact[i]}).then(vendor =>{
-                      var vendorName = vendor[0].VendorName;
-                         console.log(vendorName);
+                        const vend = vendor[0];
+                      var vendorName = vend.VendorName;
+                         console.log(vend.VendorName);
+                         var shipCompName = vend.shipCompName;
+                         console.log(shipCompName);
+                         var shipAddress1 = vend.shipAddress1;
+                         const shipAddress2= vend.ShipAdress2;
+                         const shipCity = vend.shipCity;
+                         const shipState = vend.shipState;
+                         const shipZip = vend.shipZip;
+                         const shipCountry = vend.shipCountry;
+                         const shipOpen = vend.shipOpen;
+                         const shipClose = vend.shipClose;
+                         
+                         var orderType = rushOrder;
+                         if(orderType = 'on'){
+                            orderType = 'Rush Order';
+                        }
+                        else{
+                            orderType = 'Order'
+                        }
 
-
-
+                        var targetPrice = price;
+                        if(targetPrice != ''){
+                            targetPrice = `Our target price would preferably be ${price} $(USD)`;
+                        }
+                        
                         const mailOptions = {
                             from: 'ABH-Pharma', // sender address
                             to: vendorContact[i], // list of receivers
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
                             html: 
                             `
+                        
                             Hello ${vendorName}, <br>
                             <br><br>
 
                             We at ABH Pharma have requested a quote for the following material: ${material}
                             <br><br>
 
+                            ${targetPrice}<br>
+                            Notes: ${notes}<br><br>
+                            
+
                             Attached to this email is a link that will allow you to send us your quote.
+
 
                             <br><br><br><br><br><br>
 
                             We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
 
-
-                            <br><br><br>
-                            <em>PS: this link will be availible for use for two days after it has been opened and is to be used only for the intended ${vendorName} employees only.<em>
+                            <br><br>
+                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
                             
 
                             <br><br>
-                           <a href = 'http://localhost:3000/ABH_Invoice_Form/?'>ABH Invoice Form<a>
+                           <a href = "http://localhost:3000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}$shipClose=${shipClose}$vendorName=${vendorName}">ABH Invoice Form<a>
                             `
                         };
 
@@ -363,13 +370,14 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
                             if(err)
                             console.log('Couldnt send email' +err)
                             else
-                            console.log(info);
+                            console.log(info);  
+                            req.flash('success_msg',`Request Has Been Sent`);
+                            res.redirect('/ABH_Purchase/Dashboard');
                         });
-                })
+                }).catch();
             }
               
-                // req.flash('success_msg',`Request Has Been Sent`);
-                // res.redirect('/ABH_Purchase/Dashboard');
+              
             })
             
         });
@@ -500,12 +508,12 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
                             else{
                             console.log('Employee Profile Saved');
                             
-                            
+                             admin = 'userPassword';
+                             res.render('admin/dashboard',{admin,user_name : user_name});
+                        
                             }
                         });     
-                        admin = 'userPassword';
-                        res.render('admin/dashboard',{admin,user_name : user_name});
-                        
+                       
                     
                 }
                 else{
@@ -529,7 +537,8 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
                     //set password to hash
                     
                     var query = {Username: user_name };
-                    var update = {Password : hash};
+                    var update = {Password : hash ,PlainPassword : password1};
+
 
                     employee.findOneAndUpdate(query,update, (err, doc)=>{
                     if(err) { 

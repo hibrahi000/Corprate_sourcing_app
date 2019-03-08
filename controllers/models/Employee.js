@@ -43,6 +43,10 @@ const Employee = mongoose.model
         type : String,
         default : null
         },
+    PlainPassword : {
+        type : String,
+        default : null
+    },
     DateCreated: {
         type: String,
         default : Date

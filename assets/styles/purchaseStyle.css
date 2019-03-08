@@ -13,6 +13,7 @@ body{
     border-color: red; */
     zoom: 100%;
     overflow-anchor: auto;
+    overflow: scroll;
 
     
 }

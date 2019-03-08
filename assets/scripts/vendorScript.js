@@ -119,21 +119,19 @@ var form = $('#msform');
 		});
 	});
 
+	console.log('hiiii')
 
 
-	$(".submit").click(function(){
-		
-	});
-
-
-	$('#pType').on('change', function() {
+	$('#payType').on('change', function() {
 		if ( this.value == 'terms')
 		{
 			$("#terms").slideDown();
+			$("#shipdateSelect").slideDown();
+			
 		}
 		else if (this.value == 'advancePay') {
 				$("#terms").slideUp();
-			
+				$("#shipdateSelect").slideUp();
 			
 		}
 		});
@@ -148,4 +146,4 @@ var form = $('#msform');
 			});
 
 
-			document.getElementsByName('dateIStock') = 12-12-2019;
+		

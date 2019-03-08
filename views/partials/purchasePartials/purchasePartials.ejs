@@ -1,5 +1,6 @@
 <% if(purchase == 'reqQuote') { %>
     <form id="msform" method="POST" action="/Purchase_Request" >
+        <% include ../messages.ejs%>
         <fieldset>
         <h1 id="sectionName"><em>Request Quote</em> <br><br> </h1>
         <h1 id="title" class="fs-title">Material</h2>
@@ -26,7 +27,7 @@
 
                         <div class="input-group-append">
                                 <select id="reqType" class="input-group-text" name="reqType"  placeholder="Request Type" required>
-                                <option value="oneTime">One Time</option>
+                                <option value="One Time">One Time</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Yearly">Yearly</option>
                                 </select>
@@ -41,8 +42,8 @@
                                 <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
                                 <div class="input-group-append">
                                 <select name="units" id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
-                                        <option value="kg">Kilograms</option>
-                                        <option value="lb">Pounds</option>
+                                        <option value="Kilograms">Kilograms</option>
+                                        <option value="Pounds">Pounds</option>
                                         </select>
                                 </div>
                         </div>

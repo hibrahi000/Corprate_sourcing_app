@@ -29,16 +29,56 @@ const Vendor = mongoose.model(
         type : Number,
         default : null
     },
-    WareHouse: {
-        type : String,
-        default : null
-    },
     Website: {
         type : String,
         default: null
     },
     Notes: {
         type : String,
+        default : null
+    },
+    payType :{
+        type: String,
+        default : null
+    },
+    terms:{
+        type: String,
+        default : null
+    },
+    shipCompName :{
+        type: String,
+        default : null
+    },
+    shipAddress1 :{
+        type: String,
+        default : null
+    },
+    shipAddress2 :{
+        type: String,
+        default : null
+    },
+    shipCity :{
+        type: String,
+        default : null
+    },
+    shipState :{
+        type: String,
+        default : null
+    },
+    shipZip :{
+        type: Number,
+        default : null
+    },
+     shipCountry:{
+        type: String,
+        default : null
+    },
+    shipOpen:{
+        type: String,
+        default : null
+    },
+    shipClose :{
+        type: String,
         default : null
     },
     DateCreated :{

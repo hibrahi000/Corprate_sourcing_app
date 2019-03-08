@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 
-const Material = mongoose.model
-(   'Material',
+const FlaggedEvents = mongoose.model
+(   'FlaggedEvents',
 
     new mongoose.Schema({
         MaterialName :{

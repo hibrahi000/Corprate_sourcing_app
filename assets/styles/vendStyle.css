@@ -2,6 +2,7 @@
 
 
 body{
+    overflow: scroll ;
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
     background-image: url('/images/abh-background1.jpg');
@@ -33,7 +34,16 @@ body{
 
 
 
-
+.formVendName{
+    background: transparent;
+    float: left !important;
+    margin-left: -38% !important;
+    border: none !important;
+    margin-top: 6%;
+    font-size: 30px !important;
+    font-style: italic;
+    font-weight: bold;
+}
 
 .formLoc{
     margin-top: 40%;
@@ -45,8 +55,25 @@ body{
     background-color: white;
 }
 
+.labelMat{
+    font-size: 28px !important;
+    padding: 0 !important;
+    font-weight: bold;
+}
+.labelReq {
+    font-size: 20px !important;
+    padding: 0 !important;
+    /* padding-right: 10px !important; */
 
+}
 
+.labelReq ,.labelMat{
+    background: transparent;
+    border: none !important;
+    width: 63% !important;
+    text-decoration: none;
+    text-align: center !important;
+}
 
     #formLoc{
         margin-top: 7%;
@@ -106,16 +133,18 @@ body{
     }
     /*inputs*/
     #msform input, #msform textarea {
-        
+        padding: 0;
+        padding-left: 9px !important;
         border: 1px solid #ccc;
         border-radius: 3px;
         margin-bottom: 10px;
-        width: 70%;
+        width: 60%;
         box-sizing: border-box;
         font-family: montserrat;
         color: #2C3E50;
         font-size: 18px;
         float: initial;
+        margin-left: 6%;
     }
   
     #msform .action-button:hover, #msform .action-button:focus {
@@ -146,7 +175,7 @@ body{
     }
 
     #itemCode{
-        width: 100% !important;
+        width: 94% !important;
     }
     #inStock{
         margin-top: 30px;
@@ -196,7 +225,7 @@ select{
     font-size: 15px;
 }
 
-#terms{
+#terms , #shipdateSelect{
     display: none;
 }
 
@@ -245,11 +274,18 @@ select{
         }
 
         .addLabel, .addInput{
-            display: block;
-            min-width: 100%;
+            display: table-row-group;
+            min-width: 107%;
             color: rgb(63, 82, 134);
         }
-    
+        
+        #extraNotes{
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .noteSec{
+            width: 80% !important;
+        }
 
         /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 

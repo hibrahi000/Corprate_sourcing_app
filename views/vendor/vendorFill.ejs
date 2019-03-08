@@ -33,16 +33,18 @@
         
         <div id="formLoc">
             <form id="msform" method="POST" action="/ABH_Invoice_Form"> 
+                <input type="text" name="vendorName" class="formVendName" value= '<%= qs.vendName%>' readonly>
+                
                 <fieldset>
                     <div id="materialSection">
                     <h5 id="title" class="fs-title">Material: </h5>
-                    <h5 id="material" name='material' class="fs-title"><%=material%></h5>
+                    <input type="text" value='<%=qs.material%>' name="material" id="material" readonly class="labelMat">
                     </div>
                     <div class="fillout">
 
                         <div id="abhReq" class="form-group">
                             <h5 class="form-label" id="reqLabel">ABH Requested:</h5>
-                            <h5 class="form-label" id="abhRequest" name="abhRequest"> <%=abhRequest%> </h5>
+                            <input type="text" value='<%=qs.abhRequest%>'name="abhRequest" id="abhReq" class="labelReq" readonly> 
                         </div>
 
                             <div id="moq" class="form-group">
@@ -53,7 +55,7 @@
 
                             <div id="measurments" class="form-group">
 
-                                    <label for="ammount" id="ammountLbl" class="form-label" ><en>Amount In Stock</en></label>
+                                    <label for="ammount" id="ammountLbl" class="form-label" ><en>Minimum Order Quantity</en></label>
 
                                     <div class="input-group">
                                         <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
@@ -83,14 +85,12 @@
                                 name="priceIn" placeholder="$(USD)">
                                 
                                 <div class="input-group-append">
-                                        <select name="measurement" id="unit" class="input-group-text" 
-                                        
-                                        id="measurement" 
-                                        
-                                        
-                                        placeholder = "Units" required>
-                                            <option value="kg">Delivered Price</option>
-                                            <option value="lb">Pick Up Needed</option>
+                                        <select name="priceType" 
+                                            class="input-group-text" 
+                                            id="priceType" 
+                                            required>
+                                                <option value="Delivered Price">Delivered Price</option>
+                                                <option value="Pick Up Needed">Pick Up Needed</option>
                                             </select>
                                     </div>
                             </div>
@@ -124,10 +124,10 @@
 
                     <div class="fillout">
 
-                        <div id="payType" class="form-group">
+                        <div id="pType" class="form-group">
                             <label>Payment Type</label>
                             <!-- CHECK THIS -->
-                            <select name="payType" value='advancePay' id="pType">
+                            <select name="payType" value='advancePay' id="payType">
                             
                             
                                 <option value="advancePay" class="input-group-text">Advance Payment Before Shipping</option>
@@ -148,13 +148,18 @@
 
                         <div  id="shipdateSelect" class="form-group">
                                 <label>Estimated Shipping Date</label>
-                                <input name="shippingDate" type="date" id="dateIn" class="form-group" required>
+                                <input name="shippingDate" type="date" id="dateIn" class="form-group" >
                         </div>
 
 
                     </div>
 
                     
+
+
+
+
+
 
 
 
@@ -178,7 +183,7 @@
                         <div class="form-group">
                                 <label for="compNam" id="compNamLbl" class="form-label" ><en>Shipping Company Name</en></label>
 
-                                <input type="text" name="shipCompName" class="form-group" id="compNam"  placeholder="Ex: 2Bros Shipping LLC" required> 
+                                <input type="text" name="shipCompName" class="form-group" id="compNam" value="<%=qs.shipCompName%>"  placeholder="Ex: 2Bros Shipping LLC" required> 
                          </div>
 
                          <div id="shipAddress" class="form-group">
@@ -187,43 +192,40 @@
                             <div class="row one">
                                     <div class="address-one">
                                         <label class='addLabel' for="address-one">Address Line 1</label>
-                                        <input class='addInput' name="shipAddress1" placeholder="" id="address-one" type="text" />
+                                        <input class='addInput' value="<%=qs.shipAddress1%>" name="shipAddress1" placeholder="" id="address-one" type="text" />
                                     </div>
                                     <div class="address-two">
                                         <label class='addLabel' for="address-two">Address Line 2</label>
-                                        <input class='addInput' name='shipAddress2' class="form-group" id="address-two" type="text" />
+                                        <input class='addInput' name='shipAddress2' class="form-group" value="<%=qs.shipAddress2%>" id="address-two" type="text" />
                                     </div>
                                 </div>
                                 <div class="row two">
                                     <div class="city">
                                         <label class='addLabel' for="city">City</label>
-                                        <input class='addInput' name="shipCity" placeholder="" id="city" type="text" />
+                                        <input class='addInput' value="<%=qs.shipCity%>" name="shipCity" placeholder="" id="city" type="text" />
                                     </div>
                                     <div class="state">
                                         <label class='addLabel'for="state">State / Province / Region</label>
-                                        <input class='addInput' name="shipState" placeholder="" id="state" type="text" />
+                                        <input class='addInput' value="<%=qs.shipState%>" name="shipState" placeholder="" id="state" type="text" />
                                     </div>
                                 </div>
                                 <div class="row three">
                                     <div class="zip">
                                         <label class='addLabel' for="zip">Zip / Postal Code</label>
-                                        <input class='addInput' name="shipZip" placeholder="" id="zip" type="number" />
+                                        <input class='addInput' name="shipZip"  value='<%=qs.shipZip%>' placeholder="" id="zip" type="number" />
                                     </div>
                                     <div class="country">
                                         <label class='addLabel' for="country">Country</label>
-                                        <input class='addInput' name="shipCountry" value='United States'  id="country" type="text" disabled/>
+                                        <input class='addInput' name="shipCountry" value='<%=qs.shipCountry%>'  id="country" type="text" disabled/>
                                     </div>
                                 </div>
                                 <div class="row four">
-                                        <div class="startHour">
-                                            <label class='addLabel' for="startHour">Open From:</label>
-                                            <input class='addInput' name="shipStartHour" placeholder="" id="startHour" type="time" />
-                                        </div>
-                                        <div class="endHour">
-                                            <label class='addLabel' for="endHour">Closes At:</label>
-                                            <input class='addInput' name="shipEndHour" placeholder="" id="endHour" type="time" />
-                                        </div>
+                                        
+                                      
                                  </div>
+                                 <div id="extraNotes">
+                                    <input name="notes" type="text" class='noteSec' placeholder="Any Notes you want to leave us?"></input>
+                            </div>
                             </div>
                     </div>
                                  

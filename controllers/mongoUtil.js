@@ -340,15 +340,22 @@ var admin = false;
  var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
 var username = 'Hibrahi00';
 var password = '$2a$10$yI.peBzRZrXbVdSIVkBH0Oz6nAmBVeuJkQcKKZyFBm9qbzpQTwMRS';
-
+var mat = require('./models/Material').Material;
+// connectABHPharmaDB();
+var tempMaterials = ['TestMaterial']
+var matArray = [];
+var materialPop = [];
+var vendNam = 'TestVendor';
 
 
 
 //  dbAddToEmployee('john','smith','test@test.com',1231231234,'debug',false,scheduel,username,password);
 
 
-
-
+// let vendors = ["VendorXYZ"];
+// let vend = 'VendorXYZ';
+// let index =vendors.indexOf(vend)
+// console.log(index);
 
 
 

@@ -19,7 +19,7 @@ const Employee = mongoose.model
         
         },
     Cell : {
-        type: Number,
+        type: String,
         required : true
         },
     Department : {

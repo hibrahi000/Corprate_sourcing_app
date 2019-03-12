@@ -7,15 +7,11 @@ const Vendor = mongoose.model(
     new mongoose.Schema({
         VendorName: {
         type: String,
-        required: true
+        default : null
     },
-    Material:{  
-        Material : 
-        [{
-                type : String,
-                default : null
-        }]
-        
+    Material: {
+        type: Array,
+        default : null
     },
     RepName: {
         type : String,

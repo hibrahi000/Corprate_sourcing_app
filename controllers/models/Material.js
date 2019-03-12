@@ -2,18 +2,17 @@ const mongoose = require('mongoose');
 
 
 const Material = mongoose.model
-(   'Material',
+(   'Materials',
 
     new mongoose.Schema({
         MaterialName :{
             type : String,
             required : true
         },
-        Vendors : [{
-      
-            type : String,
-            required : false,
-        }],
+        Vendors : {
+            type: Array,
+            default : null
+        },
         DateCreated: {
             type: String,
             default : Date
@@ -21,6 +20,6 @@ const Material = mongoose.model
     
     }),
     
-    'Material');
+    'Materials');
 
 module.exports = {Material};

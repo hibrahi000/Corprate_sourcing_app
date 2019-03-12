@@ -94,18 +94,42 @@
         <fieldset>
 
                 <h1 id="sectionName"><em>Add Vendor</em> <br><br> </h1>
+                <% include ../messages.ejs%>
                 <h1 id="title" class="fs-title">Contact Info</h2>
         
-                <input type="text" class="inputField" id="vendNamIn" name="vendNamIn" placeholder="Vendor Name" / required>
+                <input type="text" class="inputField" id="vendNamIn" name="vendNam" placeholder="Vendor Name" / required>
                 
-        
-                <input type="text" class="inputField" id="matSupIn" name="matSupIn" placeholder="Material Supplied" / required>
-        
-                <input type="email" class="inputField" id="vendEmailIn" name="vendEmailIn" placeholder="Vendor Email" / required>
+                <input type="text" class="inputField" id="repNameIn" name="repName" placeholder="Rep Name" / >
                 
-                <input type="number" class="inputField" id="vendNumIn" name="material" placeholder="Contact Number" / required>
+                <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" / >
+
+                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" / required>
         
-                <input type="text" class="inputField" id="vendShipLocIn" name="vendShipLocIn" placeholder="Shipping Location ** Not required **" / >
+                <input type="email" class="inputField" id="vendEmailIn" name="vendEmail" placeholder="Vendor Email" / required>
+                
+                <input type="number" class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" / required>
+                    
+               
+                
+                <label id="info">Shipping Location ** Not required</label>
+
+                <input class='addInput' name="shipCompNam" placeholder="Shipping Company Name" id="shipCompNam" type="text" />
+                        
+                <input class='addInput' name="shipAddress1" placeholder="Address Line 1" id="address-one" type="text" />
+
+                <input class='addInput' name='shipAddress2' class="form-group" placeholder="Address Line 2"  id="address-two" type="text" />   
+        
+                <input class='addInput'  name="shipCity" placeholder="city" id="city" type="text" />
+                
+                <input class='addInput'  name="shipState" placeholder="State / Province / Region" id="state" type="text" />
+        
+                <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" />
+        
+                <input class='addInput' name="shipCountry"  id="country" placeholder="Country" type="text" />
+
+                <input name="notes" type="text" class='noteSec' placeholder="Any Notes you want to leave us?"></input>
+                
+
 
                 <div id="nxtBtn">
                 <button type="submit"  name="next" id="formComplete"  ><span>Save</span></button>
@@ -120,26 +144,78 @@
     <form id="msform" method="POST" action="/Modify_Vendor" >           
         <fieldset>
         <h1 id="sectionName"><em>Modify Vendor Information</em> <br><br> </h1>
+        <% include ../messages.ejs%>
         <h1 id="title" class="fs-title">Vendor Name</h2>
 
-        <input type="text" class="inputField" name="vendSearch" placeholder="Type Vendor Name you want to modify..." / required>
+        <input type="text" class="inputField" name="vendSearch" placeholder="Type Vendor Name you want to modify..." / equired list="vendList">
+        <datalist id="vendList">
+                <% for(let i =0; i < vendorName.length; i++){ %>
+                        <option value= "<%- vendorName[i] %>" > 
+                   
+                <% } %>
+        </datalist>
+
+
+
+
         <div id="nxtBtn">
-        <button type="button" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
-        </div>
-        </fieldset>
-
-        <fieldset>
-        <h1 id="title" class="fs-title">Specify</h1>
-        
-        <input type="text" class="inputField" name="mod" placeholder="Mod1.." / required>
-
-        
-        <div class="submit">
-
-                <button type="button" id="btnPrev" name="previous" class="previous action-button" ><span>Previous</span></button>
-                <button type="submit" id="formComplete"><span>Modify Vendor</span></button>
                 
+        <button type="submit" id="btnNext" name="next" class="next action-button"  ><span>Next</span></button>
         </div>
         </fieldset>
-    </form>
+        </form>
+<%}%>
+
+
+<% if(purchase == 'vendInfoPull') { %>
+        <form id="msform" method="POST" action="/vendInfoModify">
+                <fieldset>
+                        
+                        <input type="text" class="notShow" name="tempMaterials" value="<%= tempMaterials%>">
+                        <h1 id="title" class="fs-title">Specify</h1>
+                        <h5 class="form-label" ><en>Vendor Name</en></h5>
+                        <input type="text" class="inputField" id="vendNamIn" name="vendNam" placeholder="Vendor Name" readOnly value='<%=vendNam%>'/>
+
+                        <h5 class="form-label" ><en>Rep Name</en></h5>
+                        <input type="text" class="inputField" id="repNameIn" name="repName" placeholder="Rep Name" value='<%= repNam %>'/>
+                        
+                        <h5 for="websiteIn"  class="form-label" ><en>Company website</en></h5>
+                        <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" value='<%=website%>'/>
+                        
+                        <h5 for="matSupIn"  class="form-label" ><en>Material Supplied</en></h5>
+                        <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied"value='<%=matSup%>'>
+                       
+                        
+                        <h5 for="vendEmailIn"  class="form-label" ><en>Vendor Email</en></h5>
+                        <input type="email" class="inputField" id="vendEmailIn" name="vendEmail" placeholder="Vendor Email" value='<%=vendEmail%>'/>
+                        
+                        <h5 for="vendNumIn"   class="form-label" ><en>Contact Number</en></h5>
+                        <input type="number" class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" value='<%=vendNum%>'/>
+                        
+                        <h5 for="shipCompNam"  class="form-label" ><en>Shipping Company Name</en></h5>
+                        <input class='addInput' name="shipCompNam" placeholder="Shipping Company Name" id="shipCompNam" type="text" value='<%=shipCompNam%>'/>
+                        
+                        <h5 for="address-one"  class="form-label" ><en>Address Line 1</en></h5>        
+                        <input class='addInput' name="shipAddress1" placeholder="Address Line 1" id="address-one" type="text" value='<%=shipAddress1%>'/>
+                        
+                        <h5 for="address-two"  class="form-label" ><en>Address Line 2</en></h5>
+                        <input class='addInput' name='shipAddress2' class="form-group" placeholder="Address Line 2"  id="address-two" type="text" value='<%=shipAddress2%>'/>   
+                        
+                        <h5 for="city"  class="form-label" ><en>City</en></h5>
+                        <input class='addInput'  name="shipCity" placeholder="city" id="city" type="text" value='<%= shipCity%>'/>
+                        
+                        <h5 for="state"  class="form-label" ><en>State</en></h5>
+                        <input class='addInput'  name="shipState" placeholder="State / Province / Region" id="state" type="text" value='<%= shipState%>'/>
+                        
+                        <h5 for="zip"  class="form-label" ><en>ZipCode</en></h5>
+                        <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" value='<%= shipZip%>'/>
+                        
+                        <h5 for="country"  class="form-label" ><en>Country</en></h5>
+                        <input class='addInput' name="shipCountry"  id="country" placeholder="Country" type="text" value='<%= shipCountry%>'/>
+                        
+                        <div class="submit">
+                                <button type="submit" id="formComplete"><span>Update Vendor </span></button>
+                        </div>
+                </fieldset>
+        </form>
 <%}%>

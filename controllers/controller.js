@@ -281,12 +281,13 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
             
         app.get('/ABH_Purchase/Dashboard', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
             mat.find({}).then(material =>{
-                // console.log(material[1].MaterialName);
+            
                 var materials = [];
+                // console.log(material.length);
                 for (let i = 0; i < material.length; i++) {
                      materials.push(material[i].MaterialName);
                 }
-                console.log(materials);
+                // console.log(materials);
                  purchase = 'reqQuote';
                  res.render('purchase/dashboard',{purchase,materials});
            
@@ -383,13 +384,200 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
         });
 
         app.get('/ABH_Purchase/Modify_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
+            vendor.find({}).then(vendor =>{
+                // console.log(material[1].MaterialName);
+                var vendorName = [];
+                for (let i = 0; i < vendor.length; i++) {
+                     vendorName.push(vendor[i].VendorName);
+                }
+           
+           
             purchase = 'modVend';
-            res.render('purchase/dashboard',{purchase});
+            res.render('purchase/dashboard',{purchase,vendorName});
+            }).catch();
         });
 
         app.post('/Modify_Vendor', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
 
+            const vendSearch = req.body.vendSearch;
+            purchase = 'vendInfoPull';
+            vendor.findOne({VendorName: vendSearch}).then(vendor =>{
+                if(vendor === null){
+                    req.flash('error_msg', 'It seems like you picked a vendor that isnt in the system please use the list of vendors in the search box');
+                    res.redirect('/ABH_Purchase/Modify_Vendor');
+                }
+                else{
+
+  
+              
+              
+                
+                const vendNam = vendor.VendorName;
+                const repNam = vendor.RepName;
+                const website = vendor.Website;
+                const matSup = vendor.Material;
+                const vendEmail = vendor.Email;
+                const vendNum = vendor.Number;
+                const shipCompNam = vendor.shipCompNam;
+                const shipAddress1 = vendor.shipAddress1;
+                const shipAddress2 = vendor.shipAddress2;
+                const shipCity = vendor.shipCity;
+                const shipState = vendor.shipState;
+                const shipZip = vendor.shipZip;
+                const shipCountry = vendor.shipCountry; 
+                   console.log(matSup);
+
+                    var tempMaterials = [];
+                    for(let i =0; i < matSup.length; i++){
+                        
+                        tempMaterials.push(vendor.Material[i]);
+                    }
+
+                res.render('purchase/dashboard', {purchase, vendNam,repNam,website,tempMaterials ,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry});
+                }
+            })
+            
+
         });
+
+    
+
+        app.post('/vendInfoModify', urlencodedParser, purchEnsureAuthenticated, (req,res,next)=>{
+            const {vendNam,repNam,website,tempMaterials,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry} = req.body;
+            // console.log(req.body);
+            // console.log(matSup);
+            // console.log(vendNam);
+            var matArray = new Array();
+            matArray = matSup.split(',');
+            // console.log(matArray);
+            var query = {VendorName: vendNam};  // takes the readOnly value of vendNam from purchasePartial and then applies it the query 
+            
+            var update = {VendorName : vendNam, RepNam : repNam, Website : website, Material: matArray, Email: vendEmail, Number:vendNum, shipCompNam: shipCompNam, shipAddress1 : shipAddress1, shipAddress2: shipAddress2, shipCity: shipCity, shipState: shipState, shipZip: shipZip,shipCountry: shipCountry};
+
+            let tMat = new Array()
+            tMat = tempMaterials.split(',');
+            console.log('starting tMat  ' + tMat )
+
+            console.log(tMat.length)
+
+          
+            materialPop = new Array;
+            for(let i =0; i < matArray.length; i++){  // this is for removal of vendor name from material doc or adds the vendor name to the material doc 
+                for(let i =0; i< tMat.length; i++){ // compares the document from its origional state to the new modified state to see which materials were removed and stores in materialPop
+                        console.log(`does matArray include ${tMat[i]} : ${matArray.includes(tMat[i])}`);                    
+                    if(matArray.includes(tMat[i]) === false){
+                        materialPop.push(tMat[i]);
+
+                    }
+                }
+                console.log(materialPop);
+                console.log(materialPop.length -1);
+                for(let i =0; i<materialPop.length; i++){ // looping through materialPop
+                    console.log('for loop 1 itteration '+ i)
+                    var matQuery = {MaterialName : materialPop[i]}; //sets query for current material from materialPop in db 
+                    mat.findOne(matQuery).then(material =>{ //searches for the material in the db to pull doc back as 'material variable'
+                        console.log('found query '+ i)
+                        var vendors = material.Vendors; 
+                        console.log(vendors);
+                        console.log(vendNam);
+                        var index =vendors.indexOf(vendNam) 
+                        console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
+                        if(index != -1){ //if it doesnt return -1 aka not found then ....
+                            console.log('found vendor'+ i)
+                            console.log(vendors[index]);
+                            vendors.splice(index); // takes the array of vendors and removes the value at the index aka the vendor name we want removed
+                            console.log(vendors);
+                            mat.findOneAndUpdate(matQuery,{Vendors:vendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
+                                console.log(material.Vendors);
+                            })
+                            .catch();
+                        }
+                
+                    })
+                }
+
+                mat.findOne({MaterialName : matArray[i]}).then(material =>{ //search the material db for the current material in search 
+                    console.log(material === null); //see if material shows up or not DEBUGGING 
+                        console.log (`matArray${i} was found?: ${material === null}`);
+                    if(material === null){ // if material doesnt exist
+                        // console.log(vendNam)
+                        var createMaterial = mat({ //create the material and add vendors name into the list of vendors
+                            MaterialName: matArray[i],
+                            Vendors: [vendNam]
+                        });
+                        createMaterial.save((err) =>{ //save the document for future use 
+                            if(err){console.log(err)}
+                            else{
+                            console.log('Material Added to Database');
+                            }
+                        });     
+                    }
+                    else{ // if the material is found 
+                        let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
+                        for(let i =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
+                            if(material.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
+                                vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
+                                break;
+                            }
+                            
+                        }
+                        if(!vendExist){ // if the vendor is not found then....
+                            mat.findOne({MaterialName : matArray[i]}).then(material =>{
+                                console.log('vendor wasnt found so now we are adding');
+                                let vendors = new Array();
+                                vendors = material.Vendors;
+                                vendors.push(vendNam);
+                                console.log(vendors);
+                                mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
+                                .catch();    
+                              
+                            })
+                        
+                        }
+                    }
+                })
+            }
+            
+            
+            //this is to update the vendor doc  
+            vendor.findOneAndUpdate(query,update, (err, doc)=>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
+            if(err) { 
+                console.log('err');
+                
+                throw err;
+            }
+            else{        
+                // console.log(doc);
+                      let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
+                        for(let i =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
+                            if(material.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
+                                vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
+                                break;
+                            }
+                            
+                        }
+                        if(!vendExist){ // if the vendor is not found then....
+                            mat.findOne({MaterialName : matArray[i]}).then(material =>{
+                                console.log('vendor wasnt found so now we are adding');
+                                let vendors = new Array();
+                                vendors = material.Vendors;
+                                vendors.push(vendNam);
+                                console.log(vendors);
+                                mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
+                                .catch();    
+                              
+                            })
+                        
+                        }
+                req.flash('success_msg',`You succesfully updated Vendor: ${vendNam}'s Info`);
+                res.redirect('/ABH_Purchase/Modify_Vendor');
+
+               
+            }
+             });
+
+
+        })
 
         app.get('/ABH_Purchase/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
             purchase = 'addVend';
@@ -398,6 +586,103 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
         });
 
         app.post('/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res,next) =>{
+            const {vendNam, repName,website,matSup,vendEmail, vendNum,shipCompNam, shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipCountry,notes} = req.body;
+      
+            var matArray = new Array();
+            
+            matArray = matSup.split(',');
+
+            for(let i =0; i < matArray.length; i++){
+                mat.findOne({MaterialName : matArray[i]}).then(material =>{
+                    console.log(material === null);
+                    // console.log(matArray[i]);
+                    if(material === null){
+                        console.log(vendNam)
+                        var createMaterial = mat({
+                            MaterialName: matArray[i],
+                            Vendors: [vendNam]
+                        });
+                        createMaterial.save((err) =>{
+                            if(err){console.log(err)}
+                            else{
+                            console.log('Material Added to Database');
+                            }
+                        });     
+                    }
+                    else{
+                        let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
+                        for(let i =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
+                            if(material.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
+                                vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
+                                break;
+                            }
+                            
+                        }
+                        if(!vendExist){ // if the vendor is not found then....
+                            mat.findOne({MaterialName : matArray[i]}).then(material =>{
+                                console.log('vendor wasnt found so now we are adding');
+                                let vendors = new Array();
+                                vendors = material.Vendors;
+                                vendors.push(vendNam);
+                                console.log(vendors);
+                                mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
+                                .catch();    
+                              
+                            })
+                        
+                        }
+                    }
+                })
+            }
+
+            vendor.findOne({VendorName : vendNam},function(err,data){
+                if(data === null){
+                        console.log('begining addition to Vendor Collection');
+                        
+
+                        var createVendor = vendor({
+                            VendorName : vendNam,
+                            RepName : repName,
+                            Email: vendEmail,
+                            Number : vendNum,
+                            Website : website,
+                            Admin : false,
+                            Material : matSup,
+                            shipCompName : shipCompNam,
+                            shipAddress1 : shipAddress1,
+                            shipAddress2 : shipAddress2,
+                            shipCity : shipCity,
+                            shipState: shipState,
+                            shipZip : shipZip,
+                            shipCountry : shipCountry,
+                            Notes : notes
+                            })
+                
+    
+                    createVendor.save((err) =>{
+                            if(err){console.log(err)}
+                            else{
+                            console.log('Vendor Profile Saved');
+                            
+                             req.flash('success_msg', 'Vendor Profile Has Been Saved');
+                             res.redirect('/ABH_Purchase/Add_Vendor');
+                        
+                            }
+                        });     
+                       
+                    
+                }
+                else{
+                   purchase = 'addVend'
+                    errors.push({msg :'Vendor is already in the Database if you want to modify vendor go to Modify Vendor Info Page'});
+                    res.render('purchase/dashboard',{errors,purchase})
+                    errors.pop();
+                    console.log(data);
+                    
+                }
+            });
+
+
 
         });
 
@@ -501,7 +786,7 @@ app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
                             Password : 'null'                
                         
                             })
-                
+                            
     
                     createEmployee.save((err) =>{
                             if(err){console.log(err)}

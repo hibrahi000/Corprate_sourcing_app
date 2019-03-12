@@ -7,7 +7,7 @@ const flash = require('connect-flash');
 const sessions = require('cookie-session');
 const keys = require('./controllers/config/keys');
 const pass = require('./controllers/config/passport');
-
+const PORT = process.env.PORT || 5000
 
 
 
@@ -60,8 +60,6 @@ controller(app);
 
 
 //listen to port /
-app.listen();
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-console.log('You Are Listening To Port 3000');
-console.log("-------------------------------");
 

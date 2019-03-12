@@ -233,7 +233,7 @@ module.exports = (app) =>{
 
 
         
-app.get('/ABH_Purchase_App', urlencodedParser,(req,res) =>{
+app.get('/', urlencodedParser,(req,res) =>{
 
     res.render('welcome');
 });    

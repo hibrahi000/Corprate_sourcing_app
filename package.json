@@ -4,11 +4,11 @@
   "description": "ABH Vendor/Purchase automation system",
   "main": "app.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "ABH",
-    "Form"
+    "Purchase-APP"
   ],
   "author": "Hashmat Ibrahimi",
   "license": "ISC",
@@ -34,6 +34,9 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passwordless": "^1.1.3"
+  },
+  "engines": {
+    "node": "10.15.0"
   },
   "devDependencies": {
     "mocha": "^6.0.1"

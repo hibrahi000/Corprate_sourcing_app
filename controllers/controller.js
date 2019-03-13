@@ -26,6 +26,7 @@ errors = [];
 var admin = 'dashboard';
 var purchase = 'dashboard';
 var userName = '';
+var clicked = false;
 /////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
 
 
@@ -157,9 +158,35 @@ module.exports = (app) =>{
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
+                    const{vendorName,key} = req.query;
+                
+                    function resetVendorKey(){
+                        bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findByIdAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                        })
+                        )
+                    }
 
-                 res.render( 'vendor/vendorFill',{qs : req.query});
+                    vendor.findOne({VendorName:vendorName})
+                    .then(vendor =>{
+                        bcrypt.compare(key,vendor.key)
+                            .then(isMatch =>{
+                                if(isMatch && vendor.clicked === false){
+                                    let time =  1000   *   60   * 60   *  2     *  2;
+                                            //miliSec    sec     min    hours     days    
+                                    setTimeout(resetVendorKey,time);                  
+                                    res.render( 'vendor/vendorFill',{qs : req.query}); 
+                                }
+                                else{
+                                    res.render('404Page',{reason : 'Your Time Has Expired'});
+                                }
+                            })
+                    })
                     
+
                 });
                 
                 app.post('/ABH_Invoice_Form', urlencodedParser, (req,res) =>{
@@ -306,6 +333,14 @@ app.get('/', urlencodedParser,(req,res) =>{
                 console.log(vendorContact)
           
                 for(let i = 0; i< vendorContact.length; i++){
+                    var tempKey = Math.random().toString(36).slice(-8);
+                    bcrypt.genSalt(10, (err, salt) => 
+                    bcrypt.hash(tempKey, salt, (err,hash) =>{
+                        if(err) throw err;
+                        hashKey = hash;
+                        vendor.findByIdAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch(err);
+                    })
+                    )
                     vendor.find({Email :vendorContact[i]}).then(vendor =>{
                         const vend = vendor[0];
                       var vendorName = vend.VendorName;
@@ -333,7 +368,8 @@ app.get('/', urlencodedParser,(req,res) =>{
                         if(targetPrice != ''){
                             targetPrice = `Our target price would preferably be ${price} $(USD)`;
                         }
-                        
+                      
+                    
                         const mailOptions = {
                             from: 'ABH-Pharma', // sender address
                             to: vendorContact[i], // list of receivers
@@ -363,7 +399,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             
 
                             <br><br>
-                           <a href = "http://localhost:3000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}$shipClose=${shipClose}$vendorName=${vendorName}">ABH Invoice Form<a>
+                           <a href = "http://localhost:3000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}$shipClose=${shipClose}$vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
                             `
                         };
 
@@ -592,7 +628,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             
             matArray = matSup.split(',');
 
-            for(let i =0; i < matArray.length; i++){
+            for(let i =0; i < matArray.length; i++){//This is material update when created
                 mat.findOne({MaterialName : matArray[i]}).then(material =>{
                     console.log(material === null);
                     // console.log(matArray[i]);
@@ -638,8 +674,12 @@ app.get('/', urlencodedParser,(req,res) =>{
             vendor.findOne({VendorName : vendNam},function(err,data){
                 if(data === null){
                         console.log('begining addition to Vendor Collection');
+                   
+                    bcrypt.genSalt(10, (err, salt) => 
+                    bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                        if(err) throw err;
+                        let hashKey = hash;
                         
-
                         var createVendor = vendor({
                             VendorName : vendNam,
                             RepName : repName,
@@ -655,22 +695,24 @@ app.get('/', urlencodedParser,(req,res) =>{
                             shipState: shipState,
                             shipZip : shipZip,
                             shipCountry : shipCountry,
-                            Notes : notes
+                            Notes : notes,
+                            key : hashKey,
                             })
-                
-    
-                    createVendor.save((err) =>{
-                            if(err){console.log(err)}
-                            else{
-                            console.log('Vendor Profile Saved');
-                            
-                             req.flash('success_msg', 'Vendor Profile Has Been Saved');
-                             res.redirect('/ABH_Purchase/Add_Vendor');
-                        
-                            }
-                        });     
-                       
                     
+        
+                        createVendor.save((err) =>{
+                                if(err){console.log(err)}
+                                else{
+                                console.log('Vendor Profile Saved');
+                                
+                                req.flash('success_msg', 'Vendor Profile Has Been Saved');
+                                res.redirect('/ABH_Purchase/Add_Vendor');
+                            
+                                }
+                            });     
+                       
+                        })
+                    );
                 }
                 else{
                    purchase = 'addVend'

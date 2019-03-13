@@ -357,7 +357,15 @@ var vendNam = 'TestVendor';
 // let index =vendors.indexOf(vend)
 // console.log(index);
 
+var hashKey = '';
+bcrypt.genSalt(10, (err, salt) => 
+bcrypt.hash('TigerPass)&11', salt, (err,hash) =>{
+    if(err) throw err;
+    hashKey = hash;
+    console.log(hashKey); 
 
+})
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////Dev Notes Section//////////////////////////////////////////////////////////////////////////////////////////////////
 

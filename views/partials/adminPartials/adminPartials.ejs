@@ -13,7 +13,7 @@
 <% if(admin == 'addUser') { %>
     <form id="msform" method="POST" action="/ABH_ADMIN/Dashboard/addUser" >
         <fieldset>
-                <h1 id="sectionName"><em>Add user</em> <br><br> </h1>  
+                <h1 class="sectionName"><em>Add user</em> <br><br> </h1>  
                 <p id="flashAlert"><%include ../messages.ejs %></p>
                 <h1 id="title" class="fs-title">User Info</h2>
              
@@ -94,7 +94,7 @@
 <% if(admin == 'userPassword') { %>
     <form id="msform" method="POST" action="/ABH_ADMIN/PassAdded" >
         <fieldset>
-                <h1 id="sectionName"><em>Create Password</em> <br><br> </h1>  
+                <h1 class="sectionName"><em>Create Password</em> <br><br> </h1>  
                 
                 <h1 id="title" class="fs-title">User Info</h2>
                     
@@ -151,9 +151,9 @@
 <% if(admin == 'removeUser') { %>
     <form id="msform" method="POST" action="/ABH_ADMIN/Dashboard/removeUser">
         <fieldset>   
-            
-            <div class= 'flashAlerts'><p><%include ../messages.ejs %></p></
-                  <h1 id="sectionName"><em>Remove User</em> <br><br> </h1>
+            <h1 class="sectionName"><em>Remove User</em> <br><br> </h1>
+            <div class= 'flashAlerts'><p><%include ../messages.ejs %></p></div>
+                  
                   
                       
                   

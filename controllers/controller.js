@@ -261,7 +261,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
         ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE//////////
             app.get('/ABH_Purchase/Login', urlencodedParser, (req,res) =>{
-                res.render('purchase/login');
+                res.render('purchLogin');
                 
             });
 
@@ -289,7 +289,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                 }
                 // console.log(materials);
                  purchase = 'reqQuote';
-                 res.render('purchase/dashboard',{purchase,materials});
+                 res.render('purchDashboard',{purchase,materials});
            
             })
         });
@@ -393,7 +393,7 @@ app.get('/', urlencodedParser,(req,res) =>{
            
            
             purchase = 'modVend';
-            res.render('purchase/dashboard',{purchase,vendorName});
+            res.render('purchDashboard',{purchase,vendorName});
             }).catch();
         });
 
@@ -433,7 +433,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                         tempMaterials.push(vendor.Material[i]);
                     }
 
-                res.render('purchase/dashboard', {purchase, vendNam,repNam,website,tempMaterials ,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry});
+                res.render('purchDashboard', {purchase, vendNam,repNam,website,tempMaterials ,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry});
                 }
             })
             
@@ -581,7 +581,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
         app.get('/ABH_Purchase/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
             purchase = 'addVend';
-            res.render('purchase/dashboard',{purchase});
+            res.render('purchDashboard',{purchase});
             
         });
 
@@ -675,7 +675,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                 else{
                    purchase = 'addVend'
                     errors.push({msg :'Vendor is already in the Database if you want to modify vendor go to Modify Vendor Info Page'});
-                    res.render('purchase/dashboard',{errors,purchase})
+                    res.render('purchDashboard',{errors,purchase})
                     errors.pop();
                     console.log(data);
                     
@@ -714,7 +714,7 @@ app.get('/', urlencodedParser,(req,res) =>{
     
                                         //login
         app.get('/ABH_Admin/Login', (req,res)=>{
-            res.render('admin/login');
+            res.render('adminLogin');
         });
 
                                         //login post
@@ -732,7 +732,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                                         // Dashboard
         app.get('/ABH_ADMIN/Dashboard',adminEnsureAuthenticated,(req,res) =>{
             admin = 'dashboard';
-            res.render('admin/dashboard', {admin});
+            res.render('adminDashboard', {admin});
         });
 
         
@@ -749,7 +749,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
             admin = 'addUser';
 
-            res.render('admin/dashboard',{errors,admin,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
+            res.render('adminDashboard',{errors,admin,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
             console.log(firstName, lastName,user_name, Email, department, cell);
         });
 
@@ -794,7 +794,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             console.log('Employee Profile Saved');
                             
                              admin = 'userPassword';
-                             res.render('admin/dashboard',{admin,user_name : user_name});
+                             res.render('adminDashboard',{admin,user_name : user_name});
                         
                             }
                         });     
@@ -804,7 +804,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                 else{
                     admin = 'addUser';
                     errors.push({msg :'Username is already taken please pick another'});
-                    res.render('admin/dashboard',{errors,admin,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
+                    res.render('adminDashboard',{errors,admin,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
                     errors.pop();
                     console.log(data);
                     
@@ -848,7 +848,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                                         //remove user get
         app.get('/ABH_ADMIN/Dashboard/removeUser',adminEnsureAuthenticated, (req,res) =>{
             admin = 'removeUser';
-            res.render('admin/removeUser',{admin});
+            res.render('adminDashboard',{admin});
         });
 
                                         //remove user post

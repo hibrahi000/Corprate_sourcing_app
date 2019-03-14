@@ -581,7 +581,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             
             
             //this is to update the vendor doc  
-            vendor.findOneAndUpdate(query,update, (err, doc)=>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
+            vendor.findOneAndUpdate(query,update, (err, material)=>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
             if(err) { 
                 console.log('err');
                 

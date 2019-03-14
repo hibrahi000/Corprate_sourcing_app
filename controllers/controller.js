@@ -172,6 +172,7 @@ module.exports = (app) =>{
 
                     vendor.findOne({VendorName:vendorName})
                     .then(vendor =>{
+                        if(key === null){
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
                                 if(isMatch && vendor.clicked === false){
@@ -181,9 +182,13 @@ module.exports = (app) =>{
                                     res.render( 'vendor/vendorFill',{qs : req.query}); 
                                 }
                                 else{
-                                    res.render('404Page',{reason : 'Your Time Has Expired'});
+                                    res.render('404Page');
                                 }
                             })
+                        }
+                        else{
+                            res.render('404Page');
+                        }
                     })
                     
 
@@ -534,7 +539,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
                 mat.findOne({MaterialName : matArray[i]}).then(material =>{ //search the material db for the current material in search 
                     console.log(material === null); //see if material shows up or not DEBUGGING 
-                        console.log (`matArray${i} was found?: ${material === null}`);
+                        console.log (`matArray${i} was found?: ${material !== null}`);
                     if(material === null){ // if material doesnt exist
                         // console.log(vendNam)
                         var createMaterial = mat({ //create the material and add vendors name into the list of vendors

@@ -1,26 +1,14 @@
 *,*::before, *::after{box-sizing: border-box;}
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-
-
 body{
-    /* margin: auto; */
-    /* background-image: url('../../images/bodyImg.png' ); */ 
+   
     background-image: url('/images/abh-background1.jpg');
     background-position: center right;
     font-size: 1rem;
-    /* border-style: none;
-    border-color: red; */
     zoom: 100%;
-    overflow-anchor: auto;
-
-    
+    overflow-anchor: auto;    
 }
-
-
-
-
-
 
 
 #welcome_logo_img{

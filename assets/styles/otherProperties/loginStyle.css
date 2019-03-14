@@ -80,7 +80,7 @@ label {
 
 .btn-outline-primary {
     border-color: #0DB8DE;
-    color: #0DB8DE;
+    color: #0DB8DE !important;
     border-radius: 0px;
     font-weight: bold;
     letter-spacing: 1px;
@@ -89,6 +89,7 @@ label {
 
 .btn-outline-primary:hover {
     background-color: #0DB8DE;
+    color:#1A2226 !important;
     right: 0px;
 }
 

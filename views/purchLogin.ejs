@@ -25,49 +25,14 @@
     </head>  
 
     <body >
-
-         <div class="mainHeader">
-
-        <div class="contact">
-        
-            <label class="address">131 Heartland Boulevard, Edgewood, New York, U.S </label>
-            <label class = "number">866-282-4729</label>
-
-       
-            <div class="link">
-                <a id="facebook"  class="linkSpacing"        href="https://www.facebook.com/abhpharma/n">Facebook</a>
     
-
-                <a id="twitter" class="linkSpacing" 
-                href="https://twitter.com/ABHPharma?lang=en">Twitter</a>
+            <%include ./partials/mainHeader.ejs %>
 
 
-
-                <a id="instagram" class="linkSpacing" href="https://www.instagram.com/abhpharma/?hl=en">Instagram</a>
- 
-
- 
-                <a id="google+" class="linkSpacing" 
-                href="https://plus.google.com/+Abhpharma">Google+</a>
-        
-
-       
-             <a id="linkedIn"class="linkSpacing"  href="https://www.linkedin.com/company/abh-pharma-inc/">LinkedIn</a>
-
-            </div>
-        
-        
-            <div class="logoLoc">
-                <a href="https://abhpharma.com"><img src="../images/headerv1.jpg"></a> 
-            </div>
-        </div>
-
-        </div>
-     
         <button onclick="location.href = '/'; " id="homeBtn" class="btn"><i class="fa fa-home"></i> Home</button>
         
         <div id="formLoc">
-           
+
           <form id="msform" method="POST" action="/Purchase_login">
                    <div class="welcome_page">
                        <h1 id="loginHeader">ABH Purchasing App Login</h1>

@@ -18,7 +18,7 @@ const Vendor = mongoose.model(
         default: null
     },
     Email: {
-        type:String,
+        type: String,
         default : null
     },
     Number: {

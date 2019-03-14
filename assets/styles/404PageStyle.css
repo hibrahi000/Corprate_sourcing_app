@@ -1,5 +1,6 @@
 *,*::before, *::after{box-sizing: border-box;}
 
-Body{
-  
+imageLimiter{
+  height: 100%;
+  width: 100%;
 }

@@ -38,30 +38,35 @@
 
                         <label for="ammount" id="ammountLbl" class="form-label" ><en>Requested Material Amount</en></label>
 
-                        <div class="input-group">
-                                <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                        
+                        <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                        
+                        
+                </div>
+
+                <div id=mesure class="form-group">
+                                <label class='form-label'><en>Measurements</en></label>
                                 <div class="input-group-append">
-                                <select name="units" id="unit" class="input-group-text" id="mesurement" placeholder = "Units" required>
-                                        <option value="Kilograms">Kilograms</option>
-                                        <option value="Pounds">Pounds</option>
+                                        <select name="units" id="unit" class="input-group-text" placeholder = "Units" required>
+                                                <option value="Kilograms">Kilograms</option>
+                                                <option value="Pounds">Pounds</option>
                                         </select>
                                 </div>
-                        </div>
+                </div>                
 
-                        </div>
 
-                        <div>
-                                <label for="tPrice" id="tPriceLbl" class="form-label" ><en>Target Price</en></label>
+                <div>
+                        <label for="tPrice" id="tPriceLbl" class="form-label" ><en>Target Price USD</en></label>
 
-                        </div>
+                </div>
 
                 <div id="tPrice" class="input-group">
                         
                         <input name="price" id="tPrice" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
                         
-                        <div class="input-group-append">
-                        <span class="input-group-text">$(USD)</span>
-                        </div>
+                        
+                        
+                        
                 </div>
 
                 <div id="rushOrder" class="glowing">

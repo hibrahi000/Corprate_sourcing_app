@@ -159,36 +159,41 @@ module.exports = (app) =>{
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
                     const{vendorName,key} = req.query;
-                
+                    console.log(vendorName);
+                    console.log(req.query);
+                   
                     function resetVendorKey(){
                         bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findByIdAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
                         })
                         )
                     }
 
                     vendor.findOne({VendorName:vendorName})
                     .then(vendor =>{
-                        if(key === null){
+                        
+                        if(key !== null){
+                            dbVendKey = vendor.key;
+                            console.log('printin' +key);
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
                                 if(isMatch && vendor.clicked === false){
-                                    let time =  1000   *   60   * 60   *  2     *  2;
+                                    let time =  1000   *   20   * 1   *   1    *  1;
                                             //miliSec    sec     min    hours     days    
                                     setTimeout(resetVendorKey,time);                  
                                     res.render( 'vendor/vendorFill',{qs : req.query}); 
                                 }
-                                else{
-                                    res.render('404Page');
+                                else {
+                                    res.render('404Page');    
                                 }
                             })
                         }
-                        else{
-                            res.render('404Page');
-                        }
+                        
+
+                        
                     })
                     
 
@@ -328,14 +333,14 @@ app.get('/', urlencodedParser,(req,res) =>{
 
         app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
             const {material,reqType,ammount,units,price,rushOrder,notes} = req.body;
-            console.log(material);
+            console.log(req.body);
             vendor.find({Material : material}).then(vendors =>{
-                var vendorContact = [];
+                let vendorContact = [];
                 for(let i =0; i< vendors.length; i++){
                     vendorContact.push(vendors[i].Email);
                 }
                 console.log('------------------');
-                console.log(vendorContact)
+                console.log(vendors)
           
                 for(let i = 0; i< vendorContact.length; i++){
                     var tempKey = Math.random().toString(36).slice(-8);
@@ -343,12 +348,12 @@ app.get('/', urlencodedParser,(req,res) =>{
                     bcrypt.hash(tempKey, salt, (err,hash) =>{
                         if(err) throw err;
                         hashKey = hash;
-                        vendor.findByIdAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch(err);
+                        vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).then(console.log(tempKey)).catch() 
                     })
                     )
-                    vendor.find({Email :vendorContact[i]}).then(vendor =>{
-                        const vend = vendor[0];
-                      var vendorName = vend.VendorName;
+                    vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
+                        const vend = vendor;
+                        var vendorName = vend.VendorName;
                          console.log(vend.VendorName);
                          var shipCompName = vend.shipCompName;
                          console.log(shipCompName);
@@ -404,7 +409,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             
 
                             <br><br>
-                           <a href = "http://localhost:3000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}$shipClose=${shipClose}$vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
+                           <a href = "http://localhost:5000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}&shipClose=${shipClose}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
                             `
                         };
 
@@ -412,7 +417,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             if(err)
                             console.log('Couldnt send email' +err)
                             else
-                            console.log(info);  
+                            console.log('starting info ' +info);  
                             req.flash('success_msg',`Request Has Been Sent`);
                             res.redirect('/ABH_Purchase/Dashboard');
                         });
@@ -420,7 +425,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             }
               
               
-            })
+            }).catch()
             
         });
 
@@ -613,7 +618,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             var matArray = new Array();
             
             matArray = matSup.split(',');
-
+            console.log(matArray);
             for(let i =0; i < matArray.length; i++){//This is material update when created
                 mat.findOne({MaterialName : matArray[i]}).then(material =>{
                     console.log(material === null);
@@ -673,7 +678,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             Number : vendNum,
                             Website : website,
                             Admin : false,
-                            Material : matSup,
+                            Material : matArray,
                             shipCompName : shipCompNam,
                             shipAddress1 : shipAddress1,
                             shipAddress2 : shipAddress2,

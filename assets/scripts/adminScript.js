@@ -58,5 +58,5 @@ $xBar.click(function() {
   };
 
 
-  $('.alert').alert(close)
+
 

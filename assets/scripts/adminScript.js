@@ -53,10 +53,5 @@ $xBar.click(function() {
 });
 
 
-   $('warningx').onclick = () => {
-    $('warning').slideUp('slow');
-  };
-
-
 
 

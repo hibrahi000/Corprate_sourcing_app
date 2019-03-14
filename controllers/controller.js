@@ -36,11 +36,8 @@ var vendor = require('./models/Vendor').Vendor;
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
-const vend_name = 'test';
-const subject = `ABH Invoice From RECIEVED: FROM: ${vend_name}`;
 
-var abhRequest = '12 Orders Of 50 Kilograms';
-var material = 'Alpha GPC 50%';
+
 
 
 
@@ -161,7 +158,7 @@ module.exports = (app) =>{
                     const{vendorName,key} = req.query;
                     console.log(vendorName);
                     console.log(req.query);
-                   
+                    console.log(key !== null);
                     function resetVendorKey(){
                         bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
@@ -176,7 +173,7 @@ module.exports = (app) =>{
                     .then(vendor =>{
                         
                         if(key !== null){
-                            dbVendKey = vendor.key;
+                           let dbVendKey = vendor.key;
                             console.log('printin' +key);
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
@@ -899,7 +896,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     else{
                     //match password
                     bcrypt.compare(password1, empl.Password, (err, isMatch) =>{
-                        if(err) throw err;
+                        if(err) console.log(err);
 
                         if(isMatch){
                                 employee.findOneAndDelete({Username : username}).then(
@@ -917,6 +914,66 @@ app.get('/', urlencodedParser,(req,res) =>{
             })
             .catch(err => console.log(err));
         });
+
+
+
+
+        
+        app.get('/ABH_ADMIN/Dashboard/removeVendor', adminEnsureAuthenticated,(req,res) =>{
+            
+            vendor.find({}).then(vendor =>{
+                // console.log(material[1].MaterialName);
+                  let vendors = new Array(); 
+                for (let i = 0; i < vendor.length; i++) {
+                    vendors.push(vendor[i].VendorName);
+                }
+                mat.find({}).then(mat =>{
+                    console.log(mat);
+                })
+                admin = 'removeVendor';
+                res.render('adminDashboard',{admin,vendors})
+            });
+
+        });
+        app.post('/ABH_ADMIN/Dashboard/removeVendor',urlencodedParser,(req,res) =>{
+            const {vendorName} = req.body;
+
+            vendor.findOne({VendorName : vendorName}).then(vend =>{
+                    let vendMaterial = vend.Material;
+                    console.log(vendMaterial[1]);
+                    for(let i =0; i < vendMaterial.length; i++){
+                        mat.findOne({MaterialName : vendMaterial[i]}).then(material =>{
+                            console.log(material);
+                            let tempVendArr = material.Vendors;
+                            let index = tempVendArr.indexOf(vendorName);
+                            let newVendArr = tempVendArr.splice(index,1)
+                            material.Vendors = newVendArr;
+                            mat.findOneAndUpdate({MaterialName : vendMaterial[i]},{Vendors:newVendArr}).then(material =>{
+                                console.log('material updated');
+                                console.log(material.Vendors);
+                                if(material.Vendors = null){
+                                    // mat.findOneAndDelete({MaterialName:vendMaterial[i]}).then(console.log(vendMaterial[i]+ "didnt have anymore vendors so it had been deleted"));
+                                }
+                            }).catch();
+                            console.log('removed vendor from material');                            
+                        })
+                    }
+                    vendor.findOneAndDelete({VendorName : vendorName}).then(()=>{
+                        console.log('Vendor has been deleted');
+                        req.flash('success_msg','Vendor Has been removed from Data Base');
+                        res.redirect('/ABH_ADMIN/Dashboard/removeVendor');
+                    }).catch();
+
+            })
+
+
+
+        });
+
+
+
+
+
 
                                         //admin Logout
         app.get('/ABH_ADMIN/logout',(req,res) =>{

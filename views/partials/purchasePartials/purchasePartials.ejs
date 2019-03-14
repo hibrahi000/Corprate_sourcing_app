@@ -39,7 +39,7 @@
                         <label for="ammount" id="ammountLbl" class="form-label" ><en>Requested Material Amount</en></label>
 
                         
-                        <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                        <input name="ammount" id="ammount" type="number" min="0"  class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
                         
                         
                 </div>
@@ -62,7 +62,7 @@
 
                 <div id="tPrice" class="input-group">
                         
-                        <input name="price" id="tPrice" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
+                        <input name="price" id="tPrice" type="number" min="0"  class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn" placeholder="(Optional)">
                         
                         
                         
@@ -108,11 +108,11 @@
                 
                 <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" / >
 
-                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" / required>
+                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" pattern="^\S+$" title="Make Sure there are no Spaces after the commas" / required>
         
                 <input type="email" class="inputField" id="vendEmailIn" name="vendEmail" placeholder="Vendor Email" / required>
                 
-                <input type="number" class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" / required>
+                <input type="number" min="0"  class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" / required>
                     
                
                 
@@ -128,7 +128,7 @@
                 
                 <input class='addInput'  name="shipState" placeholder="State / Province / Region" id="state" type="text" />
         
-                <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" />
+                <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" min="0"  />
         
                 <input class='addInput' name="shipCountry"  id="country" placeholder="Country" type="text" />
 
@@ -188,14 +188,14 @@
                         <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" value='<%=website%>'/>
                         
                         <h5 for="matSupIn"  class="form-label" ><en>Material Supplied</en></h5>
-                        <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied"value='<%=matSup%>'>
+                        <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied"value='<%=matSup%>' pattern="^\S+$" title="Make Sure there are no Spaces after the commas">
                        
                         
                         <h5 for="vendEmailIn"  class="form-label" ><en>Vendor Email</en></h5>
                         <input type="email" class="inputField" id="vendEmailIn" name="vendEmail" placeholder="Vendor Email" value='<%=vendEmail%>'/>
                         
                         <h5 for="vendNumIn"   class="form-label" ><en>Contact Number</en></h5>
-                        <input type="number" class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" value='<%=vendNum%>'/>
+                        <input type="number" min="0"  class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" value='<%=vendNum%>'/>
                         
                         <h5 for="shipCompNam"  class="form-label" ><en>Shipping Company Name</en></h5>
                         <input class='addInput' name="shipCompNam" placeholder="Shipping Company Name" id="shipCompNam" type="text" value='<%=shipCompNam%>'/>
@@ -213,7 +213,7 @@
                         <input class='addInput'  name="shipState" placeholder="State / Province / Region" id="state" type="text" value='<%= shipState%>'/>
                         
                         <h5 for="zip"  class="form-label" ><en>ZipCode</en></h5>
-                        <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" value='<%= shipZip%>'/>
+                        <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" min="0"   value='<%= shipZip%>'/>
                         
                         <h5 for="country"  class="form-label" ><en>Country</en></h5>
                         <input class='addInput' name="shipCountry"  id="country" placeholder="Country" type="text" value='<%= shipCountry%>'/>

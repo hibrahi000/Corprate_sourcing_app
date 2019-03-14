@@ -78,6 +78,7 @@
                 name="cell" 
                 placeholder="Cell Phone Number"
                 value="<%= cell %>"
+                min="0"
                 required
                 />
 
@@ -174,4 +175,35 @@
               </fieldset>
          
       </form>
+<%}%>
+
+
+<% if(admin == 'removeVendor') { %>
+  <form id="msform" method="POST" action="/ABH_ADMIN/Dashboard/removeVendor">
+      <fieldset>   
+          <h1 class="sectionName"><em>Erase Vendor</em> <br><br> </h1>
+          <div class= 'flashAlerts'><p><%include ../messages.ejs %></p></div>
+                
+                
+                    
+                
+                  <h1 id="title" class="fs-title">Vendor Info</h2>
+            
+                
+                <input type="text" class="inputField" id="vendor_name" name="vendorName" list='vendList' placeholder="Vendor Name" required/>
+                <datalist id="vendList">
+                    <% for(let i =0; i < vendors.length; i++){ %>
+                            <option value= "<%- vendors[i] %>" > 
+                       
+                    <% } %>
+            </datalist>
+
+
+                <div id="nxtBtn">
+                <button type="submit"  name="next" id="formComplete"  ><span>Erase  </span></button>
+                </div>
+            
+            </fieldset>
+       
+    </form>
 <%}%>

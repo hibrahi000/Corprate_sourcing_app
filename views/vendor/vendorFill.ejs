@@ -58,7 +58,7 @@
                                     <label for="ammount" id="ammountLbl" class="form-label" ><en>Minimum Order Quantity</en></label>
 
                                     <div class="input-group">
-                                        <input name="ammount" id="ammount" type="number" class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
+                                        <input name="ammount" id="ammount" type="number" min="0"   class="form-control" aria-label="Text input with dropdown button" placeholder="Ex: 32" required>
                                         <div class="input-group-append">
                                             <select name="measurement" id="unit" class="input-group-text" 
                                             
@@ -81,7 +81,7 @@
 
                             <div id="Price" class="input-group" >
                                 
-                                <input id="Price" type="number" class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn"  
+                                <input id="Price" type="number" min="0"  class="form-control" aria-label="Amount (to the nearest dollar)" id="priceIn"  
                                 name="priceIn" placeholder="$(USD)">
                                 
                                 <div class="input-group-append">
@@ -212,7 +212,7 @@
                                 <div class="row three">
                                     <div class="zip">
                                         <label class='addLabel' for="zip">Zip / Postal Code</label>
-                                        <input class='addInput' name="shipZip"  value='<%=qs.shipZip%>' placeholder="" id="zip" type="number" />
+                                        <input class='addInput' name="shipZip"  value='<%=qs.shipZip%>' placeholder="" id="zip" type="number"min="0"   />
                                     </div>
                                     <div class="country">
                                         <label class='addLabel' for="country">Country</label>

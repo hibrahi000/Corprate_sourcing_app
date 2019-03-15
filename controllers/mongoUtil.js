@@ -331,21 +331,21 @@ console.log('begining addition to Vendor collection');
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////TESTING GROUNDS//////////////////////////////////////////////////////////////////////////////////////////////////
-var firstname = "test";
-var lastname = "test";
-var email = 'test@test.com';
-var cell = 1231231232;
-var department = 'test';
-var admin = false;
- var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
-var username = 'Hibrahi00';
-var password = '$2a$10$yI.peBzRZrXbVdSIVkBH0Oz6nAmBVeuJkQcKKZyFBm9qbzpQTwMRS';
-var mat = require('./models/Material').Material;
-// connectABHPharmaDB();
-var tempMaterials = ['TestMaterial']
-var matArray = [];
-var materialPop = [];
-var vendNam = 'TestVendor';
+// var firstname = "test";
+// var lastname = "test";
+// var email = 'test@test.com';
+// var cell = 1231231232;
+// var department = 'test';
+// var admin = false;
+//  var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
+// var username = 'Hibrahi00';
+// var password = '$2a$10$yI.peBzRZrXbVdSIVkBH0Oz6nAmBVeuJkQcKKZyFBm9qbzpQTwMRS';
+// var mat = require('./models/Material').Material;
+// // connectABHPharmaDB();
+// var tempMaterials = ['TestMaterial']
+// var matArray = [];
+// var materialPop = [];
+// var vendNam = 'TestVendor';
 
 
 
@@ -357,15 +357,33 @@ var vendNam = 'TestVendor';
 // let index =vendors.indexOf(vend)
 // console.log(index);
 
-var hashKey = '';
-bcrypt.genSalt(10, (err, salt) => 
-bcrypt.hash('TigerPass)&11', salt, (err,hash) =>{
-    if(err) throw err;
-    hashKey = hash;
-    console.log(hashKey); 
+// var hashKey = '';
+// bcrypt.genSalt(10, (err, salt) => 
+// bcrypt.hash('TigerPass)&11', salt, (err,hash) =>{
+//     if(err) throw err;
+//     hashKey = hash;
+//     console.log(hashKey); 
 
-})
-);
+// })
+// );
+
+
+
+// const string = 'ajkljsdal9,09a lsdks,';
+// let index = string.indexOf(',');
+// console.log(index)
+// if(string.charAt(index +1) === ' ' || string.charAt(index+1).match(/[a-z]/i)){
+//     console.log('we found a space')
+//     let newTempString =string.substring(index, string.length -1);
+
+    
+// }
+// mat.findOne({MaterialName : 'Alpha-GPC-50%'}).then(material =>{
+//     console.log(material.Vendors[0] === undefined)
+
+// });
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////Dev Notes Section//////////////////////////////////////////////////////////////////////////////////////////////////
 

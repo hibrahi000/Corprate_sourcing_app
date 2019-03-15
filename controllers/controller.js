@@ -58,7 +58,7 @@ function passwordENCRYPT(pass,username){
 
                 employee.findOneAndUpdate(query,update, (err, doc)=>{
                   if(err)  throw err;
-                  console.log(doc.Password);
+                //   console.log(doc.Password);
                   disconnectABHPharmaDB();
                 });
 
@@ -91,7 +91,7 @@ function disconnectABHPharmaDB(){
         .then(() => console.log('Disconnected From ABH Pharma DB.....'))
         .catch(err => console.log(err));
 }
-console.log("Authenticating");
+// console.log("Authenticating");
 var transporter = nodemailer.createTransport({
     // service: 'gmail',
     // auth: {
@@ -156,9 +156,9 @@ module.exports = (app) =>{
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
                     const{vendorName,key} = req.query;
-                    console.log(vendorName);
-                    console.log(req.query);
-                    console.log(key !== null);
+                    // console.log(vendorName);
+                    // console.log(req.query);
+                    // console.log(key !== null);
                     function resetVendorKey(){
                         bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
@@ -174,7 +174,7 @@ module.exports = (app) =>{
                         
                         if(key !== null){
                            let dbVendKey = vendor.key;
-                            console.log('printin' +key);
+                            // console.log('printin' +key);
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
                                 if(isMatch && vendor.clicked === false){
@@ -198,7 +198,7 @@ module.exports = (app) =>{
                 
                 app.post('/ABH_Invoice_Form', urlencodedParser, (req,res) =>{
 
-                    console.log(req.body);
+                    // console.log(req.body);
 
                     const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,notes} = req.body;
                     var DateInStock = dateInStock;
@@ -249,7 +249,7 @@ module.exports = (app) =>{
                         if(err)
                         console.log('Couldnt send email' +err)
                         else
-                        console.log(info);
+                        // console.log(info);
                         res.redirect('https://abhpharma.com/');
                     });
             
@@ -300,7 +300,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             });
 
             app.post('/Purchase_login', urlencodedParser, (req,res,next) =>{
-                console.log('recieved post req');
+                // console.log('recieved post req');
                 connectABHPharmaDB();    
                 passport.authenticate('purchPass', {
                     successRedirect : '/ABH_Purchase/Dashboard',
@@ -330,14 +330,14 @@ app.get('/', urlencodedParser,(req,res) =>{
 
         app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
             const {material,reqType,ammount,units,price,rushOrder,notes} = req.body;
-            console.log(req.body);
+            // console.log(req.body);
             vendor.find({Material : material}).then(vendors =>{
                 let vendorContact = [];
                 for(let i =0; i< vendors.length; i++){
                     vendorContact.push(vendors[i].Email);
                 }
                 console.log('------------------');
-                console.log(vendors)
+                // console.log(vendors)
           
                 for(let i = 0; i< vendorContact.length; i++){
                     var tempKey = Math.random().toString(36).slice(-8);
@@ -345,15 +345,15 @@ app.get('/', urlencodedParser,(req,res) =>{
                     bcrypt.hash(tempKey, salt, (err,hash) =>{
                         if(err) throw err;
                         hashKey = hash;
-                        vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).then(console.log(tempKey)).catch() 
+                        vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
                     })
                     )
                     vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
                         const vend = vendor;
                         var vendorName = vend.VendorName;
-                         console.log(vend.VendorName);
+                        //  console.log(vend.VendorName);
                          var shipCompName = vend.shipCompName;
-                         console.log(shipCompName);
+                        //  console.log(shipCompName);
                          var shipAddress1 = vend.shipAddress1;
                          const shipAddress2= vend.ShipAdress2;
                          const shipCity = vend.shipCity;
@@ -468,7 +468,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                 const shipState = vendor.shipState;
                 const shipZip = vendor.shipZip;
                 const shipCountry = vendor.shipCountry; 
-                   console.log(matSup);
+                //    console.log(matSup);
 
                     var tempMaterials = [];
                     for(let i =0; i < matSup.length; i++){
@@ -499,39 +499,39 @@ app.get('/', urlencodedParser,(req,res) =>{
             let emptyArr = [];
             let tMat = new Array()
             tMat = tempMaterials.split(',');
-            console.log('starting tMat  ' + tMat )
+            // console.log('starting tMat  ' + tMat )
 
-            console.log(tMat.length)
+            // console.log(tMat.length)
             let materialPop = new Array;
             for(let i =0; i< tMat.length; i++){ // compares the document from its origional state to the new modified state to see which materials were removed and stores in materialPop
-                        console.log(`does matArray include ${tMat[i]} : ${matArray.includes(tMat[i])}`);                    
+                        // console.log(`does matArray include ${tMat[i]} : ${matArray.includes(tMat[i])}`);                    
                     if(matArray.includes(tMat[i]) === false){
                         materialPop.push(tMat[i]);
 
                     }
                 }
-            console.log(materialPop[0] == null);
+            // console.log(materialPop[0] == null);
             if(materialPop[0] !== null){
                 for(let i =0; i < matArray.length; i++){  // this is for removal of vendor name from material doc or adds the vendor name to the material doc 
-                    console.log(materialPop);
-                    console.log(materialPop.length -1);
+                    // console.log(materialPop);
+                    // console.log(materialPop.length -1);
                     for(let i =0; i<materialPop.length; i++){ // looping through materialPop
-                        console.log('for loop 1 itteration '+ i)
+                        // console.log('for loop 1 itteration '+ i)
                         var matQuery = {MaterialName : materialPop[i]}; //sets query for current material from materialPop in db 
                         mat.findOne(matQuery).then(material =>{ //searches for the material in the db to pull doc back as 'material variable'
-                            console.log('found query '+ i)
+                            // console.log('found query '+ i)
                             var vendors = material.Vendors; 
-                            console.log(vendors);
-                            console.log(vendNam);
+                            // console.log(vendors);
+                            // console.log(vendNam);
                             var index =vendors.indexOf(vendNam) 
-                            console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
+                            // console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
                             if(index != -1){ //if it doesnt return -1 aka not found then ....
-                                console.log('found vendor'+ i)
-                                console.log(vendors[index]);
+                                // console.log('found vendor'+ i)
+                                // console.log(vendors[index]);
                                 let newVendors =vendors.splice(index); // takes the array of vendors and removes the value at the index aka the vendor name we want removed
-                                console.log(vendors);
+                                // console.log(vendors);
                                 mat.findOneAndUpdate(matQuery,{Vendors:newVendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
-                                    console.log(material.Vendors);
+                                    // console.log(material.Vendors);
                                 })
                                 .catch();
                             }
@@ -542,8 +542,8 @@ app.get('/', urlencodedParser,(req,res) =>{
                 
 
                     mat.findOne({MaterialName : matArray[i]}).then(material =>{ //search the material db for the current material in search 
-                        console.log(material === null); //see if material shows up or not DEBUGGING 
-                            console.log (`matArray${i} was found?: ${material !== null}`);
+                        // console.log(material === null); //see if material shows up or not DEBUGGING 
+                            // console.log (`matArray${i} was found?: ${material !== null}`);
                         if(material === null){ // if material doesnt exist
                             // console.log(vendNam)
                             var createMaterial = mat({ //create the material and add vendors name into the list of vendors
@@ -568,11 +568,11 @@ app.get('/', urlencodedParser,(req,res) =>{
                             }
                             if(!vendExist){ // if the vendor is not found then....
                                 mat.findOne({MaterialName : matArray[i]}).then(material =>{
-                                    console.log('vendor wasnt found so now we are adding');
+                                    // console.log('vendor wasnt found so now we are adding');
                                     let vendors = new Array();
                                     vendors = material.Vendors;
                                     vendors.push(vendNam);
-                                    console.log(vendors);
+                                    // console.log(vendors);
                                     mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
                                     .catch();    
                                 
@@ -604,24 +604,34 @@ app.get('/', urlencodedParser,(req,res) =>{
     });
 
         app.get('/ABH_Purchase/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
-            purchase = 'addVend';
-            res.render('purchDashboard',{purchase});
+            mat.find({}).then(material =>{
             
+                var materials = [];
+                // console.log(material.length);
+                for (let i = 0; i < material.length; i++) {
+                     materials.push(material[i].MaterialName);
+                }
+                
+                purchase = 'addVend';
+                // console.log(materials);
+                res.render('purchDashboard',{purchase,materials});
+            })
         });
 
         app.post('/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res,next) =>{
             const {vendNam, repName,website,matSup,vendEmail, vendNum,shipCompNam, shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipCountry,notes} = req.body;
       
             var matArray = new Array();
-            
-            matArray = matSup.split(',');
-            console.log(matArray);
+            let matArr = matSup.trim();
+            // console.log(matArr);
+            matArray = matArr.split(',');
+            // console.log(matArray);
             for(let i =0; i < matArray.length; i++){//This is material update when created
                 mat.findOne({MaterialName : matArray[i]}).then(material =>{
-                    console.log(material === null);
+                    // console.log(material === null);
                     // console.log(matArray[i]);
                     if(material === null){
-                        console.log(vendNam)
+                        // console.log(vendNam)
                         var createMaterial = mat({
                             MaterialName: matArray[i],
                             Vendors: [vendNam]
@@ -648,7 +658,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                                 let vendors = new Array();
                                 vendors = material.Vendors;
                                 vendors.push(vendNam);
-                                console.log(vendors);
+                                // console.log(vendors);
                                 mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
                                 .catch();    
                               
@@ -707,7 +717,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     errors.push({msg :'Vendor is already in the Database if you want to modify vendor go to Modify Vendor Info Page'});
                     res.render('purchDashboard',{errors,purchase})
                     errors.pop();
-                    console.log(data);
+                    // console.log(data);
                     
                 }
             });
@@ -750,7 +760,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                                         //login post
         app.post('/ADMIN_login', urlencodedParser, async (req,res,next) =>{ 
         
-            console.log('recieved post req');
+            // console.log('recieved post req');
             connectABHPharmaDB();    
             passport.authenticate('adminPass', {
                 successRedirect : '/ABH_ADMIN/Dashboard',
@@ -780,7 +790,7 @@ app.get('/', urlencodedParser,(req,res) =>{
             admin = 'addUser';
 
             res.render('adminDashboard',{errors,admin,firstName : firstName, lastName : lastName, user_name : user_name, Email: Email, department: department, cell : cell});
-            console.log(firstName, lastName,user_name, Email, department, cell);
+            // console.log(firstName, lastName,user_name, Email, department, cell);
         });
 
                                          // add user post
@@ -789,7 +799,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
             const { firstName, lastName,user_name, Email, department, cell } = req.body;
             var scheduel = ['9 to 5','9 to 5','9 to 5','9 to 5','9 to 5',]
-            console.log(req.body );
+            // console.log(req.body );
 
             
                     //Add User Profile then disconnect 
@@ -836,7 +846,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     errors.push({msg :'Username is already taken please pick another'});
                     res.render('adminDashboard',{errors,admin,firstName : firstName, lastName : lastName,user_name : user_name,Email: Email, department: department, cell : cell})
                     errors.pop();
-                    console.log(data);
+                    // console.log(data);
                     
                 }
             });
@@ -862,13 +872,13 @@ app.get('/', urlencodedParser,(req,res) =>{
                         throw err;
                     }
                     else{
-                        console.log(doc.Password);
+                        // console.log(doc.Password);
                         
                         
                         req.flash('success_msg',`You succesfully added your password to ${doc.FirstName} ${doc.LastName}'s profile`);
                         res.redirect('/ABH_ADMIN/Dashboard/')
 
-                        console.log(req.body);
+                        // console.log(req.body);
                     }
                 });
             }));
@@ -883,7 +893,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
                                         //remove user post
         app.post('/ABH_ADMIN/Dashboard/removeUser',urlencodedParser ,adminEnsureAuthenticated, (req,res) =>{
-            console.log(req.body);
+            // console.log(req.body);
             var {username, password1} = req.body;
             
             employee.findOne({Username : username})
@@ -927,9 +937,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                 for (let i = 0; i < vendor.length; i++) {
                     vendors.push(vendor[i].VendorName);
                 }
-                mat.find({}).then(mat =>{
-                    console.log(mat);
-                })
+               
                 admin = 'removeVendor';
                 res.render('adminDashboard',{admin,vendors})
             });
@@ -940,22 +948,29 @@ app.get('/', urlencodedParser,(req,res) =>{
 
             vendor.findOne({VendorName : vendorName}).then(vend =>{
                     let vendMaterial = vend.Material;
-                    console.log(vendMaterial[1]);
+                    // console.log(vendMaterial[0]);
                     for(let i =0; i < vendMaterial.length; i++){
                         mat.findOne({MaterialName : vendMaterial[i]}).then(material =>{
-                            console.log(material);
+                            // console.log('this is mat'+material);
                             let tempVendArr = material.Vendors;
+                            // console.log(tempVendArr[0])
                             let index = tempVendArr.indexOf(vendorName);
-                            let newVendArr = tempVendArr.splice(index,1)
-                            material.Vendors = newVendArr;
-                            mat.findOneAndUpdate({MaterialName : vendMaterial[i]},{Vendors:newVendArr}).then(material =>{
+                            // console.log(index)
+                            if(index !== -1){
+                                let newVendArr = tempVendArr.splice(index,1)
+                                // console.log(newVendArr);
+                                // console.log(tempVendArr); // we use this because when splicing it takes the value and returns it but the origional array has it removed
+                                mat.findOneAndUpdate({MaterialName : vendMaterial[i]},{Vendors:tempVendArr}).then(material =>{
                                 console.log('material updated');
-                                console.log(material.Vendors);
-                                if(material.Vendors = null){
-                                    // mat.findOneAndDelete({MaterialName:vendMaterial[i]}).then(console.log(vendMaterial[i]+ "didnt have anymore vendors so it had been deleted"));
-                                }
+                                    mat.findOne({MaterialName : vendMaterial[i]}).then( material =>{
+                                        // console.log(material.Vendors);
+                                        if(material.Vendors[0] === undefined){            
+                                                mat.findOneAndDelete({MaterialName:vendMaterial[i]}).then(console.log(vendMaterial[i]+ "didnt have anymore vendors so it had been deleted"));
+                                        }
+                                    })
                             }).catch();
                             console.log('removed vendor from material');                            
+                        }
                         })
                     }
                     vendor.findOneAndDelete({VendorName : vendorName}).then(()=>{

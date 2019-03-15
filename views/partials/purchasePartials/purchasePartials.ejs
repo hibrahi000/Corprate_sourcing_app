@@ -108,14 +108,19 @@
                 
                 <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" / >
 
-                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" pattern="^\S+$" title="Make Sure there are no Spaces after the commas" / required>
-        
+                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" pattern="^[^,]\S+[^,]$" title="Make Sure there are no Spaces after the commas and if there are spaces inside the material seperate by using hyphens ex Alpha-GPC-50% And No commas at the beggining or end of the list" list="matList" required/>
+                <datalist id="matList">
+                <% for(let i =0; i < materials.length; i++){ %>
+                        <option value= "<%- materials[i] %>" > 
+                   
+                <% } %>
+                </datalist>
                 <input type="email" class="inputField" id="vendEmailIn" name="vendEmail" placeholder="Vendor Email" / required>
                 
-                <input type="number" min="0"  class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number" / required>
+                <input type='number' min='0' max ='9999999999' class="inputField" id="vendNumIn" name="vendNum" placeholder="Contact Number without dashes"  required/>
                     
-               
-                
+        
+        
                 <label id="info">Shipping Location ** Not required</label>
 
                 <input class='addInput' name="shipCompNam" placeholder="Shipping Company Name" id="shipCompNam" type="text" />
@@ -128,7 +133,7 @@
                 
                 <input class='addInput'  name="shipState" placeholder="State / Province / Region" id="state" type="text" />
         
-                <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="number" min="0"  />
+                <input class='addInput' name="shipZip"   placeholder="Zip / Postal Code" id="zip" type="text" maxlength="5" />
         
                 <input class='addInput' name="shipCountry"  id="country" placeholder="Country" type="text" />
 
@@ -143,7 +148,6 @@
         </fieldset>
     </form>
 <%}%>
-
 
 <% if(purchase == 'modVend') { %>
     <form id="msform" method="POST" action="/Modify_Vendor" >           

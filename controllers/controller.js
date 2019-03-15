@@ -774,9 +774,9 @@ app.get('/', urlencodedParser,(req,res) =>{
                 }
                 else{
                    purchase = 'addVend'
-                    errors.push({msg :'Vendor is already in the Database if you want to modify vendor go to Modify Vendor Info Page'});
-                    res.render('purchDashboard',{errors,purchase})
-                    errors.pop();
+                    req.flash('error_msg','Vendor is already in the Database if you want to modify vendor go to Modify Vendor Info Page');
+                    res.redirect('/ABH_Purchase/Add_Vendor');
+               
                     // console.log(data);
                     
                 }

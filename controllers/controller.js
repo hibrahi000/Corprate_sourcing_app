@@ -298,8 +298,8 @@ module.exports = (app) =>{
                         console.log('Couldnt send email' +err)
                         else
                         null
-                        // console.log(info);
-                        // res.redirect('https://abhpharma.com/');
+                        console.log(info);
+                        res.redirect('https://abhpharma.com/');
                     });
                       
                     

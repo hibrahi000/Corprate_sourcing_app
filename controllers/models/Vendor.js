@@ -22,7 +22,7 @@ const Vendor = mongoose.model(
         default : null
     },
     Number: {
-        type : Number,
+        type : String,
         default : null
     },
     Website: {

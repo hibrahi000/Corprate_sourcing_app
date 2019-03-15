@@ -19,7 +19,7 @@ const bcrypt = require('bcryptjs');
 const key =require('./config/keys');
 const passport = require('passport');
 LocalStrategy = require('passport-local').Strategy;
-const jwt = require('jsonwebtoken');
+
 const adminEnsureAuthenticated = require('./config/auth').adminEnsureAuthenticated;
 const purchEnsureAuthenticated = require('./config/auth').purchEsureAuthenticated;
 errors = [];
@@ -33,6 +33,7 @@ var clicked = false;
 var employee = require('./models/Employee').Employee;
 var mat = require('./models/Material').Material;
 var vendor = require('./models/Vendor').Vendor;
+var receipt = require('/.models/QuoteReceipt').QuoteReceipt;
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
@@ -148,15 +149,8 @@ module.exports = (app) =>{
 //                                                                                                                     //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  function resetVendorKey(){
-                        bcrypt.genSalt(10, (err, salt) => 
-                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
-                            if(err) throw err;
-                            hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
-                        })
-                        )
-                    }
+
+
 
 
 //////////////////////ABH VENDOR SITE////////////////////////////////////////
@@ -167,7 +161,15 @@ module.exports = (app) =>{
                     // console.log(vendorName);
                     // console.log(req.query);
                     // console.log(key !== null);
-                  
+                    function resetVendorKey(){
+                        bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                        })
+                        )
+                    }
 
                     vendor.findOne({VendorName:vendorName})
                     .then(vendor =>{
@@ -244,7 +246,36 @@ module.exports = (app) =>{
                         `
                     };
                 
-                
+                    var createReceipt = receipt({
+                        VendorName: vendorName,
+                        Material: material,
+                        ABH_Request: abhRequest,
+                        Item_Code: itemCode,
+                        Ammount: ammount+" "+measurement,
+                        Price: priceIn,
+                        Price_Type: priceType,
+                        In_Stock: inStock,
+                        Date_In_Stock: dateInStock ,
+                        PayType:payType ,
+                        payTerms:payTerms ,
+                        ShippingDate :shippingDate,
+                        Shipping_Company_Name: shipCompName,
+                        Ship_Address1:shipAddress1 ,
+                        Ship_Address2: shipAddress2,
+                        Ship_City: shipCity,
+                        Ship_State :shipState,
+                        Ship_Zip:shipZip ,
+                        Ship_Country : 'USA',
+                        Notes: notes ,
+                    });
+                    
+                    createReceipt.save((err) =>{
+                        if(err){console.log(err)}
+                        else{
+                            console.log('Submission Recieved And Stored')
+                        }
+                    })
+
                     transporter.sendMail(mailOptions, function (err, info) {
                         if(err)
                         console.log('Couldnt send email' +err)
@@ -253,6 +284,7 @@ module.exports = (app) =>{
                         res.redirect('https://abhpharma.com/');
                     });
                       
+                    
                       bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
                             if(err) throw err;

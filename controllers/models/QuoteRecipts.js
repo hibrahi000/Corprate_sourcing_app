@@ -28,9 +28,9 @@
 
 const mongoose = require('mongoose');
 
-const QuoteRecipts = mongoose.model(
+const QuoteReceipt = mongoose.model(
    
-    'QuoteRecipts',  
+    'QuoteReceipt',  
     
     new mongoose.Schema({
     VendorName: {
@@ -109,14 +109,6 @@ const QuoteRecipts = mongoose.model(
         type: String,
         default : null
     },
-    Ship_Open:{
-        type: String,
-        default : null
-    },
-    Ship_Close :{
-        type: String,
-        default : null
-    },
     Notes: {
         type: String,
         default: null
@@ -125,6 +117,6 @@ const QuoteRecipts = mongoose.model(
         type: String,
         default : Date
     }
-}), 'QuoteRecipts');
+}), 'QuoteReceipt');
 
-module.exports = {QuoteRecipts};
+module.exports = {QuoteReceipt};

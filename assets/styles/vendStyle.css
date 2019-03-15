@@ -35,14 +35,15 @@ body{
 
 
 .formVendName{
-    background: transparent;
+    /* background: transparent;
     float: left !important;
     margin-left: -38% !important;
     border: none !important;
     margin-top: 6%;
     font-size: 30px !important;
     font-style: italic;
-    font-weight: bold;
+    font-weight: bold; */
+    display: none;
 }
 
 .formLoc{

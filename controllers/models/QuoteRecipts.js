@@ -50,7 +50,7 @@ const QuoteReceipt = mongoose.model(
         default : null
     },
     Ammount: {
-        type : Number,
+        type : String,
         default : null
     },
     Price: {

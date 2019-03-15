@@ -203,15 +203,25 @@ module.exports = (app) =>{
                     // console.log(req.body);
 
                     const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,notes} = req.body;
+                    console.log(req.body);
                     var DateInStock = dateInStock;
                     var InStock = inStock;
                     
                     const query = {VendorName : vendorName};
-                    const update = {Notes:notes,PayType:payType, ShippingDate :shippingDate,Shipping_Company_Name: shipCompName,Ship_Address1:shipAddress1 ,Ship_Address2: shipAddress2,Ship_City: shipCity,Ship_State :shipState,Ship_Zip:shipZip ,Ship_Country : 'USA',}
+                    const update = {
+                        PayType: payType,
+                        PayTerms: payTerms,
+                        shipCompName: shipCompName,
+                        shipAddress1: shipAddress1,
+                        shipAddress2: shipAddress2,
+                        shipCity: shipCity,
+                        shipState: shipState,
+                        shipZip : shipZip,
+                    }
 
                     vendor.findOneAndUpdate(query,update).then().catch();
 
-                    
+
                     if(InStock == 'on'){
                         InStock = 'Yes';
                         DateInStock = Date.now();
@@ -286,8 +296,9 @@ module.exports = (app) =>{
                         if(err)
                         console.log('Couldnt send email' +err)
                         else
+                        null
                         // console.log(info);
-                        res.redirect('https://abhpharma.com/');
+                        // res.redirect('https://abhpharma.com/');
                     });
                       
                     
@@ -452,10 +463,11 @@ app.get('/', urlencodedParser,(req,res) =>{
                             
 
                             <br><br>
-                           <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=USA&shipOpen=${shipOpen}&shipClose=${shipClose}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
+                           <a href = "http://localHost:5000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=USA&shipOpen=${shipOpen}&shipClose=${shipClose}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
                             `
                         };
-
+                        //localHost5000
+                        //app.abhpharma.com
                         transporter.sendMail(mailOptions, function (err, info) {
                             if(err)
                             console.log('Couldnt send email' +err)

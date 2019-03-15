@@ -148,7 +148,15 @@ module.exports = (app) =>{
 //                                                                                                                     //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+  function resetVendorKey(){
+                        bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                        })
+                        )
+                    }
 
 
 //////////////////////ABH VENDOR SITE////////////////////////////////////////
@@ -159,15 +167,7 @@ module.exports = (app) =>{
                     // console.log(vendorName);
                     // console.log(req.query);
                     // console.log(key !== null);
-                    function resetVendorKey(){
-                        bcrypt.genSalt(10, (err, salt) => 
-                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
-                            if(err) throw err;
-                            hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
-                        })
-                        )
-                    }
+                  
 
                     vendor.findOne({VendorName:vendorName})
                     .then(vendor =>{
@@ -252,6 +252,7 @@ module.exports = (app) =>{
                         // console.log(info);
                         res.redirect('https://abhpharma.com/');
                     });
+                        resetVendorKey();
             
                 }); 
 

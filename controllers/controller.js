@@ -33,7 +33,7 @@ var clicked = false;
 var employee = require('./models/Employee').Employee;
 var mat = require('./models/Material').Material;
 var vendor = require('./models/Vendor').Vendor;
-var receipt = require('/.models/QuoteReceipt').QuoteReceipt;
+var receipt = require('./models/QuoteRecipts').QuoteReceipt;
 var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';

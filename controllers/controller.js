@@ -178,7 +178,7 @@ module.exports = (app) =>{
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
                                 if(isMatch && vendor.clicked === false){
-                                    let time =  1000   *   20   * 1   *   1    *  1;
+                                    let time =  1000   *   60   * 60   *   24    *  2;
                                             //miliSec    sec     min    hours     days    
                                     setTimeout(resetVendorKey,time);                  
                                     res.render( 'vendor/vendorFill',{qs : req.query}); 
@@ -252,7 +252,14 @@ module.exports = (app) =>{
                         // console.log(info);
                         res.redirect('https://abhpharma.com/');
                     });
-                        resetVendorKey();
+                      
+                      bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                        })
+                        )
             
                 }); 
 
@@ -395,7 +402,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             Notes: ${notes}<br><br>
                             
 
-                            Attached to this email is a link that will allow you to send us your quote.
+                            Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
 
 
                             <br><br><br><br><br><br>
@@ -407,7 +414,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             
 
                             <br><br>
-                           <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&shipOpen=${shipOpen}&shipClose=${shipClose}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
+                           <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=USA&shipOpen=${shipOpen}&shipClose=${shipClose}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
                             `
                         };
 

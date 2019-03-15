@@ -108,7 +108,7 @@
                 
                 <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" / >
 
-                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" pattern="^[^,]\S+[^,]$" title="Make Sure there are no Spaces after the commas and if there are spaces inside the material seperate by using hyphens ex Alpha-GPC-50% And No commas at the beggining or end of the list" list="matList" required/>
+                <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied" pattern="^[^,]\S+[^,]$" title="Make Sure there are no Spaces after the commas and if there are spaces inside the material seperate by using hyphens ex Alpha-GPC-50% And No commas at the beggining or end of the list" list="matList" />
                 <datalist id="matList">
                 <% for(let i =0; i < materials.length; i++){ %>
                         <option value= "<%- materials[i] %>" > 

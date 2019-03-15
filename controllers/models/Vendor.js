@@ -33,11 +33,11 @@ const Vendor = mongoose.model(
         type : String,
         default : null
     },
-    payType :{
+    PayType :{
         type: String,
         default : null
     },
-    terms:{
+    PayTerms:{
         type: String,
         default : null
     },
@@ -66,14 +66,6 @@ const Vendor = mongoose.model(
         default : null
     },
      shipCountry:{
-        type: String,
-        default : null
-    },
-    shipOpen:{
-        type: String,
-        default : null
-    },
-    shipClose :{
         type: String,
         default : null
     },

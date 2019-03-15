@@ -205,7 +205,13 @@ module.exports = (app) =>{
                     const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,notes} = req.body;
                     var DateInStock = dateInStock;
                     var InStock = inStock;
+                    
+                    const query = {VendorName : vendorName};
+                    const update = {Notes:notes,PayType:payType, ShippingDate :shippingDate,Shipping_Company_Name: shipCompName,Ship_Address1:shipAddress1 ,Ship_Address2: shipAddress2,Ship_City: shipCity,Ship_State :shipState,Ship_Zip:shipZip ,Ship_Country : 'USA',}
 
+                    vendor.findOneAndUpdate(query,update).then().catch();
+
+                    
                     if(InStock == 'on'){
                         InStock = 'Yes';
                         DateInStock = Date.now();
@@ -257,7 +263,7 @@ module.exports = (app) =>{
                         In_Stock: inStock,
                         Date_In_Stock: dateInStock ,
                         PayType:payType ,
-                        payTerms:payTerms ,
+                        PayTerms:payTerms ,
                         ShippingDate :shippingDate,
                         Shipping_Company_Name: shipCompName,
                         Ship_Address1:shipAddress1 ,

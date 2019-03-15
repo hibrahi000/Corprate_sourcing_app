@@ -73,7 +73,7 @@ const QuoteReceipt = mongoose.model(
         type: String,
         default: null
     },
-    payTerms: {
+    PayTerms: {
         type: String,
         default: null
     },

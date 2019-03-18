@@ -17,7 +17,7 @@ require('./controllers/config/passport')(passport);
 
 
 // //setup template engine
-app.use(expressLayouts);
+// app.use(expressLayouts);
 app.set('view engine', 'ejs');
 
 

@@ -31,7 +31,10 @@ body{
     padding-top: 5%;
 }
 
-
+.flashAlerts{
+    float: left !important;
+   width: 100%;
+}
 
 #routeHeader, #direction{
     color: white;

@@ -157,26 +157,24 @@ module.exports = (app) =>{
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
-                    const{vendorName,key} = req.query;
+                    const{vendorName,key,newMaterial} = req.query;
                     // console.log(vendorName);
-                    // console.log(req.query);
+                    console.log(req.query);
                     // console.log(key !== null);
                     function resetVendorKey(){
                         bcrypt.genSalt(10, (err, salt) => 
-                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                        bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
                         })
                         )
                     }
-
-                    vendor.findOne({VendorName:vendorName})
-                    .then(vendor =>{
-                        
-                        if(key !== null){
-                           let dbVendKey = vendor.key;
-                            // console.log('printin' +key);
+                    console.log(key == '');
+                    if(key !== undefined && key !== '' && key !== null){
+                        vendor.findOne({VendorName:vendorName})
+                        .then(vendor =>{
+                         console.log('printin' +key);
                         bcrypt.compare(key,vendor.key)
                             .then(isMatch =>{
                                 if(isMatch && vendor.clicked === false){
@@ -189,12 +187,15 @@ module.exports = (app) =>{
                                     res.render('404Page');    
                                 }
                             })
-                        }
+                    
                         
 
                         
-                    })
-                    
+                         })
+                    } 
+                    else{
+                        res.render('404Page');
+                    }  
 
                 });
                 
@@ -202,11 +203,11 @@ module.exports = (app) =>{
 
                     // console.log(req.body);
 
-                    const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry,notes} = req.body;
+                    const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry,notes,newMaterial} = req.body;
                     console.log(req.body);
                     var DateInStock = dateInStock;
                     var InStock = inStock;
-                    
+                    var isNew = ''
                     const query = {VendorName : vendorName};
                     const update = {
                         PayType: payType,
@@ -222,6 +223,12 @@ module.exports = (app) =>{
 
                     vendor.findOneAndUpdate(query,update).then().catch();
 
+                    if(newMaterial === 'true'){
+                        isNew = 'YES'
+                    }
+                    else{
+                        isNew = 'NO'
+                    }
 
                     if(InStock == 'on'){
                         InStock = 'Yes';
@@ -236,7 +243,7 @@ module.exports = (app) =>{
                         subject: `${vendorName} Request Submission For ${material}`,
                         html: 
                         `
-                        
+                        NEW MATERIAL: ${isNew}    
                         Response from vendor: ${vendorName}<br><br>
                         Material: ${material}<br>
                         ABH Requested: ${abhRequest}<br><br>
@@ -301,15 +308,30 @@ module.exports = (app) =>{
                         console.log(info);
                         res.redirect('https://abhpharma.com/');
                     });
-                      
+                
                     
-                      bcrypt.genSalt(10, (err, salt) => 
-                        bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                    bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
                             vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
                         })
-                        )
+                    );
+
+                    if(isNew === 'YES'){
+                        mat.findOne({MaterialName:material}).then(material =>{
+                            let vendorList = [];
+                            for(let i =0; i < material.Vendors.length; i++){
+                                vendorList.push(material.Vendors[i])
+                            }
+                            vendorList.push(vendorName);
+                            mat.findOneAndUpdate({MaterialName : Material},{Vendors : vendorList});///// This is where we left off we need to find a way to test this maybe createing a testing database or somthing 
+                            
+                        })
+                    }
+                    else{
+
+                    }
             
                 }); 
 
@@ -387,100 +409,208 @@ app.get('/', urlencodedParser,(req,res) =>{
         });
 
         app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
-            const {material,reqType,ammount,units,price,rushOrder,notes} = req.body;
-            // console.log(req.body);
-            vendor.find({Material : material}).then(vendors =>{
-                let vendorContact = [];
-                for(let i =0; i< vendors.length; i++){
-                    vendorContact.push(vendors[i].Email);
-                }
-                console.log('------------------');
-                // console.log(vendors)
-          
-                for(let i = 0; i< vendorContact.length; i++){
-                    var tempKey = Math.random().toString(36).slice(-8);
-                    bcrypt.genSalt(10, (err, salt) => 
-                    bcrypt.hash(tempKey, salt, (err,hash) =>{
-                        if(err) throw err;
-                        hashKey = hash;
-                        vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
-                    })
-                    )
-                    vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
-                        const vend = vendor;
-                        var vendorName = vend.VendorName;
-                        //  console.log(vend.VendorName);
-                         var shipCompName = vend.shipCompName;
-                        //  console.log(shipCompName);
-                         var shipAddress1 = vend.shipAddress1;
-                         const shipAddress2= vend.ShipAdress2;
-                         const shipCity = vend.shipCity;
-                         const shipState = vend.shipState;
-                         const shipZip = vend.shipZip;
-                         const shipCountry = vend.shipCountry;
-                         
-                         
-                         var orderType = rushOrder;
-                         if(orderType = 'on'){
-                            orderType = 'Rush Order';
-                        }
-                        else{
-                            orderType = 'Order'
-                        }
-
-                        var targetPrice = price;
-                        if(targetPrice != ''){
-                            targetPrice = `Our target price would preferably be ${price} $(USD)`;
-                        }
-                      
-                    
-                        const mailOptions = {
-                            from: 'ABH-Pharma', // sender address
-                            to: vendorContact[i], // list of receivers
-                            subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
-                            html: 
-                            `
-                        
-                            Hello ${vendorName}, <br>
-                            <br><br>
-
-                            We at ABH Pharma have requested a quote for the following material: ${material}
-                            <br><br>
-
-                            ${targetPrice}<br>
-                            Notes: ${notes}<br><br>
-                            
-
-                            Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
-
-
-                            <br><br><br><br><br><br>
-
-                            We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
-
-                            <br><br>
-                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
-                            
-
-                            <br><br>
-                           <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
-                            `
-                        };
-                        //localHost5000
-                        //app.abhpharma.com
-                        transporter.sendMail(mailOptions, function (err, info) {
-                            if(err)
-                            console.log('Couldnt send email' +err)
-                            else
-                            console.log('starting info ' +info);  
-                            req.flash('success_msg',`Request Has Been Sent`);
-                            res.redirect('/ABH_Purchase/Dashboard');
-                        });
-                }).catch();
+            const {material,reqType,ammount,units,price,rushOrder,notes,newMat} = req.body;
+            let newMaterial =false;
+            if(newMat === 'on'){
+            newMaterial = true;
             }
-              
-              
+            console.log(newMaterial);
+          
+            vendor.find({Material : material}).then(vendors =>{
+                if(vendors[0] === null){
+                    if(newMaterial === false){
+                        req.flash('error_msg',`Error: Material Not Found <br> If this is a new material please check the New Material checkbox <br> WARNING: New material request will be sent to all vendors in the Database`);
+                        res.redirect('/ABH_Purchase/Dashboard');
+
+                    }
+                    else{
+                        vendor.find({}).then(vendors =>{
+                            let vendorContact = [];
+                            for(let i =0; i< vendors.length; i++){
+                                vendorContact.push(vendors[i].Email);
+                            }
+                            console.log('------------------');
+                            // console.log(vendors)
+                    
+                            for(let i = 0; i< vendorContact.length; i++){
+                                var tempKey = Math.random().toString(36).slice(-8);
+                                bcrypt.genSalt(10, (err, salt) => 
+                                bcrypt.hash(tempKey, salt, (err,hash) =>{
+                                    if(err) throw err;
+                                    hashKey = hash;
+                                    vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
+                                })
+                                )
+                                vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
+                                    const vend = vendor;
+                                    var vendorName = vend.VendorName;
+                                    //  console.log(vend.VendorName);
+                                    var shipCompName = vend.shipCompName;
+                                    //  console.log(shipCompName);
+                                    var shipAddress1 = vend.shipAddress1;
+                                    const shipAddress2= vend.ShipAdress2;
+                                    const shipCity = vend.shipCity;
+                                    const shipState = vend.shipState;
+                                    const shipZip = vend.shipZip;
+                                    const shipCountry = vend.shipCountry;
+                                    const newMaterial = true;
+                                    
+                                    var orderType = rushOrder;
+                                    if(orderType = 'on'){
+                                        orderType = 'Rush Order';
+                                    }
+                                    else{
+                                        orderType = 'Order'
+                                    }
+        
+                                    var targetPrice = price;
+                                    if(targetPrice != ''){
+                                        targetPrice = `Our target price would preferably be ${price} $(USD)`;
+                                    }
+                                
+                                
+                                    const mailOptions = {
+                                        from: 'ABH-Pharma', // sender address
+                                        to: vendorContact[i], // list of receivers
+                                        subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
+                                        html: 
+                                        `
+                                    
+                                        Hello ${vendorName}, <br>
+                                        <br><br>
+        
+                                        We at ABH Pharma have requested a quote for the following material: ${material}
+                                        <br><br>
+        
+                                        ${targetPrice}<br>
+                                        Notes: ${notes}<br><br>
+                                        
+        
+                                        Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
+        
+        
+                                        <br><br><br><br><br><br>
+        
+                                        We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+        
+                                        <br><br>
+                                        The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
+                                        
+        
+                                        <br><br>
+                                    <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMaterial}">ABH Invoice Form<a>
+                                        `
+                                    };
+                                    //localHost5000
+                                    //app.abhpharma.com
+                                    transporter.sendMail(mailOptions, function (err, info) {
+                                        if(err)
+                                        console.log('Couldnt send email' +err)
+                                        else
+                                        console.log('starting info ' +info);  
+                                        req.flash('success_msg',`Request Has Been Sent TO ALL VENDORS`);
+                                        res.redirect('/ABH_Purchase/Dashboard');
+                                    });
+                            }).catch();
+                        }
+                        })
+
+                    }
+                }
+                else{
+                    let vendorContact = [];
+                    for(let i =0; i< vendors.length; i++){
+                        vendorContact.push(vendors[i].Email);
+                    }
+                    console.log('------------------');
+                    // console.log(vendors)
+            
+                    for(let i = 0; i< vendorContact.length; i++){
+                        var tempKey = Math.random().toString(36).slice(-8);
+                        bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash(tempKey, salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
+                        })
+                        )
+                        vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
+                            const vend = vendor;
+                            var vendorName = vend.VendorName;
+                            //  console.log(vend.VendorName);
+                            var shipCompName = vend.shipCompName;
+                            //  console.log(shipCompName);
+                            var shipAddress1 = vend.shipAddress1;
+                            const shipAddress2= vend.ShipAdress2;
+                            const shipCity = vend.shipCity;
+                            const shipState = vend.shipState;
+                            const shipZip = vend.shipZip;
+                            const shipCountry = vend.shipCountry;
+                            
+                            
+                            var orderType = rushOrder;
+                            if(orderType = 'on'){
+                                orderType = 'Rush Order';
+                            }
+                            else{
+                                orderType = 'Order'
+                            }
+
+                            var targetPrice = price;
+                            if(targetPrice != ''){
+                                targetPrice = `Our target price would preferably be ${price} $(USD)`;
+                            }
+                        
+                        
+                            const mailOptions = {
+                                from: 'ABH-Pharma', // sender address
+                                to: vendorContact[i], // list of receivers
+                                subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
+                                html: 
+                                `
+                            
+                                Hello ${vendorName}, <br>
+                                <br><br>
+
+                                We at ABH Pharma have requested a quote for the following material: ${material}
+                                <br><br>
+
+                                ${targetPrice}<br>
+                                Notes: ${notes}<br><br>
+                                
+
+                                Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
+
+
+                                <br><br><br><br><br><br>
+
+                                We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+
+                                <br><br>
+                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
+                                
+
+                                <br><br>
+                            <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
+                                `
+                            };
+                            //localHost5000
+                            //app.abhpharma.com
+                            transporter.sendMail(mailOptions, function (err, info) {
+                                if(err)
+                                console.log('Couldnt send email' +err)
+                                else
+                                console.log('starting info ' +info);  
+                                req.flash('success_msg',`Request Has Been Sent`);
+                                res.redirect('/ABH_Purchase/Dashboard');
+                            });
+                    }).catch();
+                }
+                
+         }
             }).catch()
+            
+        
             
         });
 
@@ -734,7 +864,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                         console.log('begining addition to Vendor Collection');
                    
                     bcrypt.genSalt(10, (err, salt) => 
-                    bcrypt.hash('PharmaDebug)&11', salt, (err,hash) =>{
+                    bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                         if(err) throw err;
                         let hashKey = hash;
                         

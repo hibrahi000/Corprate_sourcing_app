@@ -383,8 +383,18 @@ console.log('begining addition to Vendor collection');
 
 // });
 
+// let util = ['a'];
+// let ind = util.indexOf("a");
+// console.log(ind);
+// let alpha =util.splice(ind,1)
+// console.log(util);
 
-
+material.findOne({MaterialName: 'Test-Material'}).then(matDoc =>{
+    console.log(matDoc.Vendors[0] === undefined);
+    if(matDoc.Vendors === null){
+       
+    }})
+        // mat.findOneAndDelete({MaterialName : material}).then('unsibscription caused this material to no be avalible anymore').catch();
 ////////////////////////////////////////////////////////////////////////////////////////////Dev Notes Section//////////////////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -22,7 +22,7 @@ LocalStrategy = require('passport-local').Strategy;
 
 const adminEnsureAuthenticated = require('./config/auth').adminEnsureAuthenticated;
 const purchEnsureAuthenticated = require('./config/auth').purchEsureAuthenticated;
-errors = [];
+let errors = [];
 var admin = 'dashboard';
 var purchase = 'dashboard';
 var userName = '';
@@ -170,7 +170,9 @@ module.exports = (app) =>{
                         })
                         )
                     }
-                    console.log(key == '');
+                    console.log(key === '');
+                    console.log(key === undefined);
+                    console.log(key === null );
                     if(key !== undefined && key !== '' && key !== null){
                         vendor.findOne({VendorName:vendorName})
                         .then(vendor =>{
@@ -186,12 +188,12 @@ module.exports = (app) =>{
                                 else {
                                     res.render('404Page');    
                                 }
-                            })
+                            }).catch(err);
                     
                         
 
                         
-                         })
+                         }).catch();
                     } 
                     else{
                         res.render('404Page');
@@ -335,6 +337,140 @@ module.exports = (app) =>{
             
                 }); 
 
+                app.get('/Do_Not_Supply' , urlencodedParser, (req,res) =>{
+                    const{vendorName,key,newMaterial, material} = req.query;
+                    console.log('recieved request to remove');
+                    console.log(vendorName);
+                    console.log(req.query);
+                    // console.log(key !== null);
+                    function resetVendorKey(){
+                        bcrypt.genSalt(10, (err, salt) => 
+                        bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
+                            if(err) throw err;
+                            hashKey = hash;
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                        })
+                        )
+                    }
+                    // console.log(key === '');
+                    // console.log(key === undefined);
+                    // console.log(key === null );
+                    if(key !== undefined && key !== '' && key !== null){
+                        
+                        
+                        vendor.findOne({VendorName:vendorName})
+                        .then(vendors =>{
+                            console.log('printin' +key);
+                            bcrypt.compare(key,vendors.key)
+                                .then(isMatch =>{
+                                    if(isMatch && vendors.clicked === false){
+                                    
+                                        if(newMaterial === 'No'){
+                                            console.log('new Material == No');
+                                            let vendMatList = []
+                                            for(let i =0; i< vendors.Material.length; i++){
+                                                vendMatList.push(vendors.Material[i]);
+                                            }
+                                            let matIndex = vendMatList.indexOf(material);
+                                            vendMatList.splice(matIndex, 1);
+                                            // console.log(vendors.Material.length);
+                                            console.log(vendMatList);
+                                            // console.log(matIndex);
+
+                                    
+                                            vendor.findOneAndUpdate({VendorName : vendorName}, { Material : vendMatList})
+                                            .then( vend =>{
+                                                mat.findOne({MaterialName : material}).then(matDoc =>{
+                                                let vendorList = [];
+                                                for(let i =0; i< matDoc.Vendors.length; i++){
+                                                    vendorList.push(matDoc.Vendors[i]);
+                                                }
+                                                let vendIndex = vendorList.indexOf(vendorName);
+                                                vendorList.splice(vendIndex,1);
+                                                mat.findOneAndUpdate({MaterialName : material},{Vendors: vendorList}).then(matDoc =>{
+                                                    console.log('Update Materials')
+
+                                                        console.log(matDoc);
+                                                        console.log(matDoc.Vendors[0] === undefined);
+                                                        mat.findOne({MaterialName : vendMaterial[i]}).then( material =>{
+                                                            // console.log(material.Vendors);
+                                                            
+                                                        if(matDoc.Vendors[0] === undefined){
+                                                            mat.findOneAndDelete({MaterialName : material}).then('unsibscription caused this material to no be avalible anymore').catch();
+                                                            const mailOptions = {
+                                                                from: vendorName, // sender address
+                                                                to: 'tech@abhpharma.com', // list of receivers
+                                                                subject: `${vendorName} Request Submission For ${material}`,
+                                                                html: 
+                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                                            }
+                                                            transporter.sendMail(mailOptions, function (err, info) {
+                                                                if(err)
+                                                                console.log('Couldnt send email' +err)
+                                                                else
+                                                                null
+                                                                // console.log(info);
+                                                                res.render('/vendor/materialRemoved');
+                                                            });
+                                                            
+    
+                                                        }
+                                                        else{
+                                                            const mailOptions = {
+                                                                from: vendorName, // sender address
+                                                                to: 'tech@abhpharma.com', // list of receivers
+                                                                subject: `${vendorName} Request Submission For ${material}`,
+                                                                html: 
+                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                                            }
+                                                            transporter.sendMail(mailOptions, function (err, info) {
+                                                                if(err)
+                                                                console.log('Couldnt send email' +err)
+                                                                else
+                                                                null
+                                                                // console.log(info);
+                                                                res.render('/vendor/materialRemoved');
+                                                            });
+                                                        }
+                                                    }).catch();
+                                                }).catch()
+                                            });
+                                            
+                                        }).catch();
+                                    }
+                                        else{
+                                            console.log('else');
+                                            const mailOptions = {
+                                                from: vendorName, // sender address
+                                                to: 'tech@abhpharma.com', // list of receivers
+                                                subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
+                                                html: 
+                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                            }
+                                            transporter.sendMail(mailOptions, function (err, info) {
+                                                if(err)
+                                                console.log('Couldnt send email' +err)
+                                                else
+                                                null
+                                                // console.log(info);
+                                                res.render('/vendor/materialRemoved');
+                                            });
+                                        }
+                                        resetVendorKey();
+                                        res.render( 'vendor/materialRemoved',{qs : req.query}); 
+                                    }
+                                    else {
+                                        res.render('404Page');    
+                                    }
+                                }).catch();
+                        }).catch();
+                    } 
+                    else{
+                        res.render('404Page');
+                    }  
+
+                });
+                
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,6 +484,7 @@ module.exports = (app) =>{
 
         
 app.get('/', urlencodedParser,(req,res) =>{
+
 
     res.render('welcome');
 });    
@@ -408,210 +545,196 @@ app.get('/', urlencodedParser,(req,res) =>{
             })
         });
 
-        app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
-            const {material,reqType,ammount,units,price,rushOrder,notes,newMat} = req.body;
-            let newMaterial =false;
+        app.post('/Material_Request', urlencodedParser, purchEnsureAuthenticated, (req,res,next) =>{
+            const{material, newMat} = req.body;
+            let newMaterial = 'No';
             if(newMat === 'on'){
+                newMaterial = 'Yes';
+            }
+            let dbQuery ='noSearch';
+
+            //allow user to add new materials but check for the following:
+
+
+            // 1) if new material is checked skip the vendor search and go straight to creating a new material 
+            console.log('new material')
+            console.log(newMat);
+            
+            if(newMaterial == 'Yes'){
+                mat.findOne({MaterialName: material}).then(dbMat =>{
+                    if(dbMat === null){
+                        var createMaterial = mat({ //create the material and add vendors name into the list of vendors
+                            MaterialName: material
+                            
+                        });
+                        createMaterial.save((err) =>{ //save the document for future use 
+                            if(err){console.log(err)}
+                            else{
+                            console.log('Material Added to Database');
+                            }
+                        });    
+                        purchase = 'submitReq';
+                        res.render('purchDashboard',{purchase,material,newMaterial,dbQuery})
+                    }
+                    else{
+                        req.flash('error_msg','This Material is already in the database so we cannot create a new one please uncheck New Material then proceed with your request')
+                        res.redirect('/ABH_Purchase/Dashboard');
+                    }
+                }).catch();
+            }
+            else{
+                mat.findOne({MaterialName: material}).then(mat =>{
+                   console.log('starting test on db search');
+                    console.log(mat === null);
+                    if(mat === null){
+                        console.log('now entering');
+                        req.flash('error_msg', 'We cannot find the material You searched for if you would like to send a request for a new material check New Material to Yes.   WARNING: this action will send a request to all of the vendors in the database');
+                        purchase = 'reqQuote';
+                        res.redirect('/ABH_Purchase/Dashboard');
+                    }
+                    else{
+                        let material = mat.MaterialName;
+                        dbQuery = 'search'
+                        purchase = 'submitReq';
+                        res.render('purchDashboard',{purchase,material,newMaterial,dbQuery})
+                    }
+                }).catch();
+            }
+
+     
+
+            //3) make it so that when the post request is made that it gets sent to all the vendors by setting the vendor search to be {} insetead of a specific material
+
+            //4) on the vendor side make sure that if a vendor responds to the form that they get added to the material db that they supply that material and also their profile gets updated as well
+
+            //5) if new material isnt checked then send the db query to equal the search for Material : material (send material)
+        });
+
+
+        // app.get('Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
+            
+            
+        // });
+
+        app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
+            const {material,reqType,ammount,units,price,rushOrder,notes,newMat,dbQuery} = req.body;
+            console.log(req.body);
+            let newMaterial =false;
+            if(newMat === 'Yes'){
             newMaterial = true;
             }
             console.log(newMaterial);
-          
-            vendor.find({Material : material}).then(vendors =>{
-                if(vendors[0] === null){
-                    if(newMaterial === false){
-                        req.flash('error_msg',`Error: Material Not Found <br> If this is a new material please check the New Material checkbox <br> WARNING: New material request will be sent to all vendors in the Database`);
-                        res.redirect('/ABH_Purchase/Dashboard');
-
-                    }
-                    else{
-                        vendor.find({}).then(vendors =>{
-                            let vendorContact = [];
-                            for(let i =0; i< vendors.length; i++){
-                                vendorContact.push(vendors[i].Email);
-                            }
-                            console.log('------------------');
-                            // console.log(vendors)
-                    
-                            for(let i = 0; i< vendorContact.length; i++){
-                                var tempKey = Math.random().toString(36).slice(-8);
-                                bcrypt.genSalt(10, (err, salt) => 
-                                bcrypt.hash(tempKey, salt, (err,hash) =>{
-                                    if(err) throw err;
-                                    hashKey = hash;
-                                    vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
-                                })
-                                )
-                                vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
-                                    const vend = vendor;
-                                    var vendorName = vend.VendorName;
-                                    //  console.log(vend.VendorName);
-                                    var shipCompName = vend.shipCompName;
-                                    //  console.log(shipCompName);
-                                    var shipAddress1 = vend.shipAddress1;
-                                    const shipAddress2= vend.ShipAdress2;
-                                    const shipCity = vend.shipCity;
-                                    const shipState = vend.shipState;
-                                    const shipZip = vend.shipZip;
-                                    const shipCountry = vend.shipCountry;
-                                    const newMaterial = true;
-                                    
-                                    var orderType = rushOrder;
-                                    if(orderType = 'on'){
-                                        orderType = 'Rush Order';
-                                    }
-                                    else{
-                                        orderType = 'Order'
-                                    }
-        
-                                    var targetPrice = price;
-                                    if(targetPrice != ''){
-                                        targetPrice = `Our target price would preferably be ${price} $(USD)`;
-                                    }
-                                
-                                
-                                    const mailOptions = {
-                                        from: 'ABH-Pharma', // sender address
-                                        to: vendorContact[i], // list of receivers
-                                        subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
-                                        html: 
-                                        `
-                                    
-                                        Hello ${vendorName}, <br>
-                                        <br><br>
-        
-                                        We at ABH Pharma have requested a quote for the following material: ${material}
-                                        <br><br>
-        
-                                        ${targetPrice}<br>
-                                        Notes: ${notes}<br><br>
-                                        
-        
-                                        Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
-        
-        
-                                        <br><br><br><br><br><br>
-        
-                                        We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
-        
-                                        <br><br>
-                                        The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
-                                        
-        
-                                        <br><br>
-                                    <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMaterial}">ABH Invoice Form<a>
-                                        `
-                                    };
-                                    //localHost5000
-                                    //app.abhpharma.com
-                                    transporter.sendMail(mailOptions, function (err, info) {
-                                        if(err)
-                                        console.log('Couldnt send email' +err)
-                                        else
-                                        console.log('starting info ' +info);  
-                                        req.flash('success_msg',`Request Has Been Sent TO ALL VENDORS`);
-                                        res.redirect('/ABH_Purchase/Dashboard');
-                                    });
-                            }).catch();
-                        }
-                        })
-
-                    }
-                }
-                else{
-                    let vendorContact = [];
-                    for(let i =0; i< vendors.length; i++){
-                        vendorContact.push(vendors[i].Email);
-                    }
-                    console.log('------------------');
-                    // console.log(vendors)
+            let query = {};
             
-                    for(let i = 0; i< vendorContact.length; i++){
-                        var tempKey = Math.random().toString(36).slice(-8);
-                        bcrypt.genSalt(10, (err, salt) => 
+            if(dbQuery === 'search'){
+                query = {Material : material};
+            }
+
+            console.log(query);
+
+            vendor.find(query).then(vendors =>{
+                let vendorContact = [];
+                for(let i =0; i< vendors.length; i++){
+                    vendorContact.push(vendors[i].Email);
+                }
+                console.log(vendorContact);
+                console.log('------------------');
+                console.log(vendors)
+                for(let i = 0; i< vendorContact.length; i++){
+                    var tempKey = Math.random().toString(36).slice(-8);
+                    // var tempKey = 'PharmaDebug)!54';
+                    bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash(tempKey, salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log('key has been updated for deployment')).catch() 
+                            vendor.findOneAndUpdate({Email :vendorContact[i]},{key:hashKey}).then(console.log(`key has been updated for deployment for ${vendorContact[i]}`)).catch() 
                         })
-                        )
-                        vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
-                            const vend = vendor;
-                            var vendorName = vend.VendorName;
-                            //  console.log(vend.VendorName);
-                            var shipCompName = vend.shipCompName;
-                            //  console.log(shipCompName);
-                            var shipAddress1 = vend.shipAddress1;
-                            const shipAddress2= vend.ShipAdress2;
-                            const shipCity = vend.shipCity;
-                            const shipState = vend.shipState;
-                            const shipZip = vend.shipZip;
-                            const shipCountry = vend.shipCountry;
-                            
-                            
-                            var orderType = rushOrder;
-                            if(orderType = 'on'){
-                                orderType = 'Rush Order';
-                            }
-                            else{
-                                orderType = 'Order'
-                            }
-
-                            var targetPrice = price;
-                            if(targetPrice != ''){
-                                targetPrice = `Our target price would preferably be ${price} $(USD)`;
-                            }
+                    )
+                    vendor.findOne({Email : vendorContact[i]}).then(vendor =>{
+                        const vend = vendor;
+                        var vendorName = vend.VendorName;
+                        //  console.log(vend.VendorName);
+                        var shipCompName = vend.shipCompName;
+                        //  console.log(shipCompName);
+                        var shipAddress1 = vend.shipAddress1;
+                        const shipAddress2= vend.ShipAdress2;
+                        const shipCity = vend.shipCity;
+                        const shipState = vend.shipState;
+                        const shipZip = vend.shipZip;
+                        const shipCountry = vend.shipCountry;
+                        const matNew = newMaterial;
                         
+                        var orderType = rushOrder;
+                        if(orderType = 'on'){
+                            orderType = 'Rush Order';
+                        }
+                        else{
+                            orderType = 'Order'
+                        }
+
+                        var targetPrice = price;
+                        if(targetPrice != ''){
+                            targetPrice = `Our target price would preferably be ${price} $(USD)`;
+                        }
+                    
+                    
+                        const mailOptions = {
+                            from: 'ABH-Pharma', // sender address
+                            to: vendorContact[i], // list of receivers
+                            subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
+                            html: 
+                            `
                         
-                            const mailOptions = {
-                                from: 'ABH-Pharma', // sender address
-                                to: vendorContact[i], // list of receivers
-                                subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
-                                html: 
-                                `
+                            Hello ${vendorName}, <br>
+                            <br><br>
+
+                            We at ABH Pharma have requested a quote for the following material: ${material}
+                            <br><br>
+
+                            ${targetPrice}<br>
+                            Notes: ${notes}<br><br>
                             
-                                Hello ${vendorName}, <br>
-                                <br><br>
 
-                                We at ABH Pharma have requested a quote for the following material: ${material}
-                                <br><br>
-
-                                ${targetPrice}<br>
-                                Notes: ${notes}<br><br>
-                                
-
-                                Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
+                            Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
 
 
-                                <br><br><br><br><br><br>
+                            <br><br><br><br><br><br>
 
-                                We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+                            We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
 
-                                <br><br>
-                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
-                                
+                            <br><br>
+                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
+                            
 
-                                <br><br>
-                            <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}">ABH Invoice Form<a>
-                                `
-                            };
-                            //localHost5000
-                            //app.abhpharma.com
-                            transporter.sendMail(mailOptions, function (err, info) {
-                                if(err)
-                                console.log('Couldnt send email' +err)
-                                else
-                                console.log('starting info ' +info);  
-                                req.flash('success_msg',`Request Has Been Sent`);
+                            <br><br>
+                            <a href = "http://localHost:5000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">ABH Invoice Form<a>
+
+
+                            <br><br> 
+
+                            If you do not supply this material and want to be removed from the email chain please click the following link <br>
+                            <a href = "http://localHost:5000/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe From ${material} Email Chain<a>
+                            `
+                        };
+                        //localHost:5000
+                        //app.abhpharma.com
+                        transporter.sendMail(mailOptions, function (err, info) {
+                            if(err)
+                            console.log('Couldnt send email' +err)
+                            else
+                                console.log('starting info ' +info); 
+                                if(newMaterial){
+                                    req.flash('success_msg',`Request Has Been Sent TO ALL VENDORS`);
+                                    res.redirect('/ABH_Purchase/Dashboard');
+                                } 
+                                else{
+                                req.flash('success_msg',`Request Has Been Sent To ${vendorName}`);
                                 res.redirect('/ABH_Purchase/Dashboard');
-                            });
-                    }).catch();
-                }
-                
-         }
-            }).catch()
-            
-        
-            
+                                }
+                        });
+                }).catch();
+            }
+            })
         });
 
         app.get('/ABH_Purchase/Modify_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{
@@ -684,6 +807,17 @@ app.get('/', urlencodedParser,(req,res) =>{
             var query = {VendorName: vendNam};  // takes the readOnly value of vendNam from purchasePartial and then applies it the query 
             
             var update = {VendorName : vendNam, RepNam : repNam, Website : website, Material: matArray, Email: vendEmail, Number:vendNum, shipCompNam: shipCompNam, shipAddress1 : shipAddress1, shipAddress2: shipAddress2, shipCity: shipCity, shipState: shipState, shipZip: shipZip,shipCountry: shipCountry};
+
+            //this is to update the vendor doc  
+            vendor.findOneAndUpdate(query,update).then(vendor =>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
+
+            req.flash('success_msg',`You succesfully updated Vendor: ${vendNam}'s Info`);
+            res.redirect('/ABH_Purchase/Modify_Vendor');
+
+        
+    
+             }).catch();
+        
             let emptyArr = [];
             let tMat = new Array()
             tMat = tempMaterials.split(',');
@@ -699,34 +833,35 @@ app.get('/', urlencodedParser,(req,res) =>{
                     }
                 }
             // console.log(materialPop[0] == null);
-            if(materialPop[0] !== null){
+           
                 for(let i =0; i < matArray.length; i++){  // this is for removal of vendor name from material doc or adds the vendor name to the material doc 
                     // console.log(materialPop);
                     // console.log(materialPop.length -1);
-                    for(let i =0; i<materialPop.length; i++){ // looping through materialPop
-                        // console.log('for loop 1 itteration '+ i)
-                        var matQuery = {MaterialName : materialPop[i]}; //sets query for current material from materialPop in db 
-                        mat.findOne(matQuery).then(material =>{ //searches for the material in the db to pull doc back as 'material variable'
-                            // console.log('found query '+ i)
-                            var vendors = material.Vendors; 
-                            // console.log(vendors);
-                            // console.log(vendNam);
-                            var index =vendors.indexOf(vendNam) 
-                            // console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
-                            if(index != -1){ //if it doesnt return -1 aka not found then ....
-                                // console.log('found vendor'+ i)
-                                // console.log(vendors[index]);
-                                let newVendors =vendors.splice(index); // takes the array of vendors and removes the value at the index aka the vendor name we want removed
+                    if(materialPop[0] !== null){
+                        for(let i =0; i<materialPop.length; i++){ // looping through materialPop
+                            // console.log('for loop 1 itteration '+ i)
+                            var matQuery = {MaterialName : materialPop[i]}; //sets query for current material from materialPop in db 
+                            mat.findOne(matQuery).then(material =>{ //searches for the material in the db to pull doc back as 'material variable'
+                                // console.log('found query '+ i)
+                                var vendors = material.Vendors; 
                                 // console.log(vendors);
-                                mat.findOneAndUpdate(matQuery,{Vendors:newVendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
-                                    // console.log(material.Vendors);
-                                })
-                                .catch();
-                            }
-                    
-                        })
+                                // console.log(vendNam);
+                                var index =vendors.indexOf(vendNam) 
+                                // console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
+                                if(index != -1){ //if it doesnt return -1 aka not found then ....
+                                    // console.log('found vendor'+ i)
+                                    // console.log(vendors[index]);
+                                    let newVendors =vendors.splice(index); // takes the array of vendors and removes the value at the index aka the vendor name we want removed
+                                    // console.log(vendors);
+                                    mat.findOneAndUpdate(matQuery,{Vendors:newVendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
+                                        // console.log(material.Vendors);
+                                    })
+                                    .catch();
+                                }
+                        
+                            })
+                        }
                     }
-                    
                 
 
                     mat.findOne({MaterialName : matArray[i]}).then(material =>{ //search the material db for the current material in search 
@@ -772,23 +907,14 @@ app.get('/', urlencodedParser,(req,res) =>{
                 
                 }
                 
-                //this is to update the vendor doc  
-                vendor.findOneAndUpdate(query,update).then(vendor =>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
+       
+              
+                    req.flash('success_msg',`${vendNam}'s Info was updated`);
+                        res.redirect('/ABH_Purchase/Modify_Vendor');
             
-                    req.flash('success_msg',`You succesfully updated Vendor: ${vendNam}'s Info`);
-                    res.redirect('/ABH_Purchase/Modify_Vendor');
-
                 
             
-                }).catch();
-
-
-                
-            }
-            else{
-                req.flash('error_msg',`No Updates Were Made To ${vendNam}'s Info`);
-                    res.redirect('/ABH_Purchase/Modify_Vendor');
-            }
+            
     });
 
         app.get('/ABH_Purchase/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res) =>{

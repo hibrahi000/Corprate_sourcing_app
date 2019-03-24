@@ -150,7 +150,6 @@ body{
   
     #msform .action-button:hover, #msform .action-button:focus {
         box-shadow: 0 0 0 2px white, 0 0 0 3px #7bc659;
-
     }
     /*headings*/
     .fs-title {
@@ -173,6 +172,10 @@ body{
         font-size: 18px;
         text-align: left;
         margin-left: 0;
+    }
+
+    #dateSelect{
+        display: none;
     }
 
     #itemCode{

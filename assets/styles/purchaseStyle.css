@@ -6,7 +6,7 @@
 body{
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
-    background-image: url('/images/abh-background1.jpg');
+    background-image: url('https://res.cloudinary.com/dqnylbrs2/image/upload/v1553004797/abh-background1.jpg');
     background-position: center right;
     font-size: 1rem;
     /* border-style: none;
@@ -68,10 +68,25 @@ body{
     border-radius: 3px;
     box-shadow: 0 0 15px 1px rgba(170, 164, 164, 0.863);
 }
+.reqTitle{
+    font-size: 24px;
+    color: aqua;
+    text-align: left;
+   
+}
+.inputLabel{
+    background-color: transparent !important;
+    color: rgb(100,200,400) !important;
+    font-size: 25px !important;
+    font-family: sans-serif !important;
+    border: none;
+    width: 65% !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0% !important;
 
+}
 
-
-.notShow{
+.noShow{
     display: none;
 }
 
@@ -117,12 +132,23 @@ body{
        
     }
 
-#title{
+
+
+.title{
     margin-bottom: 6%;
-    font-size: 23px;
+    font-size: 28px;
     color: aqua;
     text-align: left;
 }
+
+.infoBar h3{
+    display: flow-root;
+    color: aquamarine;
+}
+.infoBar{
+    margin-bottom: 5%
+}
+
     #msform {
         width: 50%;
         margin-top: 40% auto;
@@ -133,7 +159,8 @@ body{
         
     }
     #msform fieldset {
-        background-image: url('/images/formBackground.jpg');
+        /* background-image: url('/images/formBackground.jpg'); */
+        background-color: rgb(22, 41, 56);
         background-repeat: no-repeat;
         background-position: center;
         border: 0 none;

@@ -1,8 +1,7 @@
 
 .container{
-    background-image: url('/images/loginLogoMedium.jpg');
-    
-    /* background-repeat: no-repeat; */
+     background-image: url('https://res.cloudinary.com/dqnylbrs2/image/upload/v1553004563/loginLogoMedium.jpg'); 
+    background-repeat: no-repeat;
     width: 1000px;
     height:435px;
     border-radius: 20px;

@@ -137,13 +137,12 @@ var form = $('#msform');
 		});
 
 
-
-	$('#checkboxLook').on(function() {
-		
-				$("#dateSelect").slideUp();
-				$("#dateSelect").hide();
-				
+		$(document).ready(function(){
+			$('#checkboxID').change(function(){
+				if(this.checked)
+					$('#dateSelect').fadeOut('slow');
+				else
+					
+					$('#dateSelect').fadeIn('slow');
 			});
-
-
-		
+		});

@@ -246,8 +246,9 @@ module.exports = (app) =>{
                     else{
                         InStock = 'No';
                     }
+                    vendor.findOne(query).then(theVendor =>{
                     const mailOptionsVendForm = {
-                        from: vendorName, // sender address
+                        from: `${vendorName}, ${theVendor.Email} `,// sender address
                         to: 'tech@abhpharma.com', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
                         html: 
@@ -309,7 +310,7 @@ module.exports = (app) =>{
                         }
                     })
 
-                    transporter.sendMail(mailOptionsVendForm, function (err, info) {
+                    transporter.send(mailOptionsVendForm, function (err, info) {
                         if(err)
                         console.log('Couldnt send email' +err)
                         else
@@ -317,7 +318,7 @@ module.exports = (app) =>{
                         console.log(info);
                         res.redirect('https://abhpharma.com/');
                     });
-                
+                });
                     
                     bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
@@ -412,7 +413,7 @@ module.exports = (app) =>{
                                                                 html: 
                                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
                                                             }
-                                                            transporter.sendMail(mailOptionsVendUnsubscibeNewDel, function (err, info) {
+                                                            transporter.send(mailOptionsVendUnsubscibeNewDel, function (err, info) {
                                                                 if(err)
                                                                 console.log('Couldnt send email' +err)
                                                                 else
@@ -431,7 +432,7 @@ module.exports = (app) =>{
                                                                 html: 
                                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
                                                             }
-                                                            transporter.sendMail(mailOptionsVendUnsubscibeNew, function (err, info) {
+                                                            transporter.send(mailOptionsVendUnsubscibeNew, function (err, info) {
                                                                 if(err)
                                                                 console.log('Couldnt send email' +err)
                                                                 else
@@ -459,7 +460,7 @@ module.exports = (app) =>{
                                                 html: 
                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
                                             }
-                                            transporter.sendMail(mailOptionsUnsubscribe, function (err, info) {
+                                            transporter.send(mailOptionsUnsubscribe, function (err, info) {
                                                 if(err)
                                                 console.log('Couldnt send email' +err)
                                                 else
@@ -690,7 +691,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                     
                         const mailOptionsReq = {
-                            from: 'ABH-Pharma', // sender address
+                            from: 'ABH-Pharma <tech@abhpharma.com>', // sender address
                             to: vendorContact[i], // list of receivers
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
                             html: 
@@ -729,7 +730,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                         };
                         //localHost:5000
                         //app.abhpharma.com
-                        transporter.sendMail(mailOptionsReq, function (err, info) {
+                        transporter.send(mailOptionsReq, function (err, info) {
                             if(err)
                             console.log('Couldnt send email' +err)
                             else

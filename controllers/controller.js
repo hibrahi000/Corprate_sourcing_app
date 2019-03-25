@@ -15,6 +15,11 @@
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+
+var domain = 'mg.abhpharma.com';
+var mailgun = require('mailgun-js')({apiKey: '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0', domain: domain});
+
+
 const bcrypt = require('bcryptjs');
 const key =require('./config/keys');
 const passport = require('passport');
@@ -93,24 +98,26 @@ function disconnectABHPharmaDB(){
         .catch(err => console.log(err));
 }
 // console.log("Authenticating");
-var transporter = nodemailer.createTransport({
-    // service: 'gmail',
-    // auth: {
-    //     user: key.email_userName_authentication,
-    //     pass: key.email_password_authentication
-    // }
+// var transporter = nodemailer.createTransport({
+//     // service: 'gmail',
+//     // auth: {
+//     //     user: key.email_userName_authentication,
+//     //     pass: key.email_password_authentication
+//     // }
 
-    host: 'smtp.office365.com', // Office 365 server
-        port: 587,     // secure SMTP
-        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
-        auth: {
-            user: key.outlook_userName_authentication,
-            pass: key.outlook_password_authentication
-        },
-        tls: {
-            ciphers: 'SSLv3'
-        }
-});
+//     host: 'smtp.office365.com', // Office 365 server
+//         port: 587,     // secure SMTP
+//         secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
+//         auth: {
+//             user: key.outlook_userName_authentication,
+//             pass: key.outlook_password_authentication
+//         },
+//         tls: {
+//             ciphers: 'SSLv3'
+//         }
+// });
+
+let transporter = mailgun.messages();
 //validate user login username and password
 
 
@@ -239,7 +246,7 @@ module.exports = (app) =>{
                     else{
                         InStock = 'No';
                     }
-                    const mailOptions = {
+                    const mailOptionsVendForm = {
                         from: vendorName, // sender address
                         to: 'tech@abhpharma.com', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
@@ -302,7 +309,7 @@ module.exports = (app) =>{
                         }
                     })
 
-                    transporter.sendMail(mailOptions, function (err, info) {
+                    transporter.sendMail(mailOptionsVendForm, function (err, info) {
                         if(err)
                         console.log('Couldnt send email' +err)
                         else
@@ -364,7 +371,7 @@ module.exports = (app) =>{
                             bcrypt.compare(key,vendors.key)
                                 .then(isMatch =>{
                                     if(isMatch && vendors.clicked === false){
-                                    
+                                        resetVendorKey();
                                         if(newMaterial === 'No'){
                                             console.log('new Material == No');
                                             let vendMatList = []
@@ -373,9 +380,9 @@ module.exports = (app) =>{
                                             }
                                             let matIndex = vendMatList.indexOf(material);
                                             vendMatList.splice(matIndex, 1);
-                                            // console.log(vendors.Material.length);
+                                            console.log(vendors.Material.length);
                                             console.log(vendMatList);
-                                            // console.log(matIndex);
+                                            console.log(matIndex);
 
                                     
                                             vendor.findOneAndUpdate({VendorName : vendorName}, { Material : vendMatList})
@@ -387,49 +394,50 @@ module.exports = (app) =>{
                                                 }
                                                 let vendIndex = vendorList.indexOf(vendorName);
                                                 vendorList.splice(vendIndex,1);
+                                                
                                                 mat.findOneAndUpdate({MaterialName : material},{Vendors: vendorList}).then(matDoc =>{
                                                     console.log('Update Materials')
 
                                                         console.log(matDoc);
                                                         console.log(matDoc.Vendors[0] === undefined);
-                                                        mat.findOne({MaterialName : vendMaterial[i]}).then( material =>{
-                                                            // console.log(material.Vendors);
+                                                        mat.findOne({MaterialName : material}).then( matDoc =>{
+                                                            console.log(material.Vendors);
                                                             
                                                         if(matDoc.Vendors[0] === undefined){
                                                             mat.findOneAndDelete({MaterialName : material}).then('unsibscription caused this material to no be avalible anymore').catch();
-                                                            const mailOptions = {
+                                                            const mailOptionsVendUnsubscibeNewDel = {
                                                                 from: vendorName, // sender address
                                                                 to: 'tech@abhpharma.com', // list of receivers
-                                                                subject: `${vendorName} Request Submission For ${material}`,
+                                                                subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
                                                                 html: 
-                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
                                                             }
-                                                            transporter.sendMail(mailOptions, function (err, info) {
+                                                            transporter.sendMail(mailOptionsVendUnsubscibeNewDel, function (err, info) {
                                                                 if(err)
                                                                 console.log('Couldnt send email' +err)
                                                                 else
                                                                 null
                                                                 // console.log(info);
-                                                                res.render('/vendor/materialRemoved');
+                                                                res.render('vendor/materialRemoved');
                                                             });
                                                             
     
                                                         }
                                                         else{
-                                                            const mailOptions = {
+                                                            const mailOptionsVendUnsubscibeNew = {
                                                                 from: vendorName, // sender address
                                                                 to: 'tech@abhpharma.com', // list of receivers
-                                                                subject: `${vendorName} Request Submission For ${material}`,
+                                                                subject: `${vendorName} Unsubscription For ${material}`,
                                                                 html: 
-                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
                                                             }
-                                                            transporter.sendMail(mailOptions, function (err, info) {
+                                                            transporter.sendMail(mailOptionsVendUnsubscibeNew, function (err, info) {
                                                                 if(err)
                                                                 console.log('Couldnt send email' +err)
                                                                 else
                                                                 null
                                                                 // console.log(info);
-                                                                res.render('/vendor/materialRemoved');
+                                                                res.render('vendor/materialRemoved');
                                                             });
                                                         }
                                                     }).catch();
@@ -437,27 +445,29 @@ module.exports = (app) =>{
                                             });
                                             
                                         }).catch();
-                                    }
+                                          }
                                         else{
+                                           
+                                            res.render( 'vendor/materialRemoved'); 
+
+
                                             console.log('else');
-                                            const mailOptions = {
+                                            const mailOptionsUnsubscribe = {
                                                 from: vendorName, // sender address
                                                 to: 'tech@abhpharma.com', // list of receivers
                                                 subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
                                                 html: 
                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
                                             }
-                                            transporter.sendMail(mailOptions, function (err, info) {
+                                            transporter.sendMail(mailOptionsUnsubscribe, function (err, info) {
                                                 if(err)
                                                 console.log('Couldnt send email' +err)
                                                 else
                                                 null
                                                 // console.log(info);
-                                                res.render('/vendor/materialRemoved');
+                                                res.render('vendor/materialRemoved');
                                             });
-                                        }
-                                        resetVendorKey();
-                                        res.render( 'vendor/materialRemoved',{qs : req.query}); 
+                                        }  
                                     }
                                     else {
                                         res.render('404Page');    
@@ -485,6 +495,7 @@ module.exports = (app) =>{
         
 app.get('/', urlencodedParser,(req,res) =>{
 
+   
 
     res.render('welcome');
 });    
@@ -678,7 +689,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                         }
                     
                     
-                        const mailOptions = {
+                        const mailOptionsReq = {
                             from: 'ABH-Pharma', // sender address
                             to: vendorContact[i], // list of receivers
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
@@ -718,7 +729,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                         };
                         //localHost:5000
                         //app.abhpharma.com
-                        transporter.sendMail(mailOptions, function (err, info) {
+                        transporter.sendMail(mailOptionsReq, function (err, info) {
                             if(err)
                             console.log('Couldnt send email' +err)
                             else

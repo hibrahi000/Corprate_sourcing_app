@@ -389,11 +389,32 @@ console.log('begining addition to Vendor collection');
 // let alpha =util.splice(ind,1)
 // console.log(util);
 
-material.findOne({MaterialName: 'Test-Material'}).then(matDoc =>{
-    console.log(matDoc.Vendors[0] === undefined);
-    if(matDoc.Vendors === null){
-       
-    }})
+
+// connectABHPharmaDB()
+// material.findOne({MaterialName: 'Test-Material'}).then(matDoc =>{
+//     console.log(matDoc.Vendors[0] === undefined);
+//     console.log(matDoc.Vendors)
+//     if(matDoc.Vendors[0] === undefined){
+//         console.log('hello')
+//     }})
+
+//     let vendorList = [];
+
+
+//     material.findOneAndUpdate({MaterialName : 'Test-Material'},{Vendors: vendorList}).then(matDoc =>{
+//         console.log('Update Materials')
+
+//             console.log(matDoc);
+//             console.log(matDoc.Vendors[0] === undefined);
+//             material.findOne({MaterialName : vendMaterial[i]}).then( material =>{
+//                 // console.log(material.Vendors);
+                
+//             if(matDoc.Vendors[0] === undefined){
+//                 mat.findOneAndDelete({MaterialName : material}).then('unsibscription caused this material to no be avalible anymore').catch();
+//             }
+//         })
+//     })
+
         // mat.findOneAndDelete({MaterialName : material}).then('unsibscription caused this material to no be avalible anymore').catch();
 ////////////////////////////////////////////////////////////////////////////////////////////Dev Notes Section//////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -126,7 +126,7 @@
 
                 <h1 id="sectionName"><em>Add Vendor</em> <br><br> </h1>
                 <% include ../messages.ejs%>
-                <h1 id="title" class="fs-title">Contact Info</h2>
+                <h1 class="title" class="fs-title">Contact Info</h2>
         
                 <input type="text" class="inputField" id="vendNamIn" name="vendNam" placeholder="Vendor Name" / required>
                 
@@ -180,7 +180,7 @@
         <fieldset>
         <h1 id="sectionName"><em>Modify Vendor Information</em> <br><br> </h1>
         <% include ../messages.ejs%>
-        <h1 id="title" class="fs-title">Vendor Name</h2>
+        <h1 class="title" class="fs-title">Vendor Name</h2>
 
         <input type="text" class="inputField" name="vendSearch" placeholder="Type Vendor Name you want to modify..." / equired list="vendList">
         <datalist id="vendList">
@@ -207,7 +207,7 @@
                 <fieldset>
                         
                         <input type="text" class="noShow" name="tempMaterials" value="<%= tempMaterials%>">
-                        <h1 id="title" class="fs-title">Specify</h1>
+                        <h1 class="title" class="fs-title">Specify</h1>
                         <h5 class="form-label" ><en>Vendor Name</en></h5>
                         <input type="text" class="inputField" id="vendNamIn" name="vendNam" placeholder="Vendor Name" readOnly value='<%=vendNam%>'/>
 

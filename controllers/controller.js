@@ -24,7 +24,7 @@ var testDomain = 'sandboxbea89a78a03645cdb62d1e7b3bf42301.mailgun.org';
 var testMailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
 
 
-var mailgun = require('mailgun-js')({apiKey: testMailKey, domain: testDomain});
+var mailgun = require('mailgun-js')({apiKey: mailKey, domain: domain});
 
 const bcrypt = require('bcryptjs');
 const key =require('./config/keys');

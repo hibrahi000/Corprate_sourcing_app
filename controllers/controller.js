@@ -720,13 +720,13 @@ app.get('/', urlencodedParser,(req,res) =>{
                             
 
                             <br><br>
-                            <a href = "http://localHost:5000/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">ABH Invoice Form<a>
+                            <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">ABH Invoice Form<a>
 
 
                             <br><br> 
 
                             If you do not supply this material and want to be removed from the email chain please click the following link <br>
-                            <a href = "http://localHost:5000/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe From ${material} Email Chain<a>
+                            <a href = "http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe From ${material} Email Chain<a>
                             `
                         };
                         //localHost:5000

@@ -255,7 +255,7 @@ module.exports = (app) =>{
                     vendor.findOne(query).then(theVendor =>{
                     const mailOptionsVendForm = {
                         from: `${vendorName} <${theVendor.Email}>`,// sender address
-                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<st-3-a7kw58ztv1@glockapps.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
+                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<ins-jiml3cyn@isnotspam.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
                         text:        `
                         NEW MATERIAL: ${isNew} <br>   
@@ -274,12 +274,13 @@ module.exports = (app) =>{
                         Shipping Date ${shippingDate}<br><br><br>
 
 
-                        Shipping Company Name:${shipCompName}<br>
-                        Shipping Company Address 1: ${shipAddress1}<br>
-                        Shipping Company Address 2: ${shipAddress2}<br>
-                        Shipping Company City: ${shipCity}<br>
-                        Shipping Company State: ${shipState}<br>
-                        Shipping Company Zip-Code: ${shipZip}<br>
+                        Shipping Company : <br>
+                        ${shipCompName}<br>
+                         ${shipAddress1}<br>
+                        ${shipAddress2}<br>
+                        ${shipCity}<br>
+                        ${shipState}<br>
+                         ${shipZip}<br>
                         
                         Notes left by ${vendorName} : <br> ${notes}.
 
@@ -307,12 +308,15 @@ module.exports = (app) =>{
                         Shipping Date ${shippingDate}<br><br><br>
 
 
-                        Shipping Company Name:${shipCompName}<br>
-                        Shipping Company Address 1: ${shipAddress1}<br>
-                        Shipping Company Address 2: ${shipAddress2}<br>
-                        Shipping Company City: ${shipCity}<br>
-                        Shipping Company State: ${shipState}<br>
-                        Shipping Company Zip-Code: ${shipZip}<br>
+                  
+
+                        Shipping Company : <br>
+                        ${shipCompName}<br>
+                         ${shipAddress1}<br>
+                        ${shipAddress2}<br>
+                        ${shipCity}<br>
+                        ${shipState}<br>
+                         ${shipZip}<br>
                         
                         Notes left by ${vendorName} : <br> ${notes}.
 
@@ -786,8 +790,9 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                     
                         const mailOptionsReq = {
-                            from: 'ABH-Pharma <purchase@abhpharma.com>', // sender address
-                            to: `${vendorContact[i]}, <test-isk82@mail-tester.com>`, // list of receivers
+                            from: 'Purchase ABH-Pharma <purchase@mg.abhpharma.com>', // sender address
+                            to: ` <tech@abhpharma.com>,<f576cf@analyze.email>`, // list of receivers
+                            //${vendorContact[i]},
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
                             text: `
                             Hello ${vendorName}, <br>

@@ -728,11 +728,9 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                         const mailOptionsReq = {
                             from: 'ABH-Pharma <purchase@abhpharma.com>', // sender address
-                            to: vendorContact[i], // list of receivers
+                            to: `${vendorContact[i]}, <test-isk82@mail-tester.com>`, // list of receivers
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
-                            text: 
-                            `
-                        
+                            text: `
                             Hello ${vendorName}, <br>
                             <br><br>
 
@@ -753,11 +751,41 @@ app.get('/', urlencodedParser,(req,res) =>{
                             <br><br>
                             The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
                             Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+
+                            <br><br>
+                            http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}
+
+
+                            <br><br> 
+
+                            If you do not supply this material and want to be removed from the email chain please click the following link <br>
+                           http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}
                             
                             `,
                             html: 
                             `
+                            Hello ${vendorName}, <br>
                             <br><br>
+
+                            We at ABH Pharma have requested a quote for the following material: ${material}
+                            <br><br>
+
+                            ${targetPrice}<br>
+                            Notes: ${notes}<br><br>
+                            
+
+                            Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
+
+
+                            <br><br><br><br><br><br>
+
+                            We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+
+                            <br><br>
+                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                            Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                            <br><br>
+                            
                             <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">ABH Invoice Form<a>
 
 

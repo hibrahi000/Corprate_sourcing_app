@@ -255,7 +255,7 @@ module.exports = (app) =>{
                     vendor.findOne(query).then(theVendor =>{
                     const mailOptionsVendForm = {
                         from: `${vendorName} <${theVendor.Email}>`,// sender address
-                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<test-88bgg@mail-tester.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
+                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<test-pix0q@mail-tester.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
                         text:        `
                         NEW MATERIAL: ${isNew} <br>   

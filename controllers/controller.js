@@ -253,7 +253,7 @@ module.exports = (app) =>{
                         subject: `${vendorName} Request Submission For ${material}`,
                         html: 
                         `
-                        NEW MATERIAL: ${isNew}    
+                        NEW MATERIAL: ${isNew} <br>   
                         Response from vendor: ${vendorName}<br><br>
                         Material: ${material}<br>
                         ABH Requested: ${abhRequest}<br><br>
@@ -277,6 +277,12 @@ module.exports = (app) =>{
                         Shipping Company Zip-Code: ${shipZip}<br>
                         
                         Notes left by ${vendorName} : <br> ${notes}.
+
+
+
+                        <br><br>
+                        The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                        Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
                         `
                     };
                 
@@ -412,7 +418,14 @@ module.exports = (app) =>{
                                                                     to: '<tech@abhpharma.com>,<purchase@abhpharma.com>', // list of receivers
                                                                     subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
                                                                     html: 
-                                                                    `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
+                                                                    `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+                                                                    
+                                                                    
+                                                                    <br><br>
+                                                                    The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                                    Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                                    
+                                                                    `
                                                                 }
                                                                 transporter.send(mailOptionsVendUnsubscibeNewDel, function (err, info) {
                                                                     if(err)
@@ -431,7 +444,15 @@ module.exports = (app) =>{
                                                                 to: '<tech@abhpharma.com>,<purchase@abhpharma.com>', // list of receivers
                                                                 subject: `${vendorName} Unsubscription For ${material}`,
                                                                 html: 
-                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save`
+                                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                <br><br>
+                                                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                                Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                                `
                                                             }
                                                             transporter.send(mailOptionsVendUnsubscibeNew, function (err, info) {
                                                                 if(err)
@@ -459,7 +480,15 @@ module.exports = (app) =>{
                                                 to: '<tech@abhpharma.com>,<purchase@abhpharma.com>', // list of receivers
                                                 subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
                                                 html: 
-                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save`
+                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
+                                                
+                                                
+                                                
+                                                <br><br>
+                                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                
+                                                `
                                             }
                                             transporter.send(mailOptionsUnsubscribe, function (err, info) {
                                                 if(err)
@@ -716,7 +745,8 @@ app.get('/', urlencodedParser,(req,res) =>{
                             We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
 
                             <br><br>
-                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. 
+                            The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                            Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
                             
 
                             <br><br>
@@ -726,7 +756,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             <br><br> 
 
                             If you do not supply this material and want to be removed from the email chain please click the following link <br>
-                            <a href = "http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe From ${material} Email Chain<a>
+                            <a href = "http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe<a>
                             `
                         };
                         //localHost:5000

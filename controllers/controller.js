@@ -730,7 +730,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             from: 'ABH-Pharma <purchase@abhpharma.com>', // sender address
                             to: vendorContact[i], // list of receivers
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
-                            html: 
+                            text: 
                             `
                         
                             Hello ${vendorName}, <br>
@@ -754,7 +754,9 @@ app.get('/', urlencodedParser,(req,res) =>{
                             The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
                             Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
                             
-
+                            `,
+                            html: 
+                            `
                             <br><br>
                             <a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">ABH Invoice Form<a>
 
@@ -762,7 +764,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             <br><br> 
 
                             If you do not supply this material and want to be removed from the email chain please click the following link <br>
-                            <a href = "http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe<a>
+                            List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${newMat}">Unsubscribe<a>
                             `
                         };
                         //localHost:5000

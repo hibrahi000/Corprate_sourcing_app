@@ -255,8 +255,40 @@ module.exports = (app) =>{
                     vendor.findOne(query).then(theVendor =>{
                     const mailOptionsVendForm = {
                         from: `${vendorName} <${theVendor.Email}>`,// sender address
-                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<test-93qyi@mail-tester.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
+                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<test-88bgg@mail-tester.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
+                        text:        `
+                        NEW MATERIAL: ${isNew} <br>   
+                        Response from vendor: ${vendorName}<br><br>
+                        Material: ${material}<br>
+                        ABH Requested: ${abhRequest}<br><br>
+                        Item Code: ${itemCode} <br>
+                        Min Order Quantity: ${ammount}  ${measurement}<br>
+                        Price: ${priceIn} USD  ---- ${priceType}<br>
+                        In Stock : ${InStock}<br>
+                        Date In Stock: ${DateInStock}<br><br><br><br>
+
+
+                        Payment Type: ${payType}<br>
+                        Payment Terms: ${payTerms}<br>
+                        Shipping Date ${shippingDate}<br><br><br>
+
+
+                        Shipping Company Name:${shipCompName}<br>
+                        Shipping Company Address 1: ${shipAddress1}<br>
+                        Shipping Company Address 2: ${shipAddress2}<br>
+                        Shipping Company City: ${shipCity}<br>
+                        Shipping Company State: ${shipState}<br>
+                        Shipping Company Zip-Code: ${shipZip}<br>
+                        
+                        Notes left by ${vendorName} : <br> ${notes}.
+
+
+
+                        <br><br>
+                        The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                        Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                        `,
                         html: 
                         `
                         NEW MATERIAL: ${isNew} <br>   
@@ -423,6 +455,14 @@ module.exports = (app) =>{
                                                                     from: `${vendorName} <${vend.Email}>`, // sender address
                                                                     to: ' <ins-fhljqql2@isnotspam.com>', // list of receivers
                                                                     subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
+                                                                    text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+                                                                    
+                                                                    
+                                                                    <br><br>
+                                                                    The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                                    Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                                    
+                                                                    `,
                                                                     html: 
                                                                     `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
                                                                     
@@ -449,6 +489,15 @@ module.exports = (app) =>{
                                                                 from: `${vendorName} <${vend.Email}>`, // sender address
                                                                 to: '<tech@abhpharma.com>,<purchase@abhpharma.com>', // list of receivers
                                                                 subject: `${vendorName} Unsubscription For ${material}`,
+                                                                text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                <br><br>
+                                                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                                Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                                `,
                                                                 html: 
                                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
                                                                 
@@ -485,6 +534,16 @@ module.exports = (app) =>{
                                                 from: `${vendorName} <${vendors.Email}>`, // sender address
                                                 to: '<tech@abhpharma.com>,<purchase@abhpharma.com>', // list of receivers
                                                 subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
+                                                text : 
+                                                `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
+                                            
+                                                
+                                                
+                                                <br><br>
+                                                The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+                                                Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+                                                
+                                                `,
                                                 html: 
                                                 `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
                                                 

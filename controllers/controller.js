@@ -1013,10 +1013,10 @@ app.get('/', urlencodedParser,(req,res) =>{
                                     mat.findOneAndUpdate(matQuery,{Vendors:newVendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
                                         // console.log(material.Vendors);
                                     })
-                                    .catch();
+                                    .catch(err =>{console.log(err)});
                                 }
                         
-                            })
+                            }).catch(err =>{console.log(`there was a error `, err)});
                         }
                     }
                 

@@ -802,7 +802,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                             Hello ${vendorName}, <br>
                             <br><br>
 
-                            We at ABH Pharma have requested a quote for the following material: ${material}
+                            We at ABH have requested a quote for the following material: ${material}
                             <br><br>
 
                             ${targetPrice}<br>
@@ -814,7 +814,7 @@ app.get('/', urlencodedParser,(req,res) =>{
 
                             <br><br><br><br><br><br>
 
-                            We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+                            We at ABH Appreciate your business with us and hope to hear from you soon.
 
                             <br><br>
                             The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>

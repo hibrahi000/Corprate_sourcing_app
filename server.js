@@ -5,11 +5,13 @@ var controller = require('./controllers/controller');
 const passport = require('passport');
 const flash = require('connect-flash');
 const sessions = require('cookie-session');
-const keys = require('./controllers/config/keys');
+const key = require('./controllers/config/keys');
 const pass = require('./controllers/config/passport');
 const PORT = process.env.PORT || 5000
+require('dotenv').config();
+const sgMail = require('@sendgrid/mail');
 
-
+sgMail.setApiKey(key.SENDGRID_API_KEY);
 
 //passport config
 require('./controllers/config/passport')(passport);
@@ -26,7 +28,7 @@ app.set('view engine', 'ejs');
 app.use(sessions({
     maxAge: 1000   *   60   * 60   *  2,
          //miliSec    sec     min    hours     days           
-    keys: [keys.session.cookieKey]
+    keys: [key.session.cookieKey]
 }));
 
 //  passport middleware

@@ -16,15 +16,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 
-var domain = 'mg.abhpharma.com';
-var mailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
+// var testDomain = 'sandboxbea89a78a03645cdb62d1e7b3bf42301.mailgun.org';
+// var testMailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
 
 
-var testDomain = 'sandboxbea89a78a03645cdb62d1e7b3bf42301.mailgun.org';
-var testMailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
-
-
-var mailgun = require('mailgun-js')({apiKey: mailKey, domain: domain});
+// var mailgun = require('mailgun-js')({apiKey: mailKey, domain: domain});
 
 const bcrypt = require('bcryptjs');
 const key =require('./config/keys');
@@ -49,11 +45,10 @@ var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
 
-
-
-
-
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(key.SENDGRID_API_KEY);
+// console.log(key.SENDGRID_API_KEY);
+let transporter = sgMail;
 
 
 /////////////////////////////////////Functions////////////////////////////////////////////////////////
@@ -123,7 +118,7 @@ function disconnectABHPharmaDB(){
 //         }
 // });
 
-let transporter = mailgun.messages();
+
 //validate user login username and password
 
 
@@ -255,7 +250,7 @@ module.exports = (app) =>{
                     vendor.findOne(query).then(theVendor =>{
                     const mailOptionsVendForm = {
                         from: `${vendorName} <${theVendor.Email}>`,// sender address
-                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>,<ins-jiml3cyn@isnotspam.com>,<hashmat.ibrahimi@lc.cuny.edu>', // list of receivers
+                        to: '<tech@abhpharma.com>, <purchase@abhpharma.com>', // list of receivers
                         subject: `${vendorName} Request Submission For ${material}`,
                         text:        `
                         NEW MATERIAL: ${isNew} <br>   
@@ -457,7 +452,7 @@ module.exports = (app) =>{
 
                                                                 const mailOptionsVendUnsubscibeNewDel = {
                                                                     from: `${vendorName} <${vend.Email}>`, // sender address
-                                                                    to: ' <ins-fhljqql2@isnotspam.com>', // list of receivers
+                                                                    to: ' <tech@abhpharma.com>,<purchase@abhpharma.com', // list of receivers
                                                                     subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
                                                                     text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
                                                                     
@@ -727,10 +722,16 @@ app.get('/', urlencodedParser,(req,res) =>{
             
         // });
 
+        app.get('/Purchase_Request',  urlencodedParser, purchEnsureAuthenticated, (req,res) =>{
+            res.redirect('/ABH_Purchase/Dashboard');
+        })
+
+
         app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated,(req,res,next) =>{
             const {material,reqType,ammount,units,price,rushOrder,notes,newMat,dbQuery} = req.body;
             console.log(req.body);
             let newMaterial =false;
+            let noErr = true;
             if(newMat === 'Yes'){
             newMaterial = true;
             }
@@ -790,8 +791,8 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                     
                         const mailOptionsReq = {
-                            from: 'Purchase ABH-Pharma <purchase@mg.abhpharma.com>', // sender address
-                            to: ` <tech@abhpharma.com>,<f576cf@analyze.email>`, // list of receivers
+                            from: 'ABH Purchase Dept. <purchase@abhpharma.com>', // sender address
+                            to: vendorContact[i], // list of receivers
                             //${vendorContact[i]},
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
                             text: `
@@ -861,21 +862,34 @@ app.get('/', urlencodedParser,(req,res) =>{
                         };
                         //localHost:5000
                         //app.abhpharma.com
-                        transporter.send(mailOptionsReq, function (err, info) {
-                            if(err)
-                            console.log('Couldnt send email' +err)
-                            else
-                                console.log('starting info ' +info); 
-                                if(newMaterial){
-                                    req.flash('success_msg',`Request Has Been Sent TO ALL VENDORS`);
-                                    res.redirect('/ABH_Purchase/Dashboard');
-                                } 
-                                else{
-                                req.flash('success_msg',`Request Has Been Sent To ${vendorName}`);
-                                res.redirect('/ABH_Purchase/Dashboard');
-                                }
+                        transporter.send(mailOptionsReq).then(info =>{
+                            console.log('Sent Email to ' + vendorContact[i]); 
+                               
+                        }).catch(err => {
+                            console.log('there is a err sending to ' + vendorContact[i] + ' code Line 869', err);
+                            noErr =false;
                         });
                 }).catch();
+            }
+            if(noErr == true){
+                if(newMaterial){
+                    req.flash('success_msg',`Request Has Been Sent TO ALL VENDORS`);
+                    res.redirect('/ABH_Purchase/Dashboard');
+                } 
+                else{
+                req.flash('success_msg',`Request Has Been Sent To ${vendorName}`);
+                res.redirect('/ABH_Purchase/Dashboard');
+                }
+            }
+            else{
+                if(newMaterial){
+                    req.flash('error_msg',`ERROR REQUEST HAD PROBLEMS TO ALL VENDORS *** Please Contact Dev Department ***`);
+                    res.redirect('/ABH_Purchase/Dashboard');
+                } 
+                else{
+                req.flash('error_msg',`ERROR REQUEST HAD PROBLEMS TO ${vendorName} *** Please Contact Dev Department ***`);
+                res.redirect('/ABH_Purchase/Dashboard');
+                }
             }
             })
         });

@@ -196,7 +196,7 @@ module.exports = (app) =>{
                                 else {
                                     res.render('404Page');    
                                 }
-                            }).catch(err);
+                            }).catch(err =>{console.log(err)});
                     
                         
 
@@ -367,7 +367,7 @@ module.exports = (app) =>{
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err=>{console.log(err)});
                         })
                     );
 
@@ -399,7 +399,7 @@ module.exports = (app) =>{
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err =>{console.log(err)} );
                         })
                         )
                     }
@@ -1395,7 +1395,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     });
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err =>{console.log(err)});
         });
 
 

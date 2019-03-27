@@ -877,7 +877,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     res.redirect('/ABH_Purchase/Dashboard');
                 } 
                 else{
-                req.flash('success_msg',`Request Has Been Sent To ${vendorName}`);
+                req.flash('success_msg',`Request Has Been Sent`);
                 res.redirect('/ABH_Purchase/Dashboard');
                 }
             }
@@ -887,7 +887,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     res.redirect('/ABH_Purchase/Dashboard');
                 } 
                 else{
-                req.flash('error_msg',`ERROR REQUEST HAD PROBLEMS TO ${vendorName} *** Please Contact Dev Department ***`);
+                req.flash('error_msg',`ERROR REQUEST HAD PROBLEMS  *** Please Contact Dev Department ***`);
                 res.redirect('/ABH_Purchase/Dashboard');
                 }
             }

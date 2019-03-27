@@ -8,8 +8,10 @@ const sessions = require('cookie-session');
 const keys = require('./controllers/config/keys');
 const pass = require('./controllers/config/passport');
 const PORT = process.env.PORT || 5000
+require('dotenv').config();
+const sgMail = require('@sendgrid/mail');
 
-
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //passport config
 require('./controllers/config/passport')(passport);

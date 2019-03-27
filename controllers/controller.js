@@ -16,15 +16,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 
-var domain = 'mg.abhpharma.com';
-var mailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
+// var testDomain = 'sandboxbea89a78a03645cdb62d1e7b3bf42301.mailgun.org';
+// var testMailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
 
 
-var testDomain = 'sandboxbea89a78a03645cdb62d1e7b3bf42301.mailgun.org';
-var testMailKey = '57375a29bc8e51168e4b4f7b8ec33237-e51d0a44-59fed9f0';
-
-
-var mailgun = require('mailgun-js')({apiKey: mailKey, domain: domain});
+// var mailgun = require('mailgun-js')({apiKey: mailKey, domain: domain});
 
 const bcrypt = require('bcryptjs');
 const key =require('./config/keys');
@@ -49,11 +45,10 @@ var urlencodedParser = bodyParser.urlencoded({ extended : false});
 
 const purchaseEmail = 'hashmatibrahimi0711@gmail.com';
 
-
-
-
-
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// console.log(process.env.SENDGRID_API_KEY);
+let transporter = sgMail;
 
 
 /////////////////////////////////////Functions////////////////////////////////////////////////////////
@@ -123,7 +118,7 @@ function disconnectABHPharmaDB(){
 //         }
 // });
 
-let transporter = mailgun.messages();
+
 //validate user login username and password
 
 
@@ -790,8 +785,8 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                     
                         const mailOptionsReq = {
-                            from: 'Purchase ABH-Pharma <purchase@mg.abhpharma.com>', // sender address
-                            to: ` <tech@abhpharma.com>,<f576cf@analyze.email>`, // list of receivers
+                            from: 'ABH Purchase Dept. <purchase@abhpharma.com>', // sender address
+                            to: ` <hashmat.ibrahimi@lc.cuny.edu>`, // list of receivers
                             //${vendorContact[i]},
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
                             text: `

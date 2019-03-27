@@ -794,7 +794,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                     
                     
                         const mailOptionsReq = {
-                            from: 'ABH Purchase Dept. <purchasinge@abhpharma.com>', // sender address
+                            from: 'ABH Purchase Dept. <purchasing@abhpharma.com>', // sender address
                             to: vendorContact[i], // list of receivers
                             //${vendorContact[i]},
                             subject: `ABH-Pharma Quote Request for ${material} `, // Subject line

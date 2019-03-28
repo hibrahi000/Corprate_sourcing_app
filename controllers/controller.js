@@ -161,7 +161,10 @@ module.exports = (app) =>{
 
 
 
+
 //////////////////////ABH VENDOR SITE////////////////////////////////////////
+
+let timer ;
 
 
                 app.get('/ABH_Invoice_Form', (req,res) =>{
@@ -174,7 +177,7 @@ module.exports = (app) =>{
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err);
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this form anymore')).catch(err);
                         })
                         )
                     }
@@ -190,7 +193,8 @@ module.exports = (app) =>{
                                 if(isMatch && vendor.clicked === false){
                                     let time =  1000   *   60   * 60   *   24    *  2;
                                             //miliSec    sec     min    hours     days    
-                                    setTimeout(resetVendorKey,time);                  
+                                timer = setTimeout(resetVendorKey,time);                  
+                                  window.
                                     res.render( 'vendor/vendorFill',{qs : req.query}); 
                                 }
                                 else {
@@ -213,7 +217,7 @@ module.exports = (app) =>{
 
                     // console.log(req.body);
 
-                    const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry,notes,newMaterial} = req.body;
+                    const{vendorName,material,abhRequest,itemCode,ammount,measurement,priceIn,priceType,inStock,dateInStock,payType,payTerms,shippingDate,shipCompName,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry,notes,newMaterial,key} = req.body;
                     console.log(req.body);
                     var DateInStock = dateInStock;
                     var InStock = inStock;
@@ -368,10 +372,16 @@ module.exports = (app) =>{
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this from anymore')).catch(err=>{console.log(err)});
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey}).then(console.log('Times Up Cannot Use this form anymore')).catch(err=>{console.log(err)});
                         })
                     );
-
+                    if(timer !== null){
+                    console.log('clearing timer');
+                    clearTimeout(timer);
+                    }
+                    else{
+                        console.log('error error vendor submission form')
+                    }
                     if(isNew === 'YES'){
                         mat.findOne({MaterialName:material}).then(material =>{
                             let vendorList = [];
@@ -395,18 +405,21 @@ module.exports = (app) =>{
                     console.log(vendorName);
                     console.log(req.query);
                     // console.log(key !== null);
-                    function resetVendorKey(){
+                   
                         bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
-                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this from anymore')).catch(err =>{console.log(err)} );
+                            vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this form anymore')).catch(err =>{console.log(err)} );
                         })
                         )
-                    }
+                    
                     // console.log(key === '');
                     // console.log(key === undefined);
                     // console.log(key === null );
+                    if(timer !== null){
+                        clearTimeout(timer);
+                    }
                     if(key !== undefined && key !== '' && key !== null){
                         
                         
@@ -576,8 +589,13 @@ module.exports = (app) =>{
                     else{
                         res.render('404Page');
                     }  
+                  
 
                 });
+                app.post('/Do_Not_Supply', urlencodedParser, (req,res) =>{
+                   
+                    res.render('404Page');
+                })
                 
 
 

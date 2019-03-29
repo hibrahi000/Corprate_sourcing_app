@@ -405,20 +405,21 @@ let timer ;
                     console.log(vendorName);
                     console.log(req.query);
                     // console.log(key !== null);
-                   
+                    function resetVendorKey(){
                         bcrypt.genSalt(10, (err, salt) => 
                         bcrypt.hash('PharmaDebug)!54', salt, (err,hash) =>{
                             if(err) throw err;
                             hashKey = hash;
                             vendor.findOneAndUpdate({VendorName :vendorName},{key:hashKey},{newMaterial: newMaterial}).then(console.log('Times Up Cannot Use this form anymore')).catch(err =>{console.log(err)} );
                         })
-                        )
+                        )};
                     
                     // console.log(key === '');
                     // console.log(key === undefined);
                     // console.log(key === null );
                     if(timer !== null){
                         clearTimeout(timer);
+                        console.log('clear timeout')
                     }
                     if(key !== undefined && key !== '' && key !== null){
                         
@@ -503,7 +504,7 @@ let timer ;
                                                                 to: '<Purchasing@abhnature.com>',
                                                                 cc:'<tech@abhpharma.com>', // list of receivers
                                                                 subject: `${vendorName} Unsubscription For ${material}`,
-                                                                text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+                                                                text: ` ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
                                                                 
                                                                 
                                                                 
@@ -1085,13 +1086,6 @@ app.get('/', urlencodedParser,(req,res) =>{
                 
                 }
                 
-       
-              
-                    req.flash('success_msg',`${vendNam}'s Info was updated`);
-                        res.redirect('/ABH_Purchase/Modify_Vendor');
-            
-                
-            
             
     });
 
@@ -1153,9 +1147,12 @@ app.get('/', urlencodedParser,(req,res) =>{
                                     vendors.push(vendNam);
                                     // console.log(vendors);
                                     mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
-                                    .catch();    
-                                
-                                })
+                                    .catch(()=> console.log('cant update material'));    
+                                    if(material.Vendors[0] === undefined){
+                                        mat.findOneAndDelete({MaterialName : matArray[i]}).then('removal of material from vendor profile emptied the materil so now its gone').catch();
+
+                                    }
+                                }).catch(()=> console.log('Cant find material'))
                             
                             }
                         }

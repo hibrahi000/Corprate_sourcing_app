@@ -194,7 +194,7 @@ let timer ;
                                     let time =  1000   *   60   * 60   *   24    *  2;
                                             //miliSec    sec     min    hours     days    
                                 timer = setTimeout(resetVendorKey,time);                  
-                                  window.
+                       
                                     res.render( 'vendor/vendorFill',{qs : req.query}); 
                                 }
                                 else {

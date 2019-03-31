@@ -993,65 +993,60 @@ app.get('/', urlencodedParser,(req,res) =>{
             req.flash('success_msg',`You succesfully updated Vendor: ${vendNam}'s Info`);
             res.redirect('/ABH_Purchase/Modify_Vendor');
 
+            }).catch();
         
-    
-             }).catch();
-        
-            let emptyArr = [];
+
+
+            /////////////////////////////////DO NOT TOUCH THE FUNCTIONS BELOW THEY WORK AND LEAVE IT THAT WAY //////////////////////////////////////////
+
             let tMat = new Array()
             tMat = tempMaterials.split(',');
             // console.log('starting tMat  ' + tMat )
 
             // console.log(tMat.length)
             let materialPop = new Array;
-            for(let i =0; i< tMat.length; i++){ // compares the document from its origional state to the new modified state to see which materials were removed and stores in materialPop
-                        // console.log(`does matArray include ${tMat[i]} : ${matArray.includes(tMat[i])}`);                    
-                    if(matArray.includes(tMat[i]) === false){
-                        materialPop.push(tMat[i]);
+            let materialAdd = new Array;
 
+            if(tMat[0] === undefined){
+                for(i=0; i<matArray.length; i++){
+                    if(tMat.includes(matArray[i]) == false){
+                        materialAdd.push(matArray[i])
                     }
                 }
-            // console.log(materialPop[0] == null);
-           
-                for(let i =0; i < matArray.length; i++){  // this is for removal of vendor name from material doc or adds the vendor name to the material doc 
-                    // console.log(materialPop);
-                    // console.log(materialPop.length -1);
-                    if(materialPop[0] !== null){
-                        for(let i =0; i<materialPop.length; i++){ // looping through materialPop
-                            // console.log('for loop 1 itteration '+ i)
-                            var matQuery = {MaterialName : materialPop[i]}; //sets query for current material from materialPop in db 
-                            mat.findOne(matQuery).then(material =>{ //searches for the material in the db to pull doc back as 'material variable'
-                                // console.log('found query '+ i)
-                                var vendors = material.Vendors; 
-                                // console.log(vendors);
-                                // console.log(vendNam);
-                                var index =vendors.indexOf(vendNam) 
-                                // console.log(index)              //searches throgh vendor name array from db and searches for a index that has the vendor name 
-                                if(index != -1){ //if it doesnt return -1 aka not found then ....
-                                    // console.log('found vendor'+ i)
-                                    // console.log(vendors[index]);
-                                    let newVendors =vendors.splice(index); // takes the array of vendors and removes the value at the index aka the vendor name we want removed
-                                    // console.log(vendors);
-                                    mat.findOneAndUpdate(matQuery,{Vendors:newVendors}).then(material =>{ // updates the current material db with the vendor list without the vendors name 
-                                        // console.log(material.Vendors);
-                                    })
-                                    .catch(err =>{console.log(err)});
-                                }
-                        
-                            }).catch(err =>{console.log(`there was a error `, err)});
-                        }
-                    }
+            }
+            else{
                 
+                for(i =0; i<tMat.length; i++){
+                    if(matArray.includes(tMat[i]) == false){
+                        materialPop.push(tMat[i]);
+                    }
+                }
+                for(i=0; i<matArray.length; i++){
+                    if(tMat.includes(matArray[i]) == false){
+                        materialAdd.push(matArray[i])
+                    }
+                }
 
-                    mat.findOne({MaterialName : matArray[i]}).then(material =>{ //search the material db for the current material in search 
-                        // console.log(material === null); //see if material shows up or not DEBUGGING 
-                            // console.log (`matArray${i} was found?: ${material !== null}`);
-                        if(material === null){ // if material doesnt exist
-                            // console.log(vendNam)
+
+            }
+            console.log('This is whats been added ' +materialAdd);
+            console.log('This is whats been removed ' +materialPop);
+            console.log(materialPop[0] == undefined);
+            console.log(materialPop[0] == null);
+            console.log(materialPop[0] == '');
+            
+            if(materialAdd[0] !== undefined && materialAdd[0] !== ''){ 
+                for(let i =0; i < materialAdd.length; i++){
+                    mat.findOne({MaterialName : materialAdd[i]}).then(matDoc =>{
+                  
+                        console.log(matDoc === null);
+                  
+                        if(matDoc === null){
                             var createMaterial = mat({ //create the material and add vendors name into the list of vendors
-                                MaterialName: matArray[i],
+                                MaterialName: materialAdd[i],
                                 Vendors: [vendNam]
                             });
+                            
                             createMaterial.save((err) =>{ //save the document for future use 
                                 if(err){console.log(err)}
                                 else{
@@ -1061,31 +1056,57 @@ app.get('/', urlencodedParser,(req,res) =>{
                         }
                         else{ // if the material is found 
                             let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
-                            for(let i =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
-                                if(material.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
+                            for(let i =0; i<matDoc.Vendors.length; i++){ // search for each vendor within the material doc 
+                                if(matDoc.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
                                     vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
                                     break;
                                 }
                                 
                             }
                             if(!vendExist){ // if the vendor is not found then....
-                                mat.findOne({MaterialName : matArray[i]}).then(material =>{
                                     // console.log('vendor wasnt found so now we are adding');
                                     let vendors = new Array();
-                                    vendors = material.Vendors;
+                                    vendors = matDoc.Vendors;
                                     vendors.push(vendNam);
                                     // console.log(vendors);
-                                    mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
-                                    .catch();    
-                                
-                                })
-                            
+                                    mat.findOneAndUpdate({MaterialName: materialAdd[i]},{Vendors: vendors})
+                                    .then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
+                                    .catch(err => console.log(err));                    
                             }
                         }
-                    }).catch();
-                
+                    })
                 }
-                
+            }
+            
+            if(materialPop[0] !== undefined && materialPop[0] !== ''){
+                for(let i =0; i < materialPop.length; i++){
+                    mat.findOne({MaterialName : materialPop[i]
+                    }).then( matDoc =>{
+                        let vendorArr = matDoc.Vendors;
+                        console.log(vendorArr);
+                        let index = vendorArr.indexOf(materialPop[i]);
+                        vendorArr.splice(index,1);
+                        console.log(vendorArr);
+                        mat.findOneAndUpdate(
+                            {MaterialName :materialPop[i]},
+                            {Vendors : vendorArr})
+                            .then(matDoc =>{
+                                console.log(matDoc.Vendors[0]);
+                                mat.findOne({MaterialName : materialPop[i]}).then( matDoc =>{
+                                    console.log("eval");
+                                    console.log(matDoc.Vendors);
+                                    console.log(matDoc.Vendors[0]);
+                                    console.log(matDoc.Vendors[0] === undefined);
+                                    if(matDoc.Vendors[0] === undefined){
+                                        console.log('Deletion Begin')
+                                        mat.findOneAndDelete({MaterialName : materialPop[i]}).then(console.log('material was deleted due to no vendors')).catch(err=> console.log('Issue deleting material ' + err));
+                                    }
+                                })
+                        }).catch(err => console.log('Error: '+ err));
+                    }).catch(err => console.log(err));
+                }
+            }
+
             
     });
 

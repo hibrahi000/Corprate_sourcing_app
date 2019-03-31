@@ -438,6 +438,45 @@ const msg = {
   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
 };
 // sgMail.send(msg);
-console.log('attempt')
+
 // console.log(process.env.SENDGRID_API_KEY);
 // console.log(process.env.SENDGRID_API_KEY);
+
+
+
+let arrayO = [1,2,3];
+let arrayN = [4,5,6,7,8,9,1];
+
+let add = new Array;
+let pop = new Array;
+
+for(i =0; i<arrayO.length; i++){
+    if(arrayN.includes(arrayO[i]) == false){
+        pop.push(arrayO[i]);
+    }
+}
+for(i=0; i<arrayN.length; i++){
+    if(arrayO.includes(arrayN[i]) == false){
+        add.push(arrayN[i])
+    }
+}
+
+
+// console.log('this is add: '+ add);
+// console.log('this is pop: ' + pop);
+
+// material.findOne({MaterialName : 'AlphaAlphaAlpha'}).then( matDoc =>{
+//     let vendorArr = matDoc.Vendors;
+//     index = vendorArr.indexOf('Testing 2');
+//     console.log(vendorArr);
+//     vendorArr.splice(index,1);
+//     console.log(vendorArr);
+// })
+// material.findOne({MaterialName : 'Alpha'}).then( matDoc =>{
+//     console.log(matDoc.Vendors);
+//     console.log(matDoc.Vendors[0]);
+//     console.log(matDoc.Vendors[0] === undefined);
+//     if(matDoc.Vendors[0] === undefined){
+//         console.log('deltion');
+//     }
+// });

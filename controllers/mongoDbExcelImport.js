@@ -46,30 +46,30 @@ function xlstojson(){
 var counter =0;
 
 let abhcontact = new Array;
-// for(let i=0; i< report.length; i++){
-//     // console.log(report[i].Email);
+for(let i=0; i< report.length; i++){
+    // console.log(report[i].Email);
    
-//     if(report[i].Email == ''){
-//         console.log('no email');
-//         counter++
-//         console.log(counter);
-//     }
+    if(report[i].Email == ''){
+        // console.log('no email');
+        // counter++
+        // console.log(counter);
+    }
 
-//     else{
-//         report[i]['Material'] = report[i]['Material'].replace(/\s*,\s*/g, ",");
-//         report[i]["Material"] =report[i]["Material"].replace(/\s+/g, '-');
-//         report[i]['Company Name']= report[i]['Company Name'].toUpperCase();
-//         report[i]['Material']=report[i]['Material'].toUpperCase();
-//         if(report[i]['Rep Name'] !== undefined){
-//             report[i]['Rep Name']=report[i]['Rep Name'].toUpperCase();
-//         }
-//         report[i]['Email']=report[i]['Email'].toUpperCase();
-//         report[i]['Website']=report[i]['Website'].toUpperCase();
+    else{
+        report[i]['Material'] = report[i]['Material'].replace(/\s*,\s*/g, ",");
+        report[i]["Material"] =report[i]["Material"].replace(/\s+/g, '-');
+        report[i]['Company Name']= report[i]['Company Name'].toUpperCase();
+        report[i]['Material']=report[i]['Material'].toUpperCase();
+        if(report[i]['Rep Name'] !== undefined){
+            report[i]['Rep Name']=report[i]['Rep Name'].toUpperCase();
+        }
+        report[i]['Email']=report[i]['Email'].toUpperCase();
+        report[i]['Website']=report[i]['Website'].toUpperCase();
         
-//         abhcontact.push(report[i])
-//     }
+        abhcontact.push(report[i])
+    }
 
-// }
+}
 
 // for(let i = 0; i< abhcontact.length; i++){
 //     console.log('Company Name is ** ' + abhcontact[i]['Company Name']);
@@ -111,23 +111,25 @@ let abhcontact = new Array;
 // let contactWithNoEmail = new Array;
 
 
-// let c =0;
-// let g =0;
-// for(let i = 0; i< abhcontact.length; i++){ // check if emails in file has a @ sign for review
-//     if(abhcontact[i]['Email'].indexOf('@') !== -1){
-//         c++;
-//         console.log('@ found '+ c)
-//     }
-//     else{
-//         contactWithNoEmail.push(abhcontact[k]['Email']);
-//         g++;
-//         console.log('@ not found ' + g)
-//     }
-// }
+let c =0;
+let g =0;
+for(let i = 0; i< abhcontact.length; i++){ // check if emails in file has a @ sign for review
+    if(abhcontact[i]['Email'].indexOf('@') !== -1){
+        c++;
+        // console.log('@ found '+ c)
+    }
+    else{
+        contactWithNoEmail.push(abhcontact[k]['Email']);
+        g++;
+        // console.log('@ not found ' + g)
+    }
+}
 
 
 
 
+
+//this is for adding a vendor
 // for(let i = 0; i< abhcontact.length; i++){
 
 //     let vendNam = abhcontact[i]['Company Name'];
@@ -139,9 +141,6 @@ let abhcontact = new Array;
 //     let website =abhcontact[i]['Website']
     
 //     console.log(matArray[0] !== '');
-
-
-
 
 
 //     vendor.findOne({VendorName : vendNam},function(err,data){
@@ -169,8 +168,8 @@ let abhcontact = new Array;
 //                 createVendor.save((err) =>{
 //                         if(err){console.log(err)}
 //                         else{
-//                         console.log('Vendor Profile Saved');
                         
+//                         console.log(vendNam);
 //                         console.log('success_msg', 'Vendor Profile Has Been Saved');
                         
                     
@@ -189,12 +188,7 @@ let abhcontact = new Array;
             
 //         }
 //     });
-    
-
-
 // }
-
-
 
 // connectABHPharmaDB();
 // for(let i = 0; i< abhcontact.length; i++){
@@ -202,53 +196,129 @@ let abhcontact = new Array;
 //     let vendNam = abhcontact[i]['Company Name'];
 //     let matArray =abhcontact[i]['Material'].split(',');;
     
-// if(matArray[0] !== ''){
-//     for(let j =0; j<matArray.length; j++){
-//       console.log(matArray[j]);
-      
-//     mat.findOne({MaterialName : matArray[j]}).then(material =>{
-//         console.log(material === null);
-//             let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
-//             for(let i =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
-//                 if(material.Vendors[i] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
-//                     vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
-//                     break;
-//                 }
-                
-//             }
-//             if(!vendExist){ // if the vendor is not found then....
-//                 mat.findOne({MaterialName : matArray[i]}).then(material =>{
-//                     console.log('vendor wasnt found so now we are adding');
-//                     let vendors = new Array();
-//                     vendors = material.Vendors;
-//                     vendors.push(vendNam);
-//                     // console.log(vendors);
-//                     mat.findOneAndUpdate({MaterialName: matArray[i]},{Vendors: vendors}).then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
-//                     .catch(()=> console.log('cant update material'));    
-//                     if(material.Vendors[0] === undefined){
-//                         mat.findOneAndDelete({MaterialName : matArray[i]}).then('removal of material from vendor profile emptied the materil so now its gone').catch();
 
-//                     }
-//                 }).catch(()=> console.log('Cant find material'))
-            
-//             }
+//     if(matArray[0] !== ''){
+//         // console.log('');
+//         // console.log(vendNam);
+//         // console.log(matArray);
+//         for(let j =0; j<matArray.length; j++){
+//         // console.log(matArray[j]);
         
-//     }).catch(err => {
-//         var createMaterial = mat({
-//             MaterialName: matArray[j],
-//             Vendors: [vendNam]
-//         });
-//         createMaterial.save((err) =>{
-//             if(err){console.log(err)}
-//             else{
-//             console.log('Material Added to Database');
-//             }
-//         });   
-//     });
+//         mat.findOne({MaterialName : matArray[j]}).then(material =>{
+//             console.log('the material exists: ' + (material !== null));
+//             if(materialAdded.includes(matArray[j])){
+//                 console.log('entered material exists')
+//                 let vendExist = false; // create a variable to see if the vendor does or doesnt already exist within the material db  assuming that vendor doesnt exist and will only change if found
+//                 for(let k =0; i<material.Vendors.length; i++){ // search for each vendor within the material doc 
+//                     if(material.Vendors[k] === vendNam){ // if the vendor in the i index of the db vendors array is equal to the vendor we are searching for 
+//                         vendExist = true;     // change the value of vendor exists to true and break out of the loop so that the value doesnt change again
+//                         break;
+//                     }
+                    
+//                 }
+//                 console.log('vendor exists : ' + vendExist);
+//                 if(vendExist === false){ // if the vendor is not found then....
+//                     mat.findOne({MaterialName : matArray[j]}).then(material =>{
+//                         console.log('vendor wasnt found so now we are adding it to ' + matArray[j] + ' document');
+//                         let vendors = new Array();
+//                         vendors = material.Vendors;
+//                         vendors.push(vendNam);
+//                         console.log('These are the vendors : ' +vendors);
+                        
+//                         mat.findOneAndUpdate({MaterialName: matArray[j]},{Vendors: vendors}).then( console.log(`updataed ${matArray[j]} by setting vendors to be ${vendors}`))
+//                         .catch(()=> console.log('cant update material'));  
+                        
+//                         // if(material.Vendors[0] === undefined){
+//                         //     mat.findOneAndDelete({MaterialName : matArray[i]}).then('removal of material from vendor profile emptied the materil so now its gone').catch();
 
+//                         // }
+//                     }).catch(()=> console.log('Cant find material'))
+                
+//                 }
+//             }
+//             else{    
+//             console.log('the material exists ROUND 2: ' + (materialAdded.includes(matArray[j])))
+//                 if(!materialAdded.includes(matArray[j])){
+//                      var createMaterial = mat({
+//                     MaterialName: matArray[j],
+//                     Vendors: [vendNam]
+//                 });
+//                 createMaterial.save((err) =>{
+//                     if(err){console.log(err)}
+//                     else{
+//                     materialAdded.push(matArray[j])
+//                     console.log( matArray[j] + '   Material Added to Database');
+//                     // console.log(materialAdded);
+//                     }
+//                 }); 
+            
+//                 }
+//             }
+//         }).catch(err => {
+//          console.log('Material wasnt found')
+//         });
+
+//         }
 //     }
 // }
-// }
-// console.log(contactWithNoEmail);
+let matUP = new Array;
+let vendorLi = new Array;
+let materialAdd = new Array;
+for(i =0; i < abhcontact.length; i++){
+    // console.log(0)
+    if(abhcontact[i]['Material'] !== ''){
+        // console.log(1)
+        let currMat = abhcontact[i]['Material'].split(',');
+        let vendor = abhcontact[i]['Company Name'];
+        console.log(currMat);
+        console.log(currMat.length);
+
+        for(let o =0; o< currMat.length; o++){
+            // console.log(2)
+            let matIndex = materialAdd.indexOf(currMat[o]);
+            if(matIndex === -1){
+                console.log(3)
+                matUP.push(currMat[o]);
+                let vendorArr = new Array;
+                vendorArr.push(vendor);
+                vendorLi.push(vendorArr);
+                materialAdd.push(currMat[o]);
+            }
+            else{
+                console.log(4)
+                vendorLi[matIndex].push(vendor);
+            }
+        }
+    }
+}
 
 
+console.log(matUP[5])
+console.log(vendorLi[5])
+console.log('the length of matup is ' + matUP.length);
+console.log('the length of vendor li is ' + vendorLi.length);
+
+
+
+
+
+
+connectABHPharmaDB()
+
+for(let tem = 0; tem< matUP.length; tem++){
+
+
+
+var createMaterial = mat({
+        MaterialName: matUP[tem],
+        Vendors: vendorLi[tem]
+    });
+    createMaterial.save((err) =>{
+        if(err){console.log(err)}
+        else{
+        console.log( matUP[tem] + '   Material Added to Database');
+        // console.log(materialAdded);
+        }
+    }); 
+
+}

@@ -976,16 +976,29 @@ app.get('/', urlencodedParser,(req,res) =>{
     
 
         app.post('/vendInfoModify', urlencodedParser, purchEnsureAuthenticated, (req,res,next)=>{
-            const {vendNam,repNam,website,tempMaterials,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry} = req.body;
-            // console.log(req.body);
+            let {vendNam,repName,website,tempMaterials,matSup,vendEmail,vendNum,shipCompNam,shipAddress1,shipAddress2,shipCity,shipState,shipZip,shipCountry} = req.body;
+    
+            console.log(req.body);
             // console.log(matSup);
             // console.log(vendNam);
+            vendNam = vendNam.toUpperCase();
+            repName = repName.toUpperCase();
+            website = website.toUpperCase();
+            matSup = matSup.toUpperCase();
+            vendEmail = vendEmail.toUpperCase();
+            shipCompNam = shipCompNam.toUpperCase();
+            shipAddress1 = shipAddress1.toUpperCase();
+            shipAddress2 = shipAddress2.toUpperCase();
+            shipCity = shipCity.toUpperCase();
+            shipState=shipState.toUpperCase();
+            
+            shipCountry = shipCountry.toUpperCase();
             var matArray = new Array();
             matArray = matSup.split(',');
             // console.log(matArray);
             var query = {VendorName: vendNam};  // takes the readOnly value of vendNam from purchasePartial and then applies it the query 
             
-            var update = {VendorName : vendNam, RepNam : repNam, Website : website, Material: matArray, Email: vendEmail, Number:vendNum, shipCompNam: shipCompNam, shipAddress1 : shipAddress1, shipAddress2: shipAddress2, shipCity: shipCity, shipState: shipState, shipZip: shipZip,shipCountry: shipCountry};
+            var update = {VendorName : vendNam, RepName : repName, Website : website, Material: matArray, Email: vendEmail, Number:vendNum, shipCompNam: shipCompNam, shipAddress1 : shipAddress1, shipAddress2: shipAddress2, shipCity: shipCity, shipState: shipState, shipZip: shipZip,shipCountry: shipCountry};
 
             //this is to update the vendor doc  
             vendor.findOneAndUpdate(query,update).then(vendor =>{ // this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
@@ -1070,7 +1083,7 @@ app.get('/', urlencodedParser,(req,res) =>{
                                     vendors.push(vendNam);
                                     // console.log(vendors);
                                     mat.findOneAndUpdate({MaterialName: materialAdd[i]},{Vendors: vendors})
-                                    .then( console.log(`updataed ${matArray[i]} by setting vendors to be ${vendors}`))
+                                    .then( console.log(`updataed ${materialAdd[i]} by setting vendors to be ${vendors}`))
                                     .catch(err => console.log(err));                    
                             }
                         }
@@ -1126,8 +1139,20 @@ app.get('/', urlencodedParser,(req,res) =>{
         });
 
         app.post('/Add_Vendor', urlencodedParser,purchEnsureAuthenticated, (req,res,next) =>{
-            const {vendNam, repName,website,matSup,vendEmail, vendNum,shipCompNam, shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipCountry,notes} = req.body;
-      
+            let {vendNam, repName,website,matSup,vendEmail, vendNum,shipCompNam, shipAddress1, shipAddress2,shipCity,shipState,shipZip,shipCountry,notes} = req.body;
+            vendNam = vendNam.toUpperCase();
+            repName = repName.toUpperCase();
+            website = website.toUpperCase();
+            matSup = matSup.toUpperCase();
+            vendEmail = vendEmail.toUpperCase();
+            shipCompNam = shipCompNam.toUpperCase();
+            shipAddress1 = shipAddress1.toUpperCase();
+            shipAddress2 = shipAddress2.toUpperCase();
+            shipCity = shipCity.toUpperCase();
+            shipState=shipState.toUpperCase();
+            
+            shipCountry = shipCountry.toUpperCase();
+
             var matArray = new Array();
             let matArr = matSup.trim();
             // console.log(matArr);

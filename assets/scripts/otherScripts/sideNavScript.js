@@ -14,7 +14,7 @@ $menuIcon.click(function() {
   });
   $menuIcon.fadeOut(5);
   $xBar.css({
-    top: 300
+    top: 260
   });
   if ($(window).width() < 767) {
     $sideNav.css({

@@ -6,7 +6,7 @@
 body{
     /* margin: auto; */
     /* background-image: url('../../images/bodyImg.png' ); */ 
-    background-image: url('https://res.cloudinary.com/dqnylbrs2/image/upload/v1553004797/abh-background1.jpg');
+    background-image: url('/images/abh-background1.jpg');
     background-position: center right;
     font-size: 1rem;
     /* border-style: none;
@@ -245,4 +245,6 @@ body{
 
 
    
-
+#materialList{
+    outline: none;
+}

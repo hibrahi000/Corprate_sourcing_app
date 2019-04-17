@@ -14,6 +14,7 @@
             width: 150px;
             transition: all 0.5s;
             cursor: pointer;
+            outline: none
 
         }
         #btnNext span {
@@ -23,7 +24,8 @@
             transition: 0.4s;
         }
         #btnNext span:after {
-            content: '>>';
+            font-family: "Font Awesome 5 Free";
+            content: "\f35a";
             position: absolute;
             opacity: 0;
             top: 0;
@@ -230,3 +232,40 @@
            font-size: 25px; /* Set a font size */
            cursor: pointer; /* Mouse pointer on hover */
         }
+
+
+
+
+        #btnEdit{
+            border-radius: 20px;
+            background-color: #7bc659;
+            width: 150px;
+            outline: none;
+            font-size: 18px;
+            color: white;
+            text-align: center;
+            padding-right: 35px;
+            margin-left: 4%;
+            margin-top: 0;
+        }
+        
+         #btnEdit span:before {
+            font-family: "Font Awesome 5 Free";
+            content: "\f044";
+            vertical-align: middle;
+            font-weight: 900;
+            opacity: 0;
+            top: 0;
+            transition: 0.5s;
+            padding-right: 8px;
+        
+        }
+        #btnEdit:hover span {
+            
+
+        }
+        #btnEdit:hover span:before {
+            opacity: 1;
+            
+        }
+        #btnEdit:focus {outline:0;}

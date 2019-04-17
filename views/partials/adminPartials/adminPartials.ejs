@@ -72,7 +72,7 @@
 
 
                 <input 
-                type="number" 
+                type="text" 
                 class="inputField" 
                 id="cellNumber" 
                 name="cell" 
@@ -121,10 +121,8 @@
                     required 
                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" 
                     onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Your password must be at least 6 characters as well as contain at least one uppercase, one lowercase, and one number' : ''); if(this.checkValidity()) form.password2.pattern = this.value;"
-      
-              
+
                     />
-                
                     <input 
                     type="password" 
                     class="inputField" 

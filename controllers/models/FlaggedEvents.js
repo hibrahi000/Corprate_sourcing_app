@@ -1,26 +1,24 @@
 const mongoose = require('mongoose');
 
+const FlaggedEvents = mongoose.model(
+	'FlaggedEvents',
+	new mongoose.Schema({
+		MaterialName: {
+			type: String,
+			required: true
+		},
+		Vendors: [
+			{
+				type: String,
+				required: false
+			}
+		],
+		DateCreated: {
+			type: String,
+			default: Date
+		}
+	}),
+	'Material'
+);
 
-const FlaggedEvents = mongoose.model
-(   'FlaggedEvents',
-
-    new mongoose.Schema({
-        MaterialName :{
-            type : String,
-            required : true
-        },
-        Vendors : [{
-      
-            type : String,
-            required : false,
-        }],
-        DateCreated: {
-            type: String,
-            default : Date
-        }
-    
-    }),
-    
-    'Material');
-
-module.exports = {Material};
+module.exports = { Material };

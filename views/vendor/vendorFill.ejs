@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+        
 
         <title>ABH Invoice Form</title>
 
@@ -34,6 +34,7 @@
         
         <div id="formLoc">
             <form id="msform" method="POST" action="/ABH_Invoice_Form"> 
+                <input type="text" name="key" class="noShow" value= '<%= qs.key%>' readonly>
                 <input type="text" name="vendorName" class="noShow" value= '<%= qs.vendorName%>' readonly>
                 <input type="text" name="newMaterial" class="noShow" value = '<%= qs.newMaterial%>' readonly>
                 <input type="text" class="noShow" name="category" value="<%=qs.category%>" readOnly>

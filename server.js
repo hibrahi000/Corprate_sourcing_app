@@ -10,6 +10,8 @@ const pass = require('./controllers/config/passport');
 const PORT = process.env.PORT || 5000
 require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
+var favicon = require('serve-favicon');
+
 
 sgMail.setApiKey(key.SENDGRID_API_KEY);
 
@@ -38,6 +40,8 @@ app.use(passport.session());
 
 //connect flash
 app.use(flash());
+
+app.use(favicon(__dirname + '/favicon.ico'));
 
 
 //global vars

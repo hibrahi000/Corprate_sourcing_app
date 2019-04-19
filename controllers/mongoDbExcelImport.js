@@ -8,7 +8,7 @@ const key = require('./config/keys');
 var employee = Employee.Employee;
 var mat = Material.Material;
 var vendor = Vendor.Vendor;
-
+var receipt = require('./models/QuoteRecipts').QuoteReceipt;
 var xlstojson = require('xls-to-json');
 var xlsxtojson = require('xlsx-to-json');
 var report = require('./spreadsheetInJson/report').text;
@@ -481,31 +481,31 @@ let vendorName ='TESTINGVENDOR';
 let category ='TESTCATEGORY2';
 let material = 'TEST1'
 
-vendor.findOne({ VendorName: vendorName }).then((vendors) => {
-	mat.findOne({Category : category}).then(matDoc=>{
-		let vProfile = vendors;
-		let vCatI = vProfile.Categories.findIndex(doc =>{ return doc.CategoryName === category});
-		let vMatI = vProfile.Categories[vCatI].Materials.findIndex(mat =>{return mat === material});
-		console.log(vMatI);
-		
-		let mProfile = matDoc;
-		let mMatI = mProfile.Material.findIndex(mat =>{return mat.MaterialName === material});
-		let mVendI = mProfile.Material[mMatI].Vendors.findIndex(vend =>{return vend === vendorName});
-		
-		vProfile.Categories[vCatI].Materials.splice(vMatI,1);
-		mProfile.Material[mMatI].Vendors.splice(mVendI,1);
+// receipt.findOne({VendorName : 'VENDORABHPHARMA'}).then(doc=>{
+// 	let rDoc = doc;
 
-		// console.log(vProfile.Categories[vCatI].Materials);
-		// console.log(mProfile.Material[mMatI].Vendors);
-
-		if(mProfile.Material[mMatI].Vendors[0] === undefined){
-			console.log('is empty')
-			mProfile.Material.splice(mMatI,1);
-		
-		}
-		console.log(vProfile.Categories)
-		
-
-
-	})
-})
+	
+// 	let newReceipt = {
+// 		Material: 'material',
+// 		ABH_Request: 'abhRequest',
+// 		Item_Code: 'itemCode',
+// 		Ammount: 'ammount' + ' ' + 'measurement',
+// 		Price: 'priceIn',
+// 		Price_Type: 'priceType',
+// 		In_Stock: 'inStock',
+// 		Date_In_Stock: 'dateInStock',
+// 		PayType: 'payType',
+// 		PayTerms: 'payTerms',
+// 		ShippingDate: 'shippingDate',
+// 		Shipping_Company_Name: 'shipCompName',
+// 		Ship_Address1: 'shipAddress1',
+// 		Ship_Address2: 'shipAddress2',
+// 		Ship_City: 'shipCity',
+// 		Ship_State: 'shipState',
+// 		Ship_Zip: 'shipZip',
+// 		Ship_Country: 'USA',
+// 		Notes: 'notes'
+// 					}
+// 	rDoc.Receipt.push(newReceipt)
+// 	console.log(rDoc)
+// })

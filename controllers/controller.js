@@ -96,7 +96,7 @@ module.exports = (app) => {
 			vendor
 				.findOne({ VendorName: vendorName })
 				.then((vendor) => {
-					console.log('printin    ' + vendor.key);
+					console.log('printin    ' + key);
 					bcrypt
 						.compare(key, vendor.key)
 						.then((isMatch) => {
@@ -149,7 +149,7 @@ module.exports = (app) => {
 			newMaterial,
 			key
 		} = req.body;
-		console.log(req.Material);
+		// console.log(req.body);
 		var DateInStock = dateInStock;
 		var InStock = inStock;
 		var isNew = '';
@@ -174,279 +174,299 @@ module.exports = (app) => {
 			InStock = 'No';
 		}
 		
+		if (key !== undefined && key !== '' && key !== null) {
 
-		vendor.findOne({ VendorName: vendorName }).then(doc =>{
-			let vProfile 								= doc;
-			
-			vProfile.PayType 							=payType;
-			vProfile.PayTerms							=payTerms;
-			vProfile.shipCompName						=shipCompName;
-			vProfile.shipAddress1						=shipAddress1;
-			vProfile.shipAddress2						=shipAddress2;
-			vProfile.shipCity							=shipCity;
-			vProfile.shipState							=shipState;
-			vProfile.shipZip							=shipZip;
-			vProfile.shipCountry						=shipCountry;
-			
+		
 
-	
-			if (newMaterial === 'true') {
-				let catIndex = vProfile.Categories.findIndex( doc =>{return doc.CategoryName === category});
-				let matIndex = vProfile.Categories[catIndex].Material.findIndex(mat =>{ return mat === material});
-				
-				//updating material database if it is a new material aka mass request so many vendors 
-				mat.findOne({ Category: category }).then((doc) => {
-					let matDoc = doc.Material;
-					let matIndex = matDoc.findIndex((mat) => {
-						return mat.MaterialName === material;
-					});
+				vendor.findOne({ VendorName: vendorName }).then(doc =>{
+
+					bcrypt
+					.compare(key, doc.key)
+					.then((isMatch) => {
+						if (isMatch ) {
+
+							let vProfile 								= doc;
+							
+							vProfile.PayType 							=payType;
+							vProfile.PayTerms							=payTerms;
+							vProfile.shipCompName						=shipCompName;
+							vProfile.shipAddress1						=shipAddress1;
+							vProfile.shipAddress2						=shipAddress2;
+							vProfile.shipCity							=shipCity;
+							vProfile.shipState							=shipState;
+							vProfile.shipZip							=shipZip;
+							vProfile.shipCountry						=shipCountry;
+							
+
 					
-					matDoc.Material[matIndex].Vendors.push(vendorName);
-					mat
-					.findOneAndUpdate({ Category: category }, { Material: matDoc })
-					.then((res) => {
-						console.log('Material Update Complete');
+							if (newMaterial === 'true') {
+								let catIndex = vProfile.Categories.findIndex( doc =>{return doc.CategoryName === category});
+								let matIndex = vProfile.Categories[catIndex].Material.findIndex(mat =>{ return mat === material});
+								
+								//updating material database if it is a new material aka mass request so many vendors 
+								mat.findOne({ Category: category }).then((doc) => {
+									let matDoc = doc.Material;
+									let matIndex = matDoc.findIndex((mat) => {
+										return mat.MaterialName === material;
+									});
+									
+									matDoc.Material[matIndex].Vendors.push(vendorName);
+									mat
+									.findOneAndUpdate({ Category: category }, { Material: matDoc })
+									.then((res) => {
+										console.log('Material Update Complete');
+									})
+									.catch((err) => {
+										console.log(err);
+									}); ///// This is where we left off
+								});
+								
+								if(catIndex !== -1){
+									if(matIndex !== -1){
+										vProfile.Categories[catIndex].Materials.push(material);
+									}
+								}
+								else{
+									let newCat = {
+										CategoryName : category,
+										Material : [material]
+									}
+									vProfile.Material.push(newMat);
+									
+								}
+								//TODO:		updating vendor material BETA this is just here as a reference  TODO:
+								// vendor.findOne({ VendorName: vendorName }).then((doc) => {
+								// 	let cat = doc.Categories;
+								// 	let catIndex = cat.findIndex((cat) => {
+								// 		return cat.CategoryName === category;
+								// 	});
+								// 	cat[catIndex].Materials.push(material);
+								// 	vendor
+								// 	.findOneAndUpdate({ VendorName: vendorName }, { Categories: cat })
+								// 	.then('Updated Vendor')
+								// 	.catch((err) => {
+								// 		console.log(err);
+								// 	});
+								// });
+								
+								
+								let vUpdate ={
+									PayType:         vProfile.PayType, 				       
+									PayTerms:        vProfile.PayTerms,				       
+									shipCompName:    vProfile.shipCompName,      
+									shipAddress1:    vProfile.shipAddress1,     
+									shipAddress2:    vProfile.shipAddress2,      
+									shipCity:        vProfile.shipCity,				       
+									shipState:       vProfile.shipState,			       
+									shipZip:         vProfile.shipZip,					       
+									shipCountry:     vProfile.shipCountry,	
+									Categories:      vProfile.Categories       
+									}
+					
+								vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
+							} 
+							else{
+								
+								let vUpdate ={
+									PayType:         vProfile.PayType, 				       
+									PayTerms:        vProfile.PayTerms,				       
+									shipCompName:    vProfile.shipCompName,      
+									shipAddress1:    vProfile.shipAddress1,     
+									shipAddress2:    vProfile.shipAddress2,      
+									shipCity:        vProfile.shipCity,				       
+									shipState:       vProfile.shipState,			       
+									shipZip:         vProfile.shipZip,					       
+									shipCountry:     vProfile.shipCountry	       
+									}
+
+									vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
+							}
+							
+
+							const mailOptionsVendForm = {
+								from: `${vendorName} <${vProfile.Email}>`, // sender address
+								to: '<Purchasing@abhnature.com>',
+								cc: '<tech@abhpharma.com>', // list of receivers
+								subject: `${vendorName} Request Submission For ${material}`,
+								text: `
+										NEW MATERIAL: ${isNew} <br>   
+										Response from vendor: ${vendorName}<br><br>
+										Material: ${material}<br>
+										ABH Requested: ${abhRequest}<br><br>
+										Item Code: ${itemCode} <br>
+										Min Order Quantity: ${ammount}  ${measurement}<br>
+										Price: ${priceIn} USD  ---- ${priceType}<br>
+										In Stock : ${InStock}<br>
+										Date In Stock: ${DateInStock}<br><br><br><br>
+
+
+										Payment Type: ${payType}<br>
+										Payment Terms: ${payTerms}<br>
+										Shipping Date ${shippingDate}<br><br><br>
+
+
+										Shipping Company : <br>
+										${shipCompName}<br>
+										${shipAddress1}<br>
+										${shipAddress2}<br>
+										${shipCity}<br>
+										${shipState}<br>
+										${shipZip}<br>
+										
+										Notes left by ${vendorName} : <br> ${notes}.
+
+
+
+										<br><br>
+										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+										`,
+								html: `
+										NEW MATERIAL: ${isNew} <br>   
+										Response from vendor: ${vendorName}<br><br>
+										Material: ${material}<br>
+										ABH Requested: ${abhRequest}<br><br>
+										Item Code: ${itemCode} <br>
+										Min Order Quantity: ${ammount}  ${measurement}<br>
+										Price: ${priceIn} USD  ---- ${priceType}<br>
+										In Stock : ${InStock}<br>
+										Date In Stock: ${DateInStock}<br><br><br><br>
+
+
+										Payment Type: ${payType}<br>
+										Payment Terms: ${payTerms}<br>
+										Shipping Date ${shippingDate}<br><br><br>
+
+
+								
+
+										Shipping Company : <br>
+										${shipCompName}<br>
+										${shipAddress1}<br>
+										${shipAddress2}<br>
+										${shipCity}<br>
+										${shipState}<br>
+										${shipZip}<br>
+										
+										Notes left by ${vendorName} : <br> ${notes}.
+
+
+
+										<br><br>
+										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+										`
+							};
+
+							//this has the receipt functionallty 
+							receipt.find({}).then(receiptDoc =>{
+								let rDoc = receiptDoc;
+								let rIndex = rDoc.findIndex(rec =>{return rec.VendorName === vendorName});
+							if(rIndex === -1){
+								var createReceipt = receipt({
+									VendorName: vendorName,
+									
+										Receipt : [{
+											Category : category,
+											Material: material,
+											ABH_Request: abhRequest,
+											Item_Code: itemCode,
+											Ammount: ammount + ' ' + measurement,
+											Price: priceIn,
+											Price_Type: priceType,
+											In_Stock: inStock,
+											Date_In_Stock: dateInStock,
+											PayType: payType,
+											PayTerms: payTerms,
+											ShippingDate: shippingDate,
+											Shipping_Company_Name: shipCompName,
+											Ship_Address1: shipAddress1,
+											Ship_Address2: shipAddress2,
+											Ship_City: shipCity,
+											Ship_State: shipState,
+											Ship_Zip: shipZip,
+											Ship_Country: shipCountry,
+											Notes: notes
+										}]
+								});
+
+								createReceipt.save((err) => {
+									if (err) {
+										console.log(err);
+									} else {
+										console.log('Submission Recieved And Stored');
+									}
+								});
+							}
+							else{
+								let newReceipt = {
+										Category : category,
+										Material: material,
+										ABH_Request: abhRequest,
+										Item_Code: itemCode,
+										Ammount: ammount + ' ' + measurement,
+										Price: priceIn,
+										Price_Type: priceType,
+										In_Stock: inStock,
+										Date_In_Stock: dateInStock,
+										PayType: payType,
+										PayTerms: payTerms,
+										ShippingDate: shippingDate,
+										Shipping_Company_Name: shipCompName,
+										Ship_Address1: shipAddress1,
+										Ship_Address2: shipAddress2,
+										Ship_City: shipCity,
+										Ship_State: shipState,
+										Ship_Zip: shipZip,
+										Ship_Country: shipCountry,
+										Notes: notes
+								}
+
+								console.log(rDoc[rIndex]);
+								rDoc[rIndex].Receipt.push(newReceipt);
+								receipt.findOneAndUpdate({VendorName: vendorName},{Receipt : rDoc[rIndex].Receipt}).then(doc => { console.log('vendor exists so added rec to db')}).catch(err =>{console.log(err)});
+							}
+							})
+
+							
+							transporter.send(mailOptionsVendForm, function(err, info) {
+								if (err) console.log('Couldnt send email' + err);
+								else {
+								// console.log(info);
+									console.log('Email Sent');
+								res.redirect('https://abhpharma.com/');
+								}
+							})
+
+							
+
+						
+
+					
+							// resets vendors pass word so that the form wont be used again
+							bcrypt.genSalt(10, (err, salt) =>
+								bcrypt.hash('PharmaDebug)!54', salt, (err, hash) => {
+									if (err) throw err;
+									hashKey = hash;
+									vendor
+										.findOneAndUpdate({ VendorName: vendorName }, { key: hashKey })
+										.then(console.log('Times Up Cannot Use this form anymore'))
+										.catch((err) => {
+											console.log(err);
+										});
+								})
+							);
+						}
+						else{
+							res.render('404Page');
+						}
 					})
-					.catch((err) => {
-						console.log(err);
-					}); ///// This is where we left off
-				});
-				
-				if(catIndex !== -1){
-					if(matIndex !== -1){
-						vProfile.Categories[catIndex].Materials.push(material);
-					}
-				}
-				else{
-					let newCat = {
-						CategoryName : category,
-						Material : [material]
-					}
-					vProfile.Material.push(newMat);
-					
-				}
-				//TODO:		updating vendor material BETA this is just here as a reference  TODO:
-				// vendor.findOne({ VendorName: vendorName }).then((doc) => {
-				// 	let cat = doc.Categories;
-				// 	let catIndex = cat.findIndex((cat) => {
-				// 		return cat.CategoryName === category;
-				// 	});
-				// 	cat[catIndex].Materials.push(material);
-				// 	vendor
-				// 	.findOneAndUpdate({ VendorName: vendorName }, { Categories: cat })
-				// 	.then('Updated Vendor')
-				// 	.catch((err) => {
-				// 		console.log(err);
-				// 	});
-				// });
-				
-				
-				let vUpdate ={
-					PayType:         vProfile.PayType, 				       
-					PayTerms:        vProfile.PayTerms,				       
-					shipCompName:    vProfile.shipCompName,      
-					shipAddress1:    vProfile.shipAddress1,     
-					shipAddress2:    vProfile.shipAddress2,      
-					shipCity:        vProfile.shipCity,				       
-					shipState:       vProfile.shipState,			       
-					shipZip:         vProfile.shipZip,					       
-					shipCountry:     vProfile.shipCountry,	
-					Categories:      vProfile.Categories       
-					}
-	
-				vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
-			} 
-			else{
-				
-				let vUpdate ={
-					PayType:         vProfile.PayType, 				       
-					PayTerms:        vProfile.PayTerms,				       
-					shipCompName:    vProfile.shipCompName,      
-					shipAddress1:    vProfile.shipAddress1,     
-					shipAddress2:    vProfile.shipAddress2,      
-					shipCity:        vProfile.shipCity,				       
-					shipState:       vProfile.shipState,			       
-					shipZip:         vProfile.shipZip,					       
-					shipCountry:     vProfile.shipCountry	       
-					}
-
-					vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
-			}
-			
-
-			const mailOptionsVendForm = {
-				from: `${vendorName} <${vProfile.Email}>`, // sender address
-				to: '<Purchasing@abhnature.com>',
-				cc: '<tech@abhpharma.com>', // list of receivers
-				subject: `${vendorName} Request Submission For ${material}`,
-				text: `
-						NEW MATERIAL: ${isNew} <br>   
-						Response from vendor: ${vendorName}<br><br>
-						Material: ${material}<br>
-						ABH Requested: ${abhRequest}<br><br>
-						Item Code: ${itemCode} <br>
-						Min Order Quantity: ${ammount}  ${measurement}<br>
-						Price: ${priceIn} USD  ---- ${priceType}<br>
-						In Stock : ${InStock}<br>
-						Date In Stock: ${DateInStock}<br><br><br><br>
-
-
-						Payment Type: ${payType}<br>
-						Payment Terms: ${payTerms}<br>
-						Shipping Date ${shippingDate}<br><br><br>
-
-
-						Shipping Company : <br>
-						${shipCompName}<br>
-						${shipAddress1}<br>
-						${shipAddress2}<br>
-						${shipCity}<br>
-						${shipState}<br>
-						${shipZip}<br>
-						
-						Notes left by ${vendorName} : <br> ${notes}.
-
-
-
-						<br><br>
-						The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
-						Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-						`,
-				html: `
-						NEW MATERIAL: ${isNew} <br>   
-						Response from vendor: ${vendorName}<br><br>
-						Material: ${material}<br>
-						ABH Requested: ${abhRequest}<br><br>
-						Item Code: ${itemCode} <br>
-						Min Order Quantity: ${ammount}  ${measurement}<br>
-						Price: ${priceIn} USD  ---- ${priceType}<br>
-						In Stock : ${InStock}<br>
-						Date In Stock: ${DateInStock}<br><br><br><br>
-
-
-						Payment Type: ${payType}<br>
-						Payment Terms: ${payTerms}<br>
-						Shipping Date ${shippingDate}<br><br><br>
-
-
-				
-
-						Shipping Company : <br>
-						${shipCompName}<br>
-						${shipAddress1}<br>
-						${shipAddress2}<br>
-						${shipCity}<br>
-						${shipState}<br>
-						${shipZip}<br>
-						
-						Notes left by ${vendorName} : <br> ${notes}.
-
-
-
-						<br><br>
-						The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
-						Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-						`
-			};
-
-			//this has the receipt functionallty 
-			receipt.find({}).then(receiptDoc =>{
-				let rDoc = receiptDoc;
-				let rIndex = rDoc.findIndex(rec =>{return rec.VendorName === vendorName});
-			if(rIndex === -1){
-				var createReceipt = receipt({
-					VendorName: vendorName,
-					
-						Receipt : [{
-							Category : category,
-							Material: material,
-							ABH_Request: abhRequest,
-							Item_Code: itemCode,
-							Ammount: ammount + ' ' + measurement,
-							Price: priceIn,
-							Price_Type: priceType,
-							In_Stock: inStock,
-							Date_In_Stock: dateInStock,
-							PayType: payType,
-							PayTerms: payTerms,
-							ShippingDate: shippingDate,
-							Shipping_Company_Name: shipCompName,
-							Ship_Address1: shipAddress1,
-							Ship_Address2: shipAddress2,
-							Ship_City: shipCity,
-							Ship_State: shipState,
-							Ship_Zip: shipZip,
-							Ship_Country: 'USA',
-							Notes: notes
-						}]
-				});
-
-				createReceipt.save((err) => {
-					if (err) {
-						console.log(err);
-					} else {
-						console.log('Submission Recieved And Stored');
-					}
-				});
-			}
-			else{
-				let newReceipt = {
-						Material: material,
-						ABH_Request: abhRequest,
-						Item_Code: itemCode,
-						Ammount: ammount + ' ' + measurement,
-						Price: priceIn,
-						Price_Type: priceType,
-						In_Stock: inStock,
-						Date_In_Stock: dateInStock,
-						PayType: payType,
-						PayTerms: payTerms,
-						ShippingDate: shippingDate,
-						Shipping_Company_Name: shipCompName,
-						Ship_Address1: shipAddress1,
-						Ship_Address2: shipAddress2,
-						Ship_City: shipCity,
-						Ship_State: shipState,
-						Ship_Zip: shipZip,
-						Ship_Country: 'USA',
-						Notes: notes
-				}
-				rDoc.Receipt.push(newReceipt);
-				receipt.findOneAndUpdate({VendorName: vendorName},{Receipt : rDoc.Receipt}).then(doc => { console.log('vendor exists so added rec to db')}).catch(err =>{console.log(err)});
-			}
-			})
-
-			
-			transporter.send(mailOptionsVendForm, function(err, info) {
-				if (err) console.log('Couldnt send email' + err);
-				else {
-				// console.log(info);
-					console.log('Email Sent');
-				res.redirect('https://abhpharma.com/');
-				}
 			});
-
 			
-
-		})
-
-	
-		//resets vendors pass word so that the form wont be used again
-		bcrypt.genSalt(10, (err, salt) =>
-			bcrypt.hash('PharmaDebug)!54', salt, (err, hash) => {
-				if (err) throw err;
-				hashKey = hash;
-				vendor
-					.findOneAndUpdate({ VendorName: vendorName }, { key: hashKey })
-					.then(console.log('Times Up Cannot Use this form anymore'))
-					.catch((err) => {
-						console.log(err);
-					});
-			})
-		);
-		
-		 
-		
+		} else {
+			res.render('404Page');
+		}
+			
 	
 	});
 
@@ -709,15 +729,15 @@ module.exports = (app) => {
 		let newMaterial = 'No';
 		
 
-		// if (newMat === 'on') {
-		// 	newMaterial = 'Yes';
-		// }
+		if (newMat === 'on') {
+			newMaterial = 'Yes';
+		}
 		// let dbQuery = 'noSearch';
 
 		//allow user to add new materials but check for the following:
 
 		// 1) if new material is checked skip the vendor search and go straight to creating a new material
-		console.log('new material');
+		console.log('new material:  ' + newMaterial);
 	
 
 		vendor.find({}).then(vendorDoc =>{
@@ -729,24 +749,19 @@ module.exports = (app) => {
 				mat
 					.findOne({ Category: category })
 					.then((doc) => {
-						let matArr = doc.Material;
-						for (let i = 0; i < matArr.length; i++) {
-							let vendArr = matArr[i].Vendors;
-							for (let k = 0; k < vendArr.length; k++) {
-								if (vendorList.indexOf(vendArr[k]) === -1) {
-									vendorList.push(vendArr[k]);
-								}
+						
+						
+						for (let i = 0; i < vendList.length; i++) {
+							let catArray = vendList[i].Categories;
+							for (let k = 0; k < catArray.length; k++) {
+									if(catArray[k].CategoryName === category){
+										vEmailList.push(vendList[i].Email)
+									}
+							
 							}
 						}
 						
-						for(let l =0; l< vendorList.length; l++){
-							let vIndex = vendList.findIndex(doc =>{
-								return	doc.VendorName === vendorList[l]
-							})
-									
-							vEmailList.push(vendList[vIndex].Email);
-							
-						}
+						
 						console.log(vEmailList);
 						purchase = 'submitReq';
 						res.render('purchDashboard', { purchase, material, newMaterial, vEmailList,category });
@@ -774,8 +789,8 @@ module.exports = (app) => {
 												vEmailList.push(vendList[i].Email);
 											}
 										}
-
-										purchase = 'submitReq';
+											console.log(vEmailList.length);
+											purchase = 'submitReq';
 										res.render('purchDashboard', { purchase, material, newMaterial, vEmailList,category });								
 							} else {
 								req.flash(
@@ -923,7 +938,7 @@ module.exports = (app) => {
 							from: 'ABH Purchase Dept. <Purchasing@abhnature.com>', // sender address
 							to: vEmailList[i], // list of receivers
 							//${vendorContact[i]},
-							subject: `ABH-Pharma Quote Request for ${material} `, // Subject line
+							subject: `ABH-Nature Quote Request for ${material} `, // Subject line
 							text: `
 								Hello ${vendorName}, <br>
 								<br><br>
@@ -960,7 +975,7 @@ module.exports = (app) => {
 								Hello ${vendorName}, <br>
 								<br><br>
 
-								We at ABH Pharma have requested a quote for the following material: ${material}
+								We at ABH have requested a quote for the following material: ${material}
 								<br><br>
 
 								${targetPrice}<br>
@@ -972,7 +987,7 @@ module.exports = (app) => {
 
 								<br><br><br><br><br><br>
 
-								We at ABH-Pharma Appreciate your business with us and hope to hear from you soon.
+								We at ABH-Nature Appreciate your business with us and hope to hear from you soon.
 
 								<br><br>
 								The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>

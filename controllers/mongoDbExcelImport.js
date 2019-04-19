@@ -389,7 +389,7 @@ var Category = [
 // 		});
 
 
-let materialAdd = ['Material-1','TestMaterial2'];
+// let materialAdd = ['Material-1','TestMaterial2'];
 // for (let i = 0; i < materialAdd.length; i++) {								
 // 	mat.findOne({Category : catSearch}).then(doc =>{
 	
@@ -424,57 +424,88 @@ let materialAdd = ['Material-1','TestMaterial2'];
 // console.log(formatValidation(arr));
 
 
-let materialPop = ['Material-2'];
-let i =0;
-let catSearch = 'TestCategory000111';
-let vendSearch ='Testor';
+// let materialPop = ['Material-2'];
+// let i =0;
+// let catSearch = 'TestCategory000111';
+// let vendSearch ='Testor';
 
-mat.findOne({Category: catSearch}).then((doc) => {
-	let matArr = doc.Material;
-	let matIndex = matArr.findIndex(material =>{
-		return material.MaterialName === materialPop[i];
-	});
-		console.log('');
+// mat.findOne({Category: catSearch}).then((doc) => {
+// 	let matArr = doc.Material;
+// 	let matIndex = matArr.findIndex(material =>{
+// 		return material.MaterialName === materialPop[i];
+// 	});
+// 		console.log('');
 		
-		console.log('Before any Changes -------------------------------------------****');
+// 		console.log('Before any Changes -------------------------------------------****');
 		
-		console.log('');
+// 		console.log('');
 	
 	
-		console.log(matArr);
-	let vendIndex = matArr[matIndex].Vendors.indexOf(vendSearch);
+// 		console.log(matArr);
+// 	let vendIndex = matArr[matIndex].Vendors.indexOf(vendSearch);
 
-	matArr[matIndex].Vendors.splice(vendIndex,1);
+// 	matArr[matIndex].Vendors.splice(vendIndex,1);
 	
-		console.log('');
+// 		console.log('');
 		
-		console.log('After any Changes -------------------------------------------****');
+// 		console.log('After any Changes -------------------------------------------****');
 		
-		console.log('');
+// 		console.log('');
 	
-		console.log(matArr);
+// 		console.log(matArr);
 	
-		console.log('');
+// 		console.log('');
 
-	let emptyMaterial = matArr[matIndex].Vendors[0] === undefined;
-	if(emptyMaterial){
-			console.log('After any Deletion -------------------------------------------****');
+// 	let emptyMaterial = matArr[matIndex].Vendors[0] === undefined;
+// 	if(emptyMaterial){
+// 			console.log('After any Deletion -------------------------------------------****');
 			
-			console.log('');
+// 			console.log('');
 
-		matArr.splice(matIndex,1);
+// 		matArr.splice(matIndex,1);
 			
-			console.log(matArr);
+// 			console.log(matArr);
 		
 		
-		console.log('');
-		console.log('');
-	}
-	else{
-		console.log('Vendors for this material still exists so the material is still alive');
+// 		console.log('');
+// 		console.log('');
+// 	}
+// 	else{
+// 		console.log('Vendors for this material still exists so the material is still alive');
 		
-	}										
+// 	}										
+// })
+
+// .catch((err) => {console.log(err)});
+let vendorName ='TESTINGVENDOR';
+let category ='TESTCATEGORY2';
+let material = 'TEST1'
+
+vendor.findOne({ VendorName: vendorName }).then((vendors) => {
+	mat.findOne({Category : category}).then(matDoc=>{
+		let vProfile = vendors;
+		let vCatI = vProfile.Categories.findIndex(doc =>{ return doc.CategoryName === category});
+		let vMatI = vProfile.Categories[vCatI].Materials.findIndex(mat =>{return mat === material});
+		console.log(vMatI);
+		
+		let mProfile = matDoc;
+		let mMatI = mProfile.Material.findIndex(mat =>{return mat.MaterialName === material});
+		let mVendI = mProfile.Material[mMatI].Vendors.findIndex(vend =>{return vend === vendorName});
+		
+		vProfile.Categories[vCatI].Materials.splice(vMatI,1);
+		mProfile.Material[mMatI].Vendors.splice(mVendI,1);
+
+		// console.log(vProfile.Categories[vCatI].Materials);
+		// console.log(mProfile.Material[mMatI].Vendors);
+
+		if(mProfile.Material[mMatI].Vendors[0] === undefined){
+			console.log('is empty')
+			mProfile.Material.splice(mMatI,1);
+		
+		}
+		console.log(vProfile.Categories)
+		
+
+
+	})
 })
-
-.catch((err) => {console.log(err)});
-	

@@ -68,10 +68,12 @@
 <% if(purchase == 'submitReq') { %>
         <form id="msform" method="POST" action="/Purchase_Request" >
                 <fieldset>
-                        <input type="text" name="vEmailList" class="" value="<%=vEmailList%>" readOnly>
+                        <input type="text" name="vEmailList" class="noShow" value="<%=vEmailList%>" readOnly>
                         <h1 id="sectionName" ><em>Request Details</em></h1>
                         <div class="infoBar">
                                 <div>
+                                        <input type="text" name="category" class="noShow" value="<%=category%>">
+                           
                                         <label class="reqTitle">Material :</label>              
                                         <input class="inputLabel" type='text' name='material' value='<%=material%>' readonly>
                                 </div>
@@ -144,7 +146,7 @@
                                 </div>
                                 
                         </div>
-                <div class="submit">
+                         <div class="submit">
                         
                         <button onclick="window.location.href='/ABH_Purchase/Dashboard'" id="btnPrev"  ><span>Back</span></button>
                         <button type="submit" id="formComplete"><span>Form Completed </span></button>
@@ -240,7 +242,6 @@
         <form id="msform" method="POST" action="/vendInfoModify">
                 <fieldset>
                         
-                        <input type="text" class="noShow" name="tempMaterials" value="<%= tempMaterials%>">
                         <h1 class="title" class="fs-title">Specify</h1>
                         <h5 class="form-label" ><en>Vendor Name</en></h5>
                         <input type="text" class="inputField" id="vendNamIn" name="vendNam" placeholder="Vendor Name" readOnly value='<%=vendNam%>'/>
@@ -251,8 +252,6 @@
                         <h5 for="websiteIn"  class="form-label" ><en>Company website</en></h5>
                         <input type="text" class="inputField" id="websiteIn" name="website" placeholder="Company website" value='<%=website%>'/>
                         
-                        <h5 for="matSupIn"  class="form-label" ><en>Material Supplied</en></h5>
-                        <input type="text" class="inputField" id="matSupIn" name="matSup" placeholder="Material Supplied"value='<%=matSup%>' pattern="^\S+$" title="Make Sure there are no Spaces after the commas">
                        
                         
                         <h5 for="vendEmailIn"  class="form-label" ><en>Vendor Email</en></h5>
@@ -336,8 +335,8 @@
 
                 <input type="text" class="inputField" name="catSearch" placeholder="Type Category Name you want to modify..."  required list="catList"/>
                 <datalist id="catList">
-                        <% for(let i =0; i < categories.length; i++){ %>
-                                <option value= "<%- categories[i] %>" > 
+                        <% for(let i =0; i < catSearch.length; i++){ %>
+                                <option value= "<%= catSearch[i] %>" > 
 
                         <% } %>
                 </datalist>
@@ -364,9 +363,9 @@
 
                 <input type="text" class="inputField" name="catAddition" placeholder="Select Category You Want To Add..."  required list="catList" />
                 <datalist id="catList">
-                        <% for(let i =0; i < categories.length; i++){ %>
+                        <% for(let i =0; i < catSearch.length; i++){ %>
                                 
-                                <option value= "<%= categories[i] %>" > 
+                                <option value= "<%= catSearch[i] %>" > 
 
                         <% } %>
                 </datalist>
@@ -472,7 +471,7 @@
 
                         <input type="text" class="inputField" name="catSearch" value='<%=catSearch%>'  readOnly />
                         
-                        <h1 class="title" class="fs-title"> Previous Category Name</h2>
+                        <h1 class="title" class="fs-title"> New Category Name</h2>
                         <input type="text" class="inputField" name="catChange" value='<%=catSearch%>'   />
                        
                         <div id="nxtBtn">

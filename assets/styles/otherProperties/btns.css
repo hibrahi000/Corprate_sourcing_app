@@ -67,7 +67,8 @@
             transition: 0.4s;
         }
         #btnPrev span:before {
-            content: '<<';
+            font-family: "Font Awesome 5 Free";
+            content: "\f359";
             position: absolute;
             opacity: 0;
             top: 0;

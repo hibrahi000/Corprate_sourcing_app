@@ -75,7 +75,7 @@ function passport(passport) {
 							console.log('passFound');
 							//check to see if purchase
 							employee.findOne({ Username: userName }).then((empl) => {
-								if (empl.Department != 'Purchase') {
+								if (empl.Department != 'Purchasing') {
 									console.log('Not Dep Purch');
 									if (!empl.Admin) {
 										console.log('Not Admin');

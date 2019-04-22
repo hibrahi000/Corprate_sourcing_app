@@ -25,6 +25,7 @@ function passport(passport) {
 				.findOne({ Username: userName })
 				.then((empl) => {
 					if (!empl) {
+						console.log('Attempt was made to go into Admin USERNAME : ' + userName);
 						return done(null, false, { message: 'Invalid username or password' });
 					}
 
@@ -46,7 +47,9 @@ function passport(passport) {
 								}
 							});
 						} else {
+							console.log('Attempt was made to log into Admin USERNAME: ' + userName);
 							return done(null, false, { message: 'Invalid username or password' });
+
 						}
 					});
 				})
@@ -83,11 +86,11 @@ function passport(passport) {
 											message: 'It seems like you dont have permision to acces this site'
 										});
 									} else {
-										console.log('is admin');
+										console.log('is admin USER:' + userName);
 										return done(null, empl);
 									}
 								} else {
-									console.log('is Purch');
+									console.log('is Purch USER: ' + userName);
 									connectABHPharmaDB();
 									return done(null, empl);
 								}

@@ -27,7 +27,8 @@ const herokuRecoveryCodes = [
 module.exports = {
 	default_vendor_key: default_vendor_key,
 
-	ABHPHARMA_DB_CONNECT_URI: 'mongodb://Hibrahi000:TigerPass123@ds149905.mlab.com:49905/abhpharma',
+	ABHPHARMA_DB_CONNECT_URI: 'mongodb://Hibrahi000:TigerPass123@ds147346-a0.mlab.com:47346,ds147346-a1.mlab.com:47346/abhpharma?replicaSet=rs-ds147346',
+							   
 
 	SENDGRID_API_KEY: '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',
 

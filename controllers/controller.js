@@ -1300,7 +1300,7 @@ module.exports = (app) => {
 				for (let i = 0; i < doc.length; i++) {
 					catSearch.push(doc[i].Category);
 				}
-				console.log(catSearch);
+				// console.log(catSearch);
 				purchase = 'add_Category_Vendor';
 				res.render('purchDashboard', { purchase, vendSearch, catSearch });
 			});
@@ -1315,11 +1315,11 @@ module.exports = (app) => {
 					res.redirect('/ABH_Purchase/Modify_Material');
 				} else {
 					let catSearch = new Array();
-					console.log(doc.Categories.length);
+					// console.log(doc.Categories.length);
 					for (let i = 0; i < doc.Categories.length; i++) {
 						catSearch.push(doc.Categories[i].CategoryName);
 					}
-					console.log(catSearch);
+					// console.log(catSearch);
 					purchase = 'mat_Cat_Select';
 					res.render('purchDashboard', { purchase, vendSearch, catSearch });
 				}
@@ -1336,13 +1336,13 @@ module.exports = (app) => {
 		};
 
 		vendor.findOne({ VendorName: vendSearch }).then((doc) => {
-			console.log(vendSearch);
+			// console.log(vendSearch);
 			let arr = new Array();
 			let isExist = doc.Categories.findIndex((Category) => {
 				return Category.CategoryName === catAddition;
 			});
 			isExist = isExist !== -1;
-			console.log(isExist);
+			// console.log(isExist);
 			if (!isExist) {
 				vendor
 					.findOneAndUpdate({ VendorName: vendSearch }, { $push: { Categories: catModel } })
@@ -1384,7 +1384,7 @@ module.exports = (app) => {
 				let materialListTemp = materialList;
 				materialList = materialList.join(',\n');
 				// console.log(materialList,vendSearch,catSearch)
-				console.log(materialList);
+				// console.log(materialList);
 				purchase = 'mat_Vendor_Update';
 				res.render('purchDashboard', { purchase, materialList, vendSearch, catSearch, materialListTemp });
 			}
@@ -1417,7 +1417,7 @@ module.exports = (app) => {
 		}
 
 		// printout if it passed 2nd stage input verrification
-		console.log(materialList);
+		// console.log(materialList);
 		// make both the temporary list and new list capitalized so that only the word is compared not the caseing
 		materialList = materialList.toUpperCase();
 		materialListTemp = materialListTemp.toUpperCase();
@@ -1433,14 +1433,14 @@ module.exports = (app) => {
 			materialList = materialList.split(',');
 		}
 		materialListTemp = materialListTemp.split(',');
-		console.log('this is now before validation ', materialList);
+		// console.log('this is now before validation ', materialList);
 		//this is to prepare the list to be updated by replacing all the html tags that display the list in the textarea like tab(\r) and line brakes(\n) or both
 		for (let i = 0; i < materialList.length; i++) {
 			materialList[i] = materialList[i].replace(/(\r\n|\n|\r)/gm, '');
 		}
 
 		let formatPass = formatValidation(materialList); // this is to check to see if there are any : Spaces, extra commas,or underscore to sepereate multiword Materials
-		console.log(formatPass);
+		// console.log(formatPass);
 
 		//if the format that was entereed does not passes the second stage of checking then ...
 		if (!formatPass || badComma) {
@@ -1462,11 +1462,11 @@ module.exports = (app) => {
 			let tMat = materialListTemp;
 			// console.log(materialListTemp);
 			//this is to check what the result is
-			console.log('this is now ', materialList);
+			// console.log('this is now ', materialList);
 
 			/////////////////////////////////DO NOT TOUCH THE FUNCTIONS BELOW THEY WORK AND LEAVE IT THAT WAY //////////////////////////////////////////
 
-			console.log('this is before ', tMat);
+			// console.log('this is before ', tMat);
 
 			// create materialPop and materialAdd arrays to use later to decied what to remove and what to add
 			let materialPop = new Array();
@@ -1491,10 +1491,10 @@ module.exports = (app) => {
 				}
 			}
 
-			console.log(
-				(materialAdd[0] !== undefined && materialAdd[0] !== '') ||
-					(materialPop[0] !== undefined && materialPop[0] !== '')
-			);
+			// console.log(
+				// (materialAdd[0] !== undefined && materialAdd[0] !== '') ||
+					// (materialPop[0] !== undefined && materialPop[0] !== '')
+			// );
 			console.log('Material Was ADDED : ' + (materialAdd[0] !== undefined && materialAdd[0] !== ''));
 			console.log('Material Was REMOVED : ' + (materialPop[0] !== undefined && materialPop[0] !== ''));
 			//check if anything was added or removed if it was then proceed
@@ -1533,7 +1533,7 @@ module.exports = (app) => {
 
 							tempCat[index].Materials.splice(popI, 1);
 						}
-						console.log(tempCat);
+						// console.log(tempCat);
 
 						//This portion adds the added values from the arr
 						for (let i = 0; i < materialAdd.length; i++) {
@@ -1541,10 +1541,10 @@ module.exports = (app) => {
 							let tDoc = doc.Categories;
 							let catLength = tDoc.length;
 							let categoryMatExist;
-							console.log(tDoc);
+							// console.log(tDoc);
 							for (let k = 0; k < catLength; k++) {
 								let materialArr = tDoc[k].Materials;
-								console.log(materialArr);
+								// console.log(materialArr);
 								for (let j = 0; j < materialArr.length; j++) {
 									if (materialArr[j] === materialAdd[i]) {
 										materialExist = true;
@@ -1601,12 +1601,12 @@ module.exports = (app) => {
 				/////////////////////////////////////////////////////////////////////////////////////////////////TODO: COMPLETED APRIL 18TH 2019
 
 				//This section is to update the material document that houses the Categories => Materials => Vendors who supply the material
-				console.log(tMat[0] === '' || tMat[0] === undefined);
+				// console.log(tMat[0] === '' || tMat[0] === undefined);
 				mat
 					.findOne({ Category: catSearch })
 					.then((doc) => {
-						console.log(catSearch);
-						console.log(doc);
+						// console.log(catSearch);
+						// console.log(doc);
 						if (materialAdd[0] !== undefined && materialAdd[0] !== '') {
 							if (tMat[0] === '') {
 								let matArr = doc.Material;
@@ -1618,10 +1618,10 @@ module.exports = (app) => {
 										for (let i = 0; i < materialAdd.length; i++) {
 											let tDoc = totalDoc;
 											let catLength = tDoc.length;
-											console.log(tDoc);
+											// console.log(tDoc);
 											for (let k = 0; k < catLength; k++) {
 												let materialArr = tDoc[k].Material;
-												console.log(materialArr);
+												// console.log(materialArr);
 												for (let j = 0; j < materialArr.length; j++) {
 													if (materialArr[j].MaterialName === materialAdd[i]) {
 														materialExist = true;
@@ -1692,7 +1692,7 @@ module.exports = (app) => {
 												let vendIndex = matArr[matI].Vendors.findIndex((vend) => {
 													return vend === vendSearch;
 												});
-												console.log(vendIndex);
+												// console.log(vendIndex);
 
 												if (vendIndex === -1) {
 													matArr[matIndex].Vendors.push(vendSearch);
@@ -1733,7 +1733,7 @@ module.exports = (app) => {
 																		Vendors: vendSearch
 																	};
 																	matArr.push(newMaterial);
-																	console.log(matArr);
+																	// console.log(matArr);
 																}
 															}
 														}

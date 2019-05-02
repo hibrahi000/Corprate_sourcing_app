@@ -73,7 +73,7 @@ module.exports = (app) => {
 	//////////////////////ABH VENDOR SITE////////////////////////////////////////
 
 	app.get('/ABH_Invoice_Form', (req, res) => {
-		const { vendorName, key, newMaterial} = req.query;
+		const { vendorName, key, newMaterial } = req.query;
 		// console.log(vendorName);
 		console.log(req.query);
 		// console.log(key !== null);
@@ -166,52 +166,46 @@ module.exports = (app) => {
 			shipCountry: shipCountry
 		};
 
-
 		if (InStock == 'on') {
 			InStock = 'Yes';
 			DateInStock = Date();
 		} else {
 			InStock = 'No';
 		}
-		
+
 		if (key !== undefined && key !== '' && key !== null) {
+			vendor.findOne({ VendorName: vendorName }).then((doc) => {
+				bcrypt.compare(key, doc.key).then((isMatch) => {
+					if (isMatch) {
+						let vProfile = doc;
 
-		
+						vProfile.PayType = payType;
+						vProfile.PayTerms = payTerms;
+						vProfile.shipCompName = shipCompName;
+						vProfile.shipAddress1 = shipAddress1;
+						vProfile.shipAddress2 = shipAddress2;
+						vProfile.shipCity = shipCity;
+						vProfile.shipState = shipState;
+						vProfile.shipZip = shipZip;
+						vProfile.shipCountry = shipCountry;
 
-				vendor.findOne({ VendorName: vendorName }).then(doc =>{
+						if (newMaterial === 'true') {
+							let catIndex = vProfile.Categories.findIndex((doc) => {
+								return doc.CategoryName === category;
+							});
+							let matIndex = vProfile.Categories[catIndex].Material.findIndex((mat) => {
+								return mat === material;
+							});
 
-					bcrypt
-					.compare(key, doc.key)
-					.then((isMatch) => {
-						if (isMatch ) {
+							//updating material database if it is a new material aka mass request so many vendors
+							mat.findOne({ Category: category }).then((doc) => {
+								let matDoc = doc.Material;
+								let matIndex = matDoc.findIndex((mat) => {
+									return mat.MaterialName === material;
+								});
 
-							let vProfile 								= doc;
-							
-							vProfile.PayType 							=payType;
-							vProfile.PayTerms							=payTerms;
-							vProfile.shipCompName						=shipCompName;
-							vProfile.shipAddress1						=shipAddress1;
-							vProfile.shipAddress2						=shipAddress2;
-							vProfile.shipCity							=shipCity;
-							vProfile.shipState							=shipState;
-							vProfile.shipZip							=shipZip;
-							vProfile.shipCountry						=shipCountry;
-							
-
-					
-							if (newMaterial === 'true') {
-								let catIndex = vProfile.Categories.findIndex( doc =>{return doc.CategoryName === category});
-								let matIndex = vProfile.Categories[catIndex].Material.findIndex(mat =>{ return mat === material});
-								
-								//updating material database if it is a new material aka mass request so many vendors 
-								mat.findOne({ Category: category }).then((doc) => {
-									let matDoc = doc.Material;
-									let matIndex = matDoc.findIndex((mat) => {
-										return mat.MaterialName === material;
-									});
-									
-									matDoc.Material[matIndex].Vendors.push(vendorName);
-									mat
+								matDoc.Material[matIndex].Vendors.push(vendorName);
+								mat
 									.findOneAndUpdate({ Category: category }, { Material: matDoc })
 									.then((res) => {
 										console.log('Material Update Complete');
@@ -219,77 +213,85 @@ module.exports = (app) => {
 									.catch((err) => {
 										console.log(err);
 									}); ///// This is where we left off
-								});
-								
-								if(catIndex !== -1){
-									if(matIndex !== -1){
-										vProfile.Categories[catIndex].Materials.push(material);
-									}
-								}
-								else{
-									let newCat = {
-										CategoryName : category,
-										Material : [material]
-									}
-									vProfile.Material.push(newMat);
-									
-								}
-								//TODO:		updating vendor material BETA this is just here as a reference  TODO:
-								// vendor.findOne({ VendorName: vendorName }).then((doc) => {
-								// 	let cat = doc.Categories;
-								// 	let catIndex = cat.findIndex((cat) => {
-								// 		return cat.CategoryName === category;
-								// 	});
-								// 	cat[catIndex].Materials.push(material);
-								// 	vendor
-								// 	.findOneAndUpdate({ VendorName: vendorName }, { Categories: cat })
-								// 	.then('Updated Vendor')
-								// 	.catch((err) => {
-								// 		console.log(err);
-								// 	});
-								// });
-								
-								
-								let vUpdate ={
-									PayType:         vProfile.PayType, 				       
-									PayTerms:        vProfile.PayTerms,				       
-									shipCompName:    vProfile.shipCompName,      
-									shipAddress1:    vProfile.shipAddress1,     
-									shipAddress2:    vProfile.shipAddress2,      
-									shipCity:        vProfile.shipCity,				       
-									shipState:       vProfile.shipState,			       
-									shipZip:         vProfile.shipZip,					       
-									shipCountry:     vProfile.shipCountry,	
-									Categories:      vProfile.Categories       
-									}
-					
-								vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
-							} 
-							else{
-								
-								let vUpdate ={
-									PayType:         vProfile.PayType, 				       
-									PayTerms:        vProfile.PayTerms,				       
-									shipCompName:    vProfile.shipCompName,      
-									shipAddress1:    vProfile.shipAddress1,     
-									shipAddress2:    vProfile.shipAddress2,      
-									shipCity:        vProfile.shipCity,				       
-									shipState:       vProfile.shipState,			       
-									shipZip:         vProfile.shipZip,					       
-									shipCountry:     vProfile.shipCountry	       
-									}
+							});
 
-									vendor.findOneAndUpdate({VendorName: vendorName},vUpdate).then(doc =>{console.log('update successfull')}).catch(err =>{console.log(err)});
+							if (catIndex !== -1) {
+								if (matIndex !== -1) {
+									vProfile.Categories[catIndex].Materials.push(material);
+								}
+							} else {
+								let newCat = {
+									CategoryName: category,
+									Material: [ material ]
+								};
+								vProfile.Material.push(newMat);
 							}
-							
+							//TODO:		updating vendor material BETA this is just here as a reference  TODO:
+							// vendor.findOne({ VendorName: vendorName }).then((doc) => {
+							// 	let cat = doc.Categories;
+							// 	let catIndex = cat.findIndex((cat) => {
+							// 		return cat.CategoryName === category;
+							// 	});
+							// 	cat[catIndex].Materials.push(material);
+							// 	vendor
+							// 	.findOneAndUpdate({ VendorName: vendorName }, { Categories: cat })
+							// 	.then('Updated Vendor')
+							// 	.catch((err) => {
+							// 		console.log(err);
+							// 	});
+							// });
 
-							const mailOptionsVendForm = {
-								from: `${vendorName} <${vProfile.Email}>`, // sender address
-								to: '<Purchasing@abhnature.com>',
-								cc: '<tech@abhpharma.com>', // list of receivers
-								subject: `${vendorName} Request Submission For ${material}`,
-								text: `
-										NEW MATERIAL: ${isNew} <br>   
+							let vUpdate = {
+								PayType: vProfile.PayType,
+								PayTerms: vProfile.PayTerms,
+								shipCompName: vProfile.shipCompName,
+								shipAddress1: vProfile.shipAddress1,
+								shipAddress2: vProfile.shipAddress2,
+								shipCity: vProfile.shipCity,
+								shipState: vProfile.shipState,
+								shipZip: vProfile.shipZip,
+								shipCountry: vProfile.shipCountry,
+								Categories: vProfile.Categories
+							};
+
+							vendor
+								.findOneAndUpdate({ VendorName: vendorName }, vUpdate)
+								.then((doc) => {
+									console.log('update successfull');
+								})
+								.catch((err) => {
+									console.log(err);
+								});
+						} else {
+							let vUpdate = {
+								PayType: vProfile.PayType,
+								PayTerms: vProfile.PayTerms,
+								shipCompName: vProfile.shipCompName,
+								shipAddress1: vProfile.shipAddress1,
+								shipAddress2: vProfile.shipAddress2,
+								shipCity: vProfile.shipCity,
+								shipState: vProfile.shipState,
+								shipZip: vProfile.shipZip,
+								shipCountry: vProfile.shipCountry
+							};
+
+							vendor
+								.findOneAndUpdate({ VendorName: vendorName }, vUpdate)
+								.then((doc) => {
+									console.log('update successfull');
+								})
+								.catch((err) => {
+									console.log(err);
+								});
+						}
+
+						const mailOptionsVendForm = {
+							from: `${vendorName} <${vProfile.Email}>`, // sender address
+							to: '<Purchasing@abhnature.com>',
+							cc: '<tech@abhpharma.com>', // list of receivers
+							subject: `${vendorName} Request Submission For ${material}`,
+							text: `
+										NEW MATERIAL: ${isNew} <br>
 										Response from vendor: ${vendorName}<br><br>
 										Material: ${material}<br>
 										ABH Requested: ${abhRequest}<br><br>
@@ -312,7 +314,7 @@ module.exports = (app) => {
 										${shipCity}<br>
 										${shipState}<br>
 										${shipZip}<br>
-										
+
 										Notes left by ${vendorName} : <br> ${notes}.
 
 
@@ -321,8 +323,8 @@ module.exports = (app) => {
 										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 										`,
-								html: `
-										NEW MATERIAL: ${isNew} <br>   
+							html: `
+										NEW MATERIAL: ${isNew} <br>
 										Response from vendor: ${vendorName}<br><br>
 										Material: ${material}<br>
 										ABH Requested: ${abhRequest}<br><br>
@@ -338,7 +340,7 @@ module.exports = (app) => {
 										Shipping Date ${shippingDate}<br><br><br>
 
 
-								
+
 
 										Shipping Company : <br>
 										${shipCompName}<br>
@@ -347,7 +349,7 @@ module.exports = (app) => {
 										${shipCity}<br>
 										${shipState}<br>
 										${shipZip}<br>
-										
+
 										Notes left by ${vendorName} : <br> ${notes}.
 
 
@@ -356,18 +358,21 @@ module.exports = (app) => {
 										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 										`
-							};
+						};
 
-							//this has the receipt functionallty 
-							receipt.find({}).then(receiptDoc =>{
-								let rDoc = receiptDoc;
-								let rIndex = rDoc.findIndex(rec =>{return rec.VendorName === vendorName});
-							if(rIndex === -1){
+						//this has the receipt functionallty
+						receipt.find({}).then((receiptDoc) => {
+							let rDoc = receiptDoc;
+							let rIndex = rDoc.findIndex((rec) => {
+								return rec.VendorName === vendorName;
+							});
+							if (rIndex === -1) {
 								var createReceipt = receipt({
 									VendorName: vendorName,
-									
-										Receipt : [{
-											Category : category,
+
+									Receipt: [
+										{
+											Category: category,
 											Material: material,
 											ABH_Request: abhRequest,
 											Item_Code: itemCode,
@@ -387,7 +392,8 @@ module.exports = (app) => {
 											Ship_Zip: shipZip,
 											Ship_Country: shipCountry,
 											Notes: notes
-										}]
+										}
+									]
 								});
 
 								createReceipt.save((err) => {
@@ -397,84 +403,77 @@ module.exports = (app) => {
 										console.log('Submission Recieved And Stored');
 									}
 								});
-							}
-							else{
+							} else {
 								let newReceipt = {
-										Category : category,
-										Material: material,
-										ABH_Request: abhRequest,
-										Item_Code: itemCode,
-										Ammount: ammount + ' ' + measurement,
-										Price: priceIn,
-										Price_Type: priceType,
-										In_Stock: inStock,
-										Date_In_Stock: dateInStock,
-										PayType: payType,
-										PayTerms: payTerms,
-										ShippingDate: shippingDate,
-										Shipping_Company_Name: shipCompName,
-										Ship_Address1: shipAddress1,
-										Ship_Address2: shipAddress2,
-										Ship_City: shipCity,
-										Ship_State: shipState,
-										Ship_Zip: shipZip,
-										Ship_Country: shipCountry,
-										Notes: notes
-								}
+									Category: category,
+									Material: material,
+									ABH_Request: abhRequest,
+									Item_Code: itemCode,
+									Ammount: ammount + ' ' + measurement,
+									Price: priceIn,
+									Price_Type: priceType,
+									In_Stock: inStock,
+									Date_In_Stock: dateInStock,
+									PayType: payType,
+									PayTerms: payTerms,
+									ShippingDate: shippingDate,
+									Shipping_Company_Name: shipCompName,
+									Ship_Address1: shipAddress1,
+									Ship_Address2: shipAddress2,
+									Ship_City: shipCity,
+									Ship_State: shipState,
+									Ship_Zip: shipZip,
+									Ship_Country: shipCountry,
+									Notes: notes
+								};
 
 								console.log(rDoc[rIndex]);
 								rDoc[rIndex].Receipt.push(newReceipt);
-								receipt.findOneAndUpdate({VendorName: vendorName},{Receipt : rDoc[rIndex].Receipt}).then(doc => { console.log('vendor exists so added rec to db')}).catch(err =>{console.log(err)});
+								receipt
+									.findOneAndUpdate({ VendorName: vendorName }, { Receipt: rDoc[rIndex].Receipt })
+									.then((doc) => {
+										console.log('vendor exists so added rec to db');
+									})
+									.catch((err) => {
+										console.log(err);
+									});
 							}
-							})
+						});
 
-							
-							transporter.send(mailOptionsVendForm, function(err, info) {
-								if (err) console.log('Couldnt send email' + err);
-								else {
+						transporter.send(mailOptionsVendForm, function(err, info) {
+							if (err) console.log('Couldnt send email' + err);
+							else {
 								// console.log(info);
-									console.log('Email Sent');
+								console.log('Email Sent');
 								res.redirect('https://abhpharma.com/');
-								}
+							}
+						});
+
+						// resets vendors pass word so that the form wont be used again
+						bcrypt.genSalt(10, (err, salt) =>
+							bcrypt.hash('PharmaDebug)!54', salt, (err, hash) => {
+								if (err) throw err;
+								hashKey = hash;
+								vendor
+									.findOneAndUpdate({ VendorName: vendorName }, { key: hashKey })
+									.then(console.log('Times Up Cannot Use this form anymore'))
+									.catch((err) => {
+										console.log(err);
+									});
 							})
-
-							
-
-						
-
-					
-							// resets vendors pass word so that the form wont be used again
-							bcrypt.genSalt(10, (err, salt) =>
-								bcrypt.hash('PharmaDebug)!54', salt, (err, hash) => {
-									if (err) throw err;
-									hashKey = hash;
-									vendor
-										.findOneAndUpdate({ VendorName: vendorName }, { key: hashKey })
-										.then(console.log('Times Up Cannot Use this form anymore'))
-										.catch((err) => {
-											console.log(err);
-										});
-								})
-							);
-						}
-						else{
-							res.render('404Page');
-						}
-					})
+						);
+					} else {
+						res.render('404Page');
+					}
+				});
 			});
-			
 		} else {
 			res.render('404Page');
 		}
-			
-	
 	});
 
-
-
-
 	app.get('/Do_Not_Supply', urlencodedParser, (req, res) => {
-		const { vendorName, key, newMaterial, material , category} = req.query;
+		const { vendorName, key, newMaterial, material, category } = req.query;
 		console.log('recieved request to remove');
 		console.log(vendorName);
 		console.log(req.query);
@@ -497,7 +496,7 @@ module.exports = (app) => {
 		// console.log(key === '');
 		// console.log(key === undefined);
 		// console.log(key === null );
-	
+
 		if (key !== undefined && key !== '' && key !== null) {
 			vendor
 				.findOne({ VendorName: vendorName })
@@ -509,103 +508,114 @@ module.exports = (app) => {
 							if (isMatch && vendors.clicked === false) {
 								resetVendorKey();
 								if (newMaterial === 'false') {
-									mat.findOne({Category : category}).then(matDoc=>{
+									mat.findOne({ Category: category }).then((matDoc) => {
 										let vProfile = vendors;
-										let vCatI = vProfile.Categories.findIndex(doc =>{ return doc.CategoryName === category});
-										let vMatI = vProfile.Categories[vCatI].Materials.findIndex(mat =>{return mat === material});
+										let vCatI = vProfile.Categories.findIndex((doc) => {
+											return doc.CategoryName === category;
+										});
+										let vMatI = vProfile.Categories[vCatI].Materials.findIndex((mat) => {
+											return mat === material;
+										});
 										console.log(vMatI);
-										
+
 										let mProfile = matDoc;
-										let mMatI = mProfile.Material.findIndex(mat =>{return mat.MaterialName === material});
-										let mVendI = mProfile.Material[mMatI].Vendors.findIndex(vend =>{return vend === vendorName});
-										
-										vProfile.Categories[vCatI].Materials.splice(vMatI,1);
-										mProfile.Material[mMatI].Vendors.splice(mVendI,1);
-								
+										let mMatI = mProfile.Material.findIndex((mat) => {
+											return mat.MaterialName === material;
+										});
+										let mVendI = mProfile.Material[mMatI].Vendors.findIndex((vend) => {
+											return vend === vendorName;
+										});
+
+										vProfile.Categories[vCatI].Materials.splice(vMatI, 1);
+										mProfile.Material[mMatI].Vendors.splice(mVendI, 1);
+
 										// console.log(vProfile.Categories[vCatI].Materials);
 										// console.log(mProfile.Material[mMatI].Vendors);
-								
-										if(mProfile.Material[mMatI].Vendors[0] === undefined){
-											console.log('is empty')
-											mProfile.Material.splice(mMatI,1);
-										
+
+										if (mProfile.Material[mMatI].Vendors[0] === undefined) {
+											console.log('is empty');
+											mProfile.Material.splice(mMatI, 1);
+
 											const mailOptionsVendUnsubscibeNewDel = {
 												from: `${vendorName} <${vProfile.Email}>`, // sender address
-												to:
-													' <tech@abhpharma.com>,<Purchasing@abhnature.com>', // list of receivers
+												to: ' <tech@abhpharma.com>,<Purchasing@abhnature.com>', // list of receivers
 												subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
 												text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
-											
-											
+
+
 											<br><br>
 											The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 											Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-											
+
 											`,
 												html: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
-											
-											
+
+
 											<br><br>
 											The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 											Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-											
+
 											`
 											};
-											transporter.send(
-												mailOptionsVendUnsubscibeNewDel,
-												function(err, info) {
-													if (err)
-														console.log('Couldnt send email' + err);
-													else null;
-													// console.log(info);
-													res.render('vendor/materialRemoved');
-												}
-											);
-										}
-										else{
+											transporter.send(mailOptionsVendUnsubscibeNewDel, function(err, info) {
+												if (err) console.log('Couldnt send email' + err);
+												else null;
+												// console.log(info);
+												res.render('vendor/materialRemoved');
+											});
+										} else {
 											const mailOptionsVendUnsubscibeNew = {
 												from: `${vendorName} <${vend.Email}>`, // sender address
 												to: '<Purchasing@abhnature.com>',
 												cc: '<tech@abhpharma.com>', // list of receivers
 												subject: `${vendorName} Unsubscription For ${material}`,
 												text: ` ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
-										
-										
-										
-										
+
+
+
+
 										<br><br>
 										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 										`,
 												html: `Since ${vendorName} requested to be removed from the email chain for material: ${material}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
-										
-										
-										
-										
+
+
+
+
 										<br><br>
 										The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 										Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 										`
 											};
-											transporter.send(
-												mailOptionsVendUnsubscibeNew,
-												function(err, info) {
-													if (err)
-														console.log('Couldnt send email' + err);
-													else null;
-													// console.log(info);
-													res.render('vendor/materialRemoved');
-												}
-											);
+											transporter.send(mailOptionsVendUnsubscibeNew, function(err, info) {
+												if (err) console.log('Couldnt send email' + err);
+												else null;
+												// console.log(info);
+												res.render('vendor/materialRemoved');
+											});
 										}
 
-										mat.findOneAndUpdate({Category : category},{Material : mProfile.Material}).then(doc =>{console.log('Updated Database')}).catch(err =>{console.log(err)});
-										vendor.findOneAndUpdate({VendorName: vendorName},{Categories : vProfile.Categories}).then(doc =>{console.log('Updated Database')}).catch(err =>{console.log(err)});
-
-
-									
+										mat
+											.findOneAndUpdate({ Category: category }, { Material: mProfile.Material })
+											.then((doc) => {
+												console.log('Updated Database');
+											})
+											.catch((err) => {
+												console.log(err);
+											});
+										vendor
+											.findOneAndUpdate(
+												{ VendorName: vendorName },
+												{ Categories: vProfile.Categories }
+											)
+											.then((doc) => {
+												console.log('Updated Database');
+											})
+											.catch((err) => {
+												console.log(err);
+											});
 									});
-							
 								} else {
 									res.render('vendor/materialRemoved');
 
@@ -616,22 +626,22 @@ module.exports = (app) => {
 										cc: '<tech@abhpharma.com>', // list of receivers
 										subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
 										text: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
-                                            
-                                                
-                                                
+
+
+
                                                 <br><br>
                                                 The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
                                                 Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-                                                
+
                                                 `,
 										html: `Since ${vendorName} requested to be removed from the email chain for material: ${material}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
-                                                
-                                                
-                                                
+
+
+
                                                 <br><br>
                                                 The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
                                                 Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-                                                
+
                                                 `
 									};
 									transporter.send(mailOptionsUnsubscribe, function(err, info) {
@@ -641,8 +651,7 @@ module.exports = (app) => {
 										res.render('vendor/materialRemoved');
 									});
 								}
-							}
-							 else {
+							} else {
 								res.render('404Page');
 							}
 						})
@@ -692,7 +701,6 @@ module.exports = (app) => {
 
 	app.get('/ABH_Purchase/Dashboard', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		mat.find({}).then((matDoc) => {
-
 			var categories = new Array();
 			for (let i = 0; i < matDoc.length; i++) {
 				categories.push(matDoc[i]);
@@ -725,9 +733,7 @@ module.exports = (app) => {
 
 		let { material } = req.body;
 		material = material.toUpperCase();
-
 		let newMaterial = 'No';
-		
 
 		if (newMat === 'on') {
 			newMaterial = 'Yes';
@@ -739,32 +745,29 @@ module.exports = (app) => {
 		// 1) if new material is checked skip the vendor search and go straight to creating a new material
 		console.log('new material:  ' + newMaterial);
 		console.log('masCat:  ' + masCat);
+		console.log('The material Inputed Was ' + material);
 
-		vendor.find({}).then(vendorDoc =>{
+		vendor.find({}).then((vendorDoc) => {
 			// console.log(vendorDoc)
 			let vendList = vendorDoc;
-			let vEmailList = new Array;
+			let vEmailList = new Array();
 			let vendorList = new Array();
 			if (masCat === 'on') {
 				mat
 					.findOne({ Category: category })
 					.then((doc) => {
-						
-						
 						for (let i = 0; i < vendList.length; i++) {
 							let catArray = vendList[i].Categories;
 							for (let k = 0; k < catArray.length; k++) {
-									if(catArray[k].CategoryName === category){
-										vEmailList.push(vendList[i].Email)
-									}
-							
+								if (catArray[k].CategoryName === category) {
+									vEmailList.push(vendList[i].Email);
+								}
 							}
 						}
-						
-						
+
 						console.log(vEmailList);
 						purchase = 'submitReq';
-						res.render('purchDashboard', { purchase, material, newMaterial, vEmailList,category });
+						res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
 					})
 					.catch((err) => {
 						console.log(err);
@@ -775,23 +778,22 @@ module.exports = (app) => {
 						.findOne({ Category: category })
 						.then((doc) => {
 							let matArr = doc.Material;
-							let matFound = matArr.findIndex(mat =>{
-								return mat.MaterialName === material
+							let matFound = matArr.findIndex((mat) => {
+								return mat.MaterialName === material;
 							});
-						
-							console.log(matFound);
-							
 
-							if (matFound === -1) {										
-										for (let i = 0; i < vendList.length; i++) {
-											if (!vendorList.includes(vendList[i].VendorName)) {
-												vendorList.push(vendList[i].VendorName);
-												vEmailList.push(vendList[i].Email);
-											}
-										}
-											console.log(vEmailList.length);
-											purchase = 'submitReq';
-										res.render('purchDashboard', { purchase, material, newMaterial, vEmailList,category });								
+							console.log(matFound);
+
+							if (matFound === -1) {
+								for (let i = 0; i < vendList.length; i++) {
+									if (!vendorList.includes(vendList[i].VendorName)) {
+										vendorList.push(vendList[i].VendorName);
+										vEmailList.push(vendList[i].Email);
+									}
+								}
+								console.log(vEmailList.length);
+								purchase = 'submitReq';
+								res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
 							} else {
 								req.flash(
 									'error_msg',
@@ -805,13 +807,15 @@ module.exports = (app) => {
 						});
 				} else {
 					mat
-						.findOne({Category: category })
+						.findOne({ Category: category })
 						.then((doc) => {
 							console.log(doc);
 							console.log('starting test on db search');
 							let matArr = doc.Material;
-							let matIndex = matArr.findIndex(arr =>{return arr.MaterialName === material});
-							console.log('matIndex= '+ matIndex + ' ' + matIndex === -1);
+							let matIndex = matArr.findIndex((arr) => {
+								return arr.MaterialName === material;
+							});
+							console.log('matIndex= ' + matIndex + ' ' + matIndex === -1);
 							if (matIndex === -1) {
 								console.log('now entering');
 								req.flash(
@@ -821,26 +825,32 @@ module.exports = (app) => {
 								purchase = 'reqQuote';
 								res.redirect('/ABH_Purchase/Dashboard');
 							} else {
-								
-								for(let m =0; m< matArr[matIndex].Vendors.length; m++){
-								vendorList.push(matArr[matIndex].Vendors[m]);
-								}	
-								for(let i =0; i< vendorList.length; i++){
-									let vIndex = vendList.findIndex( doc =>{return doc.VendorName === vendorList[i]})
+								for (let m = 0; m < matArr[matIndex].Vendors.length; m++) {
+									vendorList.push(matArr[matIndex].Vendors[m]);
+								}
+								for (let i = 0; i < vendorList.length; i++) {
+									let vIndex = vendList.findIndex((doc) => {
+										return doc.VendorName === vendorList[i];
+									});
 									vEmailList.push(vendList[vIndex].Email);
 								}
 								console.log(vEmailList);
 								dbQuery = 'search';
 								purchase = 'submitReq';
-								res.render('purchDashboard', { purchase, material, newMaterial, dbQuery,category, vEmailList});
+								res.render('purchDashboard', {
+									purchase,
+									material,
+									newMaterial,
+									dbQuery,
+									category,
+									vEmailList
+								});
 							}
 						})
 						.catch();
 				}
 			}
-
 		});
-
 	});
 
 	app.get('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
@@ -848,19 +858,14 @@ module.exports = (app) => {
 	});
 
 	app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res, next) => {
-		const { material, reqType, ammount, units, price, rushOrder, notes, newMat,category} = req.body;
+		const { material, reqType, ammount, units, price, rushOrder, notes, newMat, category } = req.body;
 		let { vEmailList } = req.body;
 		vEmailList = vEmailList.split(',');
 		let newMaterial = newMat === 'on';
 		let noErr = true;
 
-		
-
-
-
-		if(newMaterial){
-			
-			mat.findOne({Category : category}).then(mDoc=>{
+		if (newMaterial) {
+			mat.findOne({ Category: category }).then((mDoc) => {
 				let matArr = matDoc.Material;
 				matArr.push({
 					MaterialName: material,
@@ -869,29 +874,27 @@ module.exports = (app) => {
 
 				console.log(matArr);
 
-
 				mat
-				.findOneAndUpdate({ Category: category }, { Material: matArr })
-				.then(() => {
-					console.log('Updated ' + category);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-			})
+					.findOneAndUpdate({ Category: category }, { Material: matArr })
+					.then(() => {
+						console.log('Updated ' + category);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			});
 		}
-
 
 		console.log(vEmailList);
 		console.log('------------------');
-	
 
-		vendor.find({}).then(vDoc =>{
-
+		vendor.find({}).then((vDoc) => {
 			let vendArr = vDoc;
 
 			for (let i = 0; i < vEmailList.length; i++) {
-				let vIndex = vendArr.findIndex(doc =>{return doc.Email === vEmailList[i]})
+				let vIndex = vendArr.findIndex((doc) => {
+					return doc.Email === vEmailList[i];
+				});
 				var tempKey = Math.random().toString(36).slice(-8);
 				let vend = vendArr[vIndex];
 				// var tempKey = 'PharmaDebug)!54';
@@ -906,40 +909,37 @@ module.exports = (app) => {
 							.catch();
 					})
 				);
-					
 
+				var vendorName = vend.VendorName;
+				//  console.log(vend.VendorName);
+				var shipCompName = vend.shipCompName;
+				//  console.log(shipCompName);
+				var shipAddress1 = vend.shipAddress1;
+				const shipAddress2 = vend.ShipAdress2;
+				const shipCity = vend.shipCity;
+				const shipState = vend.shipState;
+				const shipZip = vend.shipZip;
+				const shipCountry = vend.shipCountry;
+				const matNew = newMaterial;
 
-						
-						var vendorName = vend.VendorName;
-						//  console.log(vend.VendorName);
-						var shipCompName = vend.shipCompName;
-						//  console.log(shipCompName);
-						var shipAddress1 = vend.shipAddress1;
-						const shipAddress2 = vend.ShipAdress2;
-						const shipCity = vend.shipCity;
-						const shipState = vend.shipState;
-						const shipZip = vend.shipZip;
-						const shipCountry = vend.shipCountry;
-						const matNew = newMaterial;
+				var orderType = rushOrder;
+				if ((orderType = 'on')) {
+					orderType = 'Rush Order';
+				} else {
+					orderType = 'Order';
+				}
 
-						var orderType = rushOrder;
-						if ((orderType = 'on')) {
-							orderType = 'Rush Order';
-						} else {
-							orderType = 'Order';
-						}
+				var targetPrice = price;
+				if (targetPrice != '') {
+					targetPrice = `Our target price would preferably be ${price} $(USD)`;
+				}
 
-						var targetPrice = price;
-						if (targetPrice != '') {
-							targetPrice = `Our target price would preferably be ${price} $(USD)`;
-						}
-
-						const mailOptionsReq = {
-							from: 'ABH Purchase Dept. <Purchasing@abhnature.com>', // sender address
-							to: vEmailList[i], // list of receivers
-							//${vendorContact[i]},
-							subject: `ABH-Nature Quote Request for ${material} `, // Subject line
-							text: `
+				const mailOptionsReq = {
+					from: 'ABH Purchase Dept. <Purchasing@abhnature.com>', // sender address
+					to: vEmailList[i], // list of receivers
+					//${vendorContact[i]},
+					subject: `ABH-Nature Quote Request for ${material} `, // Subject line
+					text: `
 								Hello ${vendorName}, <br>
 								<br><br>
 
@@ -948,7 +948,7 @@ module.exports = (app) => {
 
 								${targetPrice}<br>
 								Notes: ${notes}<br><br>
-								
+
 
 								Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
 
@@ -965,13 +965,13 @@ module.exports = (app) => {
 								http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&category=${category}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${matNew}
 
 
-								<br><br> 
+								<br><br>
 
 								If you do not supply this material and want to be removed from the email chain please click the following link <br>
 								http://app.abhpharma.com/Do_Not_Supply/?material=${material}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${matNew}
-								
+
 								`,
-							html: `
+					html: `
 								Hello ${vendorName}, <br>
 								<br><br>
 
@@ -980,7 +980,7 @@ module.exports = (app) => {
 
 								${targetPrice}<br>
 								Notes: ${notes}<br><br>
-								
+
 
 								Attached to this email is a link that will allow you to send us your quote. This link will expire in 2 Days or once you submit the form.
 
@@ -993,31 +993,29 @@ module.exports = (app) => {
 								The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 								Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 								<br><br>
-								
+
 								<a href = "http://app.abhpharma.com/ABH_Invoice_Form/?material=${material}&category=${category}&abhRequest=${orderType}+Of+${ammount}+${units}:+${reqType}&shipCompName=${shipCompName}&shipAddress1=${shipAddress1}&shipAddress2${shipAddress2}&shipCity=${shipCity}&shipState=${shipState}&shipZip=${shipZip}&shipCountry=${shipCountry}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${matNew}">ABH Invoice Form<a>
 
 
-								<br><br> 
+								<br><br>
 
 								If you do not supply this material and want to be removed from the email chain please click the following link <br>
 								List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "http:/app.abhpharma.com/Do_Not_Supply/?material=${material}&category=${category}&vendorName=${vendorName}&key=${tempKey}&newMaterial=${matNew}">Unsubscribe<a>
 								`
-						};
-						//localHost:5000
-						//app.abhpharma.com
-						transporter
-							.send(mailOptionsReq)
-							.then((info) => {
-								console.log('Sent Email to ' + vEmailList[i]);
-							})
-							.catch((err) => {
-								console.log('there is a err sending to ' + vEmailList[i] + ' code Line 869', err);
-								noErr = false;
-							});
-				
+				};
+				//localHost:5000
+				//app.abhpharma.com
+				transporter
+					.send(mailOptionsReq)
+					.then((info) => {
+						console.log('Sent Email to ' + vEmailList[i]);
+					})
+					.catch((err) => {
+						console.log('there is a err sending to ' + vEmailList[i] + ' code Line 869', err);
+						noErr = false;
+					});
 			}
-
-		})
+		});
 		if (noErr == true) {
 			if (newMaterial) {
 				req.flash('success_msg', `Request Has Been Sent TO ALL VENDORS`);
@@ -1026,8 +1024,6 @@ module.exports = (app) => {
 				req.flash('success_msg', `Request Has Been Sent`);
 				res.redirect('/ABH_Purchase/Dashboard');
 			}
-			
-
 		} else {
 			if (newMaterial) {
 				req.flash(
@@ -1073,7 +1069,7 @@ module.exports = (app) => {
 				const vendNam = vendor.VendorName;
 				const repNam = vendor.RepName;
 				const website = vendor.Website;
-				
+
 				const vendEmail = vendor.Email;
 				const vendNum = vendor.Number;
 				const shipCompNam = vendor.shipCompNam;
@@ -1085,16 +1081,12 @@ module.exports = (app) => {
 				const shipCountry = vendor.shipCountry;
 				//    console.log(matSup);
 
-			
-			
-
 				res.render('purchDashboard', {
 					purchase,
 					vendNam,
 					repNam,
 					website,
-					
-				
+
 					vendEmail,
 					vendNum,
 					shipCompNam,
@@ -1141,7 +1133,7 @@ module.exports = (app) => {
 
 		shipCountry = shipCountry.toUpperCase();
 		var matArray = new Array();
-		
+
 		// console.log(matArray);
 		var query = { VendorName: vendNam }; // takes the readOnly value of vendNam from purchasePartial and then applies it the query
 
@@ -1195,7 +1187,7 @@ module.exports = (app) => {
 			vendNam,
 			repName,
 			website,
-			
+
 			vendEmail,
 			vendNum,
 			shipCompNam,
@@ -1210,7 +1202,7 @@ module.exports = (app) => {
 		vendNam = vendNam.toUpperCase();
 		repName = repName.toUpperCase();
 		website = website.toUpperCase();
-		
+
 		vendEmail = vendEmail.toUpperCase();
 		shipCompNam = shipCompNam.toUpperCase();
 		shipAddress1 = shipAddress1.toUpperCase();
@@ -1220,11 +1212,10 @@ module.exports = (app) => {
 
 		shipCountry = shipCountry.toUpperCase();
 
-		
 		// console.log(matArr);
-		
+
 		// console.log(matArray);
-	
+
 		vendor.findOne({ VendorName: vendNam }, function(err, data) {
 			if (data === null) {
 				console.log('begining addition to Vendor Collection');
@@ -1241,7 +1232,7 @@ module.exports = (app) => {
 							Number: vendNum,
 							Website: website,
 							Admin: false,
-						
+
 							shipCompName: shipCompNam,
 							shipAddress1: shipAddress1,
 							shipAddress2: shipAddress2,
@@ -1492,8 +1483,8 @@ module.exports = (app) => {
 			}
 
 			// console.log(
-				// (materialAdd[0] !== undefined && materialAdd[0] !== '') ||
-					// (materialPop[0] !== undefined && materialPop[0] !== '')
+			// (materialAdd[0] !== undefined && materialAdd[0] !== '') ||
+			// (materialPop[0] !== undefined && materialPop[0] !== '')
 			// );
 			console.log('Material Was ADDED : ' + (materialAdd[0] !== undefined && materialAdd[0] !== ''));
 			console.log('Material Was REMOVED : ' + (materialPop[0] !== undefined && materialPop[0] !== ''));

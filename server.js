@@ -29,12 +29,12 @@ app.set('view engine', 'ejs');
 //Sessions
 app.use(sessions({
     maxAge: 1000   *   60   * 60   *  2,
-         //miliSec    sec     min    hours     days           
+         //miliSec    sec     min    hours     days
     keys: [key.session.cookieKey]
 }));
 
 //  passport middleware
-app.use(passport.initialize('/controllers/config/passport.js')); // this initializes 
+app.use(passport.initialize('/controllers/config/passport.js')); // this initializes
 app.use(passport.session());
 
 
@@ -55,7 +55,7 @@ app.use((req,res,next) => {
 
 
 
-//static files 
+//static files
 app.use(express.static(__dirname + "/assets"));
 
 

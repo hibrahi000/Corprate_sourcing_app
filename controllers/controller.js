@@ -738,7 +738,7 @@ module.exports = (app) => {
 
 		// 1) if new material is checked skip the vendor search and go straight to creating a new material
 		console.log('new material:  ' + newMaterial);
-	
+		console.log('masCat:  ' + masCat);
 
 		vendor.find({}).then(vendorDoc =>{
 			// console.log(vendorDoc)
@@ -819,7 +819,7 @@ module.exports = (app) => {
 									'We cannot find the material You searched for if you would like to send a request for a new material check New Material to Yes.   WARNING: this action will send a request to all of the vendors in the database'
 								);
 								purchase = 'reqQuote';
-								// res.redirect('/ABH_Purchase/Dashboard');
+								res.redirect('/ABH_Purchase/Dashboard');
 							} else {
 								
 								for(let m =0; m< matArr[matIndex].Vendors.length; m++){

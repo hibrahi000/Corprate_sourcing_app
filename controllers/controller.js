@@ -733,8 +733,8 @@ module.exports = (app) => {
 
 		let { material } = req.body;
 		material = material.toUpperCase();
+		
 		let newMaterial = 'No';
-
 		if (newMat === 'on') {
 			newMaterial = 'Yes';
 		}
@@ -743,8 +743,8 @@ module.exports = (app) => {
 		//allow user to add new materials but check for the following:
 
 		// 1) if new material is checked skip the vendor search and go straight to creating a new material
-		console.log('new material:  ' + newMaterial);
-		console.log('masCat:  ' + masCat);
+		
+		console.log('masCat:  ' + masCat === 'on');
 		console.log('The material Inputed Was ' + material);
 
 		vendor.find({}).then((vendorDoc) => {
@@ -764,10 +764,25 @@ module.exports = (app) => {
 								}
 							}
 						}
+						let dbMatArray = doc.Material;
+						let indexMaterialFound = dbMatArray.findIndex(mat => {
+							return mat.MaterialName === material;
+						});
 
+						console.log(dbMatArray);
+						console.log(indexMaterialFound);
 						console.log(vEmailList);
+						if(indexMaterialFound === -1){
+							req.flash(
+								'error_msg',
+								'This Material is Not in the database for this category. If this is a new material uncheck the "Send to all category" and check "This is a new material" '
+							);
+							res.redirect('/ABH_Purchase/Dashboard');
+						}
+						else{
 						purchase = 'submitReq';
 						res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
+						}
 					})
 					.catch((err) => {
 						console.log(err);

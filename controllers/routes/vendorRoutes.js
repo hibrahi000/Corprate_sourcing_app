@@ -19,22 +19,46 @@ module.exports = (imports) => {
 							return key === tok;
 						});
 						//if found ...validate token to see if we need to remove it from db
-
 						console.log(keyIndex);
 						if (keyIndex !== -1) {
 							jwt.verify(tok, key.jwtSecret, (err) => {
-								if (err) {
-									vdoc.key.splice(keyIndex, 1);
 
-									vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
-										console.log('token no longer valid so it was removed');
-									});
-									res.render('404Page');
-								} else {
-									let token = jwt.decode(tok);
-									res.render('vendor/vendorFill', { qs: token, tok: tok, vendorName: vend });
-								}
+								//this is to clean up the already existing jwt that have expired 
+								vdoc.key.forEach(element => {
+									jwt.verify(element,key.jwtSecret, (err) => {
+										if(err) {
+											let tokIndex = vdoc.key.findIndex(token => {
+												return token === element;
+											})
+											if(tokIndex !== -1){
+												vdoc.key.splice(tokIndex,1);
+												vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
+													console.log('cleaning up expired tokens');
+												});
+											}
+										}
+									})
+								});
+
+
+
+								// if (err) {
+								// 	vdoc.key.splice(keyIndex, 1);
+
+								// 	vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
+								// 		console.log('token no longer valid so it was removed');
+								// 	});
+								// 	res.render('404Page');
+								// } else {
+								// 	let token = jwt.decode(tok);
+								// 	res.render('vendor/vendorFill', { qs: token, tok: tok, vendorName: vend });
+								// }
+
+
 							});
+
+
+
 						} else {
 							//if not found ...
 							console.log('token not found');
@@ -429,7 +453,7 @@ module.exports = (imports) => {
 
 		console.log('recieved request to remove');
 
-	
+
 
 		if (tok !== undefined && vend !== undefined) {
 			vendor
@@ -454,7 +478,16 @@ module.exports = (imports) => {
 								} else {
 									let token = jwt.decode(tok);
 									let {newMaterial,category,material,vendorName} = token
-									console.log(newMaterial)
+
+									console.log(token)
+
+									vdoc.key.splice(keyIndex,1);
+									vendor.findByIdAndUpdate(vdoc._id, {key: vdoc.key}).then(console.log('token was used so now its gone')).catch(err =>{
+										console.log('there is a error updating token');
+										console.log(err);
+									});
+
+
 									if (newMaterial === false) {
 										mat.findOne({ Category: category }).then((matDoc) => {
 											let vProfile = vdoc;
@@ -477,8 +510,8 @@ module.exports = (imports) => {
 											vProfile.Categories[vCatI].Materials.splice(vMatI, 1);
 											mProfile.Material[mMatI].Vendors.splice(mVendI, 1);
 
-											// console.log(vProfile.Categories[vCatI].Materials);
-											// console.log(mProfile.Material[mMatI].Vendors);
+											console.log(vProfile.Categories[vCatI].Materials);
+											console.log(mProfile.Material[mMatI].Vendors);
 
 											if (mProfile.Material[mMatI].Vendors[0] === undefined) {
 												console.log('is empty');
@@ -552,13 +585,14 @@ module.exports = (imports) => {
 												.catch((err) => {
 													console.log(err);
 												});
+											console.log(vendorName);
 											vendor
 												.findOneAndUpdate(
 													{ VendorName: vendorName },
 													{ Categories: vProfile.Categories }
 												)
 												.then((doc) => {
-													console.log('Updated Database');
+													console.log('Updated Database Vendors');
 												})
 												.catch((err) => {
 													console.log(err);

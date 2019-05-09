@@ -206,7 +206,7 @@ module.exports = (imports) => {
 		vEmailList = vEmailList.split(',');
 		let newMaterial = newMat === 'on';
 		let noErr = true;
-		const testing = true; // this is for simple testing
+		const testing = false; // this is for simple testing
 		let httpRoute = testing ?'http://localHost:5000/':'http://app.abhpharma.com/';
 
 
@@ -262,7 +262,7 @@ module.exports = (imports) => {
 
 				var token = jwt.sign(
 					{
-					vendorName : vend.vendorName,
+					vendorName : vend.VendorName,
 					shipCompName : vend.shipCompName,
 					shipAddress1 : vend.shipAddress1,
 					shipAddress2 : vend.ShipAdress2,
@@ -282,7 +282,7 @@ module.exports = (imports) => {
 					},
 					key.jwtSecret,
 					{
-					expiresIn: "20m"
+					expiresIn: "10s"
 
 					}
 				);

@@ -269,8 +269,8 @@ module.exports = (imports) => {
 
 									const mailOptionsVendForm = {
 										from: `${vendorName} <${vProfile.Email}>`, // sender address Purchasing@abhnature.com
-										to: '<tech@abhpharma.com>',
-										// cc: '<tech@abhpharma.com>', // list of receivers
+										to: '<Purchasing@abhnature.com>',
+										cc: '<tech@abhpharma.com>', // list of receivers
 										subject: `${vendorName} Request Submission For ${material}`,
 										text: `
 													NEW MATERIAL: ${isNew} <br>

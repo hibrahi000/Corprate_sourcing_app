@@ -74,7 +74,8 @@ const Vendor = mongoose.model(
 			default: null
 		},
 		key: {
-			type: String
+			type: Array,
+			default: null
 		},
 		clicked: {
 			type: Boolean,

@@ -18,7 +18,7 @@ const FlaggedEvents = mongoose.model(
 			default: Date
 		}
 	}),
-	'Material'
+	'FlaggedEvents'
 );
 
-module.exports = { Material };
+module.exports = { FlaggedEvents };

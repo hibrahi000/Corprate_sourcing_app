@@ -5,7 +5,8 @@
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start" : "nodemon server.js"
+		"start": "nodemon server.js",
+		"testCode": "nodemon practiceCode/practiceFile1.js"
 	},
 	"keywords": [ "ABH", "Purchase-APP" ],
 	"author": "Hashmat Ibrahimi",
@@ -26,6 +27,7 @@
 		"jquery-html5-validity": "^1.1.2",
 		"jsonwebtoken": "^8.5.0",
 		"lodash": "^4.17.11",
+		"moment": "^2.24.0",
 		"mongo": "^0.1.0",
 		"mongoose": "^5.4.11",
 		"mongoose-unique-validator": "^2.0.2",

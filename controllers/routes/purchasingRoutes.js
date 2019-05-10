@@ -282,7 +282,7 @@ module.exports = (imports) => {
 					},
 					key.jwtSecret,
 					{
-					expiresIn: "5 days"
+					expiresIn: "7 days"
 
 					}
 				);

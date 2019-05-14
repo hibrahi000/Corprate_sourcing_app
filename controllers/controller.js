@@ -3,39 +3,38 @@
 //
 
 /////////////////////////////////////////RREQUIRE SECTION////////////////////////////////////
-const welcomeRoute = require('./routes/welcomeRoute');
-const purchasingRoute = require('./routes/purchasingRoutes');
-const adminRoute = require('./routes/AdminRoutes');
-const vendorRoute = require('./routes/vendorRoutes');
-const jwt 			= require('jsonwebtoken');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const key = require('./config/keys');
-const passport = require('passport');
-let LocalStrategy = require('passport-local').Strategy;
+const welcomeRoute             = require('./routes/welcomeRoute');
+const purchasingRoute          = require('./routes/purchasingRoutes');
+const adminRoute               = require('./routes/AdminRoutes');
+const vendorRoute              = require('./routes/vendorRoutes');
+const jwt                      = require('jsonwebtoken');
+const bodyParser               = require('body-parser');
+const mongoose                 = require('mongoose');
+const bcrypt                   = require('bcryptjs');
+const key                      = require('./config/keys');
+const passport                 = require('passport');
+const LocalStrategy            = require('passport-local').Strategy;
 const adminEnsureAuthenticated = require('./config/auth').adminEnsureAuthenticated;
 const purchEnsureAuthenticated = require('./config/auth').purchEsureAuthenticated;
-let errors = [];
-var admin = 'dashboard';
-var purchase = 'dashboard';
-var clicked = false;
-/////////////////////////////////////VARIABLE SECTION////////////////////////////////////////
+const employee                 = require('./models/Employee').Employee;
+const mat                      = require('./models/Material').Material;
+const vendor                   = require('./models/Vendor').Vendor;
+const receipt                  = require('./models/QuoteRecipts').QuoteReceipt;
+const urlencodedParser         = bodyParser.urlencoded({ extended: false });
+const sgMail                   = require('@sendgrid/mail');
 
-var employee = require('./models/Employee').Employee;
-var mat = require('./models/Material').Material;
-var vendor = require('./models/Vendor').Vendor;
-var receipt = require('./models/QuoteRecipts').QuoteReceipt;
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+// * ////////////////////////////VARIABLE SECTION////////////////////////////////////////
+let   errors                   = [];
+let   admin                    = 'dashboard';
+let   purchase                 = 'dashboard';
+let   clicked                  = false;
 
-
-const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(key.SENDGRID_API_KEY);
 let transporter = sgMail;
 // console.log(key.SENDGRID_API_KEY);
 
-/////////////////////////////////////Functions////////////////////////////////////////////////////////
+// * //////////////////////////////////Functions////////////////////////////////////////////////////////
 
 //Encrypt Pass -- DEBUG : TRUE
 function passwordENCRYPT(pass, username) {
@@ -68,7 +67,7 @@ let disconnectABHPharmaDB = () => {
 
 
 
-
+// ! //This is where we export stuff to the apps
 
 
 module.exports = (app) => {

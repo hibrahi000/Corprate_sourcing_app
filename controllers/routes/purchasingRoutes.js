@@ -7,7 +7,7 @@
 module.exports = (imports) => {
 
 	const{key,jwt,bcrypt,app,passport,purchEnsureAuthenticated,mat,vendor,urlencodedParser,transporter,connectABHPharmaDB,disconnectABHPharmaDB} = imports;
-    let {purchase} = imports;
+	let   {purchase}                                                                                                                             = imports;
 
 
     ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE//////////
@@ -21,7 +21,7 @@ module.exports = (imports) => {
 		passport.authenticate('purchPass', {
 			successRedirect: '/ABH_Purchase/Dashboard',
 			failureRedirect: '/ABH_Purchase/Login',
-			failureFlash: true
+			failureFlash   : true
 		})(req, res, next);
 	});
 
@@ -60,7 +60,7 @@ module.exports = (imports) => {
 		const { category, newMat, masCat } = req.body;
 
 		let { material } = req.body;
-		material = material.toUpperCase();
+		    material     = material.toUpperCase();
 
 		let newMaterial = 'No';
 		if (newMat === 'on') {
@@ -77,7 +77,7 @@ module.exports = (imports) => {
 
 		vendor.find({}).then((vendorDoc) => {
 			// console.log(vendorDoc)
-			let vendList = vendorDoc;
+			let vendList   = vendorDoc;
 			let vEmailList = new Array();
 			let vendorList = new Array();
 			if (masCat === 'on') {
@@ -92,7 +92,7 @@ module.exports = (imports) => {
 								}
 							}
 						}
-						let dbMatArray = doc.Material;
+						let dbMatArray         = doc.Material;
 						let indexMaterialFound = dbMatArray.findIndex(mat => {
 							return mat.MaterialName === material;
 						});
@@ -120,7 +120,7 @@ module.exports = (imports) => {
 					mat
 						.findOne({ Category: category })
 						.then((doc) => {
-							let matArr = doc.Material;
+							let matArr   = doc.Material;
 							let matFound = matArr.findIndex((mat) => {
 								return mat.MaterialName === material;
 							});
@@ -154,7 +154,7 @@ module.exports = (imports) => {
 						.then((doc) => {
 							console.log(doc);
 							console.log('starting test on db search');
-							let matArr = doc.Material;
+							let matArr   = doc.Material;
 							let matIndex = matArr.findIndex((arr) => {
 								return arr.MaterialName === material;
 							});
@@ -178,7 +178,7 @@ module.exports = (imports) => {
 									vEmailList.push(vendList[vIndex].Email);
 								}
 								console.log(vEmailList);
-								dbQuery = 'search';
+								dbQuery  = 'search';
 								purchase = 'submitReq';
 								res.render('purchDashboard', {
 									purchase,
@@ -334,13 +334,13 @@ module.exports = (imports) => {
 								Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 
 								<br><br>
-								${httpRoute}ABH_Invoice_Form/?vend=${vendorName}&tok=${token}
+								http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}
 
 
 								<br><br>
 
 								If you do not supply this material and want to be removed from the email chain please click the following link <br>
-								${httpRoute}Do_Not_Supply/?vend=${vendorName}&tok=${token}
+								http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}
 
 								`,
 					html: `
@@ -366,13 +366,13 @@ module.exports = (imports) => {
 								Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 								<br><br>
 
-								<a href = "${httpRoute}ABH_Invoice_Form/?vend=${vendorName}&tok=${token}">ABH Invoice Form<a>
+								<a href = "http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}">ABH Invoice Form<a>
 
 
 								<br><br>
 
 								If you do not supply this material and want to be removed from the email chain please click the following link <br>
-								List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "${httpRoute}Do_Not_Supply/?vend=${vendorName}&tok=${token}">Unsubscribe<a>
+								List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}">Unsubscribe<a>
 								`
 				};
 				//localHost:5000
@@ -1288,7 +1288,7 @@ module.exports = (imports) => {
 	});
 
 	app.post('/Modify_Category', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
-		purchase = 'modCatSub';
+		      purchase      = 'modCatSub';
 		const { catSearch } = req.body;
 		res.render('purchDashboard', { purchase, catSearch });
 	});

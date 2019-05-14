@@ -42,17 +42,17 @@ module.exports = (imports) => {
 
 
 
-								// if (err) {
-								// 	vdoc.key.splice(keyIndex, 1);
+								if (err) {
+									vdoc.key.splice(keyIndex, 1);
 
-								// 	vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
-								// 		console.log('token no longer valid so it was removed');
-								// 	});
-								// 	res.render('404Page');
-								// } else {
-								// 	let token = jwt.decode(tok);
-								// 	res.render('vendor/vendorFill', { qs: token, tok: tok, vendorName: vend });
-								// }
+									vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
+										console.log('token no longer valid so it was removed');
+									});
+									res.render('404Page');
+								} else {
+									let token = jwt.decode(tok);
+									res.render('vendor/vendorFill', { qs: token, tok: tok, vendorName: vend });
+								}
 
 
 							});

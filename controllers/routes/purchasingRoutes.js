@@ -1,9 +1,3 @@
-
-
-
-
-
-
 module.exports = (imports) => {
 
 	const{key,jwt,bcrypt,app,passport,purchEnsureAuthenticated,mat,vendor,urlencodedParser,transporter,connectABHPharmaDB,disconnectABHPharmaDB} = imports;
@@ -214,7 +208,7 @@ module.exports = (imports) => {
 
 		if (newMaterial) {
 			mat.findOne({ Category: category }).then((mDoc) => {
-				let matArr = matDoc.Material;
+				let matArr = mDoc.Material;
 				matArr.push({
 					MaterialName: material,
 					Vendors: []

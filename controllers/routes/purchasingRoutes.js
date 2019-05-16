@@ -1,10 +1,21 @@
 module.exports = (imports) => {
+	const {
+		key,
+		jwt,
+		bcrypt,
+		app,
+		passport,
+		purchEnsureAuthenticated,
+		mat,
+		vendor,
+		urlencodedParser,
+		transporter,
+		connectABHPharmaDB,
+		disconnectABHPharmaDB
+	} = imports;
+	let { purchase } = imports;
 
-	const{key,jwt,bcrypt,app,passport,purchEnsureAuthenticated,mat,vendor,urlencodedParser,transporter,connectABHPharmaDB,disconnectABHPharmaDB} = imports;
-	let   {purchase}                                                                                                                             = imports;
-
-
-    ///////////////////////////////ABH PURCHASE SITE LOGIN PAGE//////////
+	///////////////////////////////ABH PURCHASE SITE LOGIN PAGE//////////
 	app.get('/ABH_Purchase/Login', urlencodedParser, (req, res) => {
 		res.render('purchLogin');
 	});
@@ -15,7 +26,7 @@ module.exports = (imports) => {
 		passport.authenticate('purchPass', {
 			successRedirect: '/ABH_Purchase/Dashboard',
 			failureRedirect: '/ABH_Purchase/Login',
-			failureFlash   : true
+			failureFlash: true
 		})(req, res, next);
 	});
 
@@ -54,7 +65,7 @@ module.exports = (imports) => {
 		const { category, newMat, masCat } = req.body;
 
 		let { material } = req.body;
-		    material     = material.toUpperCase();
+		material = material.toUpperCase();
 
 		let newMaterial = 'No';
 		if (newMat === 'on') {
@@ -69,125 +80,153 @@ module.exports = (imports) => {
 		console.log('masCat:  ' + masCat === 'on');
 		console.log('The material Inputed Was ' + material);
 
-		vendor.find({}).then((vendorDoc) => {
-			// console.log(vendorDoc)
-			let vendList   = vendorDoc;
-			let vEmailList = new Array();
-			let vendorList = new Array();
-			if (masCat === 'on') {
-				mat
-					.findOne({ Category: category })
-					.then((doc) => {
-						for (let i = 0; i < vendList.length; i++) {
-							let catArray = vendList[i].Categories;
-							for (let k = 0; k < catArray.length; k++) {
-								if (catArray[k].CategoryName === category) {
-									vEmailList.push(vendList[i].Email);
-								}
-							}
-						}
-						let dbMatArray         = doc.Material;
-						let indexMaterialFound = dbMatArray.findIndex(mat => {
-							return mat.MaterialName === material;
-						});
+		let badComma = material.indexOf(',', material.length - 1) !== -1;
+		let formatPass =
+			material.indexOf(' ') === -1 &&
+			material.indexOf('_') === -1 &&
+			material.indexOf('+') === -1 &&
+			material.indexOf(',') === -1 &&
+			material.indexOf() === -1;
 
-						console.log(dbMatArray);
-						console.log(indexMaterialFound);
-						console.log(vEmailList);
-						if(indexMaterialFound === -1){
-							req.flash(
-								'error_msg',
-								'This Material is Not in the database for this category. If this is a new material uncheck the "Send to all category" and check "This is a new material" '
-							);
-							res.redirect('/ABH_Purchase/Dashboard');
-						}
-						else{
-						purchase = 'submitReq';
-						res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			} else {
-				if (newMat == 'on') {
+		if (formatPass === false) {
+			console.log(material + ' is ' + 'INVALID FORMAT');
+		}
+
+		console.log(!badComma + ' Good comma');
+		console.log(formatPass + ' format Pass');
+
+		if (!badComma && formatPass) {
+			vendor.find({}).then((vendorDoc) => {
+				// console.log(vendorDoc)
+				let vendList = vendorDoc;
+				let vEmailList = new Array();
+				let vendorList = new Array();
+				if (masCat === 'on') {
 					mat
 						.findOne({ Category: category })
 						.then((doc) => {
-							let matArr   = doc.Material;
-							let matFound = matArr.findIndex((mat) => {
-								return mat.MaterialName === material;
-							});
-
-							console.log(matFound);
-
-							if (matFound === -1) {
-								for (let i = 0; i < vendList.length; i++) {
-									if (!vendorList.includes(vendList[i].VendorName)) {
-										vendorList.push(vendList[i].VendorName);
+							for (let i = 0; i < vendList.length; i++) {
+								let catArray = vendList[i].Categories;
+								for (let k = 0; k < catArray.length; k++) {
+									if (catArray[k].CategoryName === category) {
 										vEmailList.push(vendList[i].Email);
 									}
 								}
-								console.log(vEmailList.length);
-								purchase = 'submitReq';
-								res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
-							} else {
+							}
+							let dbMatArray = doc.Material;
+							let indexMaterialFound = dbMatArray.findIndex((mat) => {
+								return mat.MaterialName === material;
+							});
+
+							console.log(dbMatArray);
+							console.log(indexMaterialFound);
+							console.log(vEmailList);
+							if (indexMaterialFound === -1) {
 								req.flash(
 									'error_msg',
-									'This Material is already in the database so we cannot create a new one please uncheck New Material then proceed with your request'
+									'This Material is Not in the database for this category. If this is a new material uncheck the "Send to all category" and check "This is a new material" '
 								);
 								res.redirect('/ABH_Purchase/Dashboard');
+							} else {
+								purchase = 'submitReq';
+								res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
 							}
 						})
 						.catch((err) => {
 							console.log(err);
 						});
 				} else {
-					mat
-						.findOne({ Category: category })
-						.then((doc) => {
-							console.log(doc);
-							console.log('starting test on db search');
-							let matArr   = doc.Material;
-							let matIndex = matArr.findIndex((arr) => {
-								return arr.MaterialName === material;
-							});
-							console.log('matIndex= ' + matIndex + ' ' + matIndex === -1);
-							if (matIndex === -1) {
-								console.log('now entering');
-								req.flash(
-									'error_msg',
-									'We cannot find the material You searched for if you would like to send a request for a new material check New Material to Yes.   WARNING: this action will send a request to all of the vendors in the database'
-								);
-								purchase = 'reqQuote';
-								res.redirect('/ABH_Purchase/Dashboard');
-							} else {
-								for (let m = 0; m < matArr[matIndex].Vendors.length; m++) {
-									vendorList.push(matArr[matIndex].Vendors[m]);
-								}
-								for (let i = 0; i < vendorList.length; i++) {
-									let vIndex = vendList.findIndex((doc) => {
-										return doc.VendorName === vendorList[i];
-									});
-									vEmailList.push(vendList[vIndex].Email);
-								}
-								console.log(vEmailList);
-								dbQuery  = 'search';
-								purchase = 'submitReq';
-								res.render('purchDashboard', {
-									purchase,
-									material,
-									newMaterial,
-									dbQuery,
-									category,
-									vEmailList
+					if (newMat == 'on') {
+						mat
+							.findOne({ Category: category })
+							.then((doc) => {
+								let matArr = doc.Material;
+								let matFound = matArr.findIndex((mat) => {
+									return mat.MaterialName === material;
 								});
-							}
-						})
-						.catch();
+
+								console.log(matFound);
+
+								if (matFound === -1) {
+									for (let i = 0; i < vendList.length; i++) {
+										if (!vendorList.includes(vendList[i].VendorName)) {
+											vendorList.push(vendList[i].VendorName);
+											vEmailList.push(vendList[i].Email);
+										}
+									}
+									console.log(vEmailList.length);
+									purchase = 'submitReq';
+									res.render('purchDashboard', {
+										purchase,
+										material,
+										newMaterial,
+										vEmailList,
+										category
+									});
+								} else {
+									req.flash(
+										'error_msg',
+										'This Material is already in the database so we cannot create a new one please uncheck New Material then proceed with your request'
+									);
+									res.redirect('/ABH_Purchase/Dashboard');
+								}
+							})
+							.catch((err) => {
+								console.log(err);
+							});
+					} else {
+						mat
+							.findOne({ Category: category })
+							.then((doc) => {
+								console.log(doc);
+								console.log('starting test on db search');
+								let matArr = doc.Material;
+								let matIndex = matArr.findIndex((arr) => {
+									return arr.MaterialName === material;
+								});
+								console.log('matIndex= ' + matIndex + ' ' + matIndex === -1);
+								if (matIndex === -1) {
+									console.log('now entering');
+									req.flash(
+										'error_msg',
+										'We cannot find the material You searched for if you would like to send a request for a new material check New Material to Yes.   WARNING: this action will send a request to all of the vendors in the database'
+									);
+									purchase = 'reqQuote';
+									res.redirect('/ABH_Purchase/Dashboard');
+								} else {
+									for (let m = 0; m < matArr[matIndex].Vendors.length; m++) {
+										vendorList.push(matArr[matIndex].Vendors[m]);
+									}
+									for (let i = 0; i < vendorList.length; i++) {
+										let vIndex = vendList.findIndex((doc) => {
+											return doc.VendorName === vendorList[i];
+										});
+										vEmailList.push(vendList[vIndex].Email);
+									}
+									console.log(vEmailList);
+									dbQuery = 'search';
+									purchase = 'submitReq';
+									res.render('purchDashboard', {
+										purchase,
+										material,
+										newMaterial,
+										dbQuery,
+										category,
+										vEmailList
+									});
+								}
+							})
+							.catch();
+					}
 				}
-			}
-		});
+			});
+		} else {
+			req.flash(
+				'error_msg',
+				'The format for the request was invalid please make sure that There are no spaces and words are seperated by dashes and no trailing commas'
+			);
+			res.redirect('/ABH_Purchase/Dashboard');
+		}
 	});
 
 	app.get('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
@@ -201,10 +240,7 @@ module.exports = (imports) => {
 		let newMaterial = newMat === 'on';
 		let noErr = true;
 		const testing = false; // this is for simple testing
-		let httpRoute = testing ?'http://localHost:5000/':'http://app.abhpharma.com/';
-
-
-
+		let httpRoute = testing ? 'http://localHost:5000/' : 'http://app.abhpharma.com/';
 
 		if (newMaterial) {
 			mat.findOne({ Category: category }).then((mDoc) => {
@@ -226,7 +262,6 @@ module.exports = (imports) => {
 					});
 			});
 		}
-
 		console.log(vEmailList);
 		console.log('------------------');
 
@@ -238,9 +273,8 @@ module.exports = (imports) => {
 					return doc.Email === vEmailList[i];
 				});
 
-                let vend = vendArr[vIndex];
+				let vend = vendArr[vIndex];
 				let vendId = vend._id;
-
 
 				var orderType = rushOrder;
 				if ((orderType = 'on')) {
@@ -256,36 +290,36 @@ module.exports = (imports) => {
 
 				var token = jwt.sign(
 					{
-					vendorName : vend.VendorName,
-					shipCompName : vend.shipCompName,
-					shipAddress1 : vend.shipAddress1,
-					shipAddress2 : vend.ShipAdress2,
-					shipCity : vend.shipCity,
-					shipState : vend.shipState,
-					shipZip : vend.shipZip,
-					shipCountry : vend.shipCountry,
-					newMaterial : newMaterial,
-					rushOrder: rushOrder,
-					targetPrice: targetPrice,
-					material: material,
-					category:category,
-					orderType: orderType,
-					abhRequest: `${orderType} Of ${ammount} ${units}: ${reqType}`,
-
-
+						vendorName: vend.VendorName,
+						shipCompName: vend.shipCompName,
+						shipAddress1: vend.shipAddress1,
+						shipAddress2: vend.ShipAdress2,
+						shipCity: vend.shipCity,
+						shipState: vend.shipState,
+						shipZip: vend.shipZip,
+						shipCountry: vend.shipCountry,
+						newMaterial: newMaterial,
+						rushOrder: rushOrder,
+						targetPrice: targetPrice,
+						material: material,
+						category: category,
+						orderType: orderType,
+						abhRequest: `${orderType} Of ${ammount} ${units}: ${reqType}`
 					},
 					key.jwtSecret,
 					{
-					expiresIn: "7 days"
-
+						expiresIn: '7 days'
 					}
 				);
 				console.log(token);
-				let vendorKeys = [...vend.key, token];
+				let vendorKeys = [ ...vend.key, token ];
 
-
-				 vendor.findByIdAndUpdate(vendId, {key : vendorKeys}).then(() => console.log('Updated tokens for  Vendor ' + vend.VendorName)).catch(err => {err ? err : 'no err'});
-
+				vendor
+					.findByIdAndUpdate(vendId, { key: vendorKeys })
+					.then(() => console.log('Updated tokens for  Vendor ' + vend.VendorName))
+					.catch((err) => {
+						err ? err : 'no err';
+					});
 
 				var vendorName = vend.VendorName;
 				//  console.log(vend.VendorName);
@@ -299,75 +333,74 @@ module.exports = (imports) => {
 				// const shipCountry = vend.shipCountry;
 				// const matNew = newMaterial;
 
-
 				const mailOptionsReq = {
 					from: 'ABH Purchase Dept. <Purchasing@abhnature.com>', // sender address
 					to: vEmailList[i], // list of receivers
 					//${vendorContact[i]},
 					subject: `ABH-Nature Quote Request for ${material} `, // Subject line
 					text: `
-								Hello ${vendorName}, <br>
-								<br><br>
+									Hello ${vendorName}, <br>
+									<br><br>
 
-								We at ABH have requested a quote for the following material: ${material}
-								<br><br>
+									We at ABH have requested a quote for the following material: ${material}
+									<br><br>
 
-								${targetPrice}<br>
-								Notes: ${notes}<br><br>
-
-
-								Attached to this email is a link that will allow you to send us your quote. This link will expire in 5 Days or once you submit the form.
+									${targetPrice}<br>
+									Notes: ${notes}<br><br>
 
 
-								<br><br><br><br><br><br>
-
-								We at ABH Appreciate your business with us and hope to hear from you soon.
-
-								<br><br>
-								The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
-								Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-
-								<br><br>
-								http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}
+									Attached to this email is a link that will allow you to send us your quote. This link will expire in 5 Days or once you submit the form.
 
 
-								<br><br>
+									<br><br><br><br><br><br>
 
-								If you do not supply this material and want to be removed from the email chain please click the following link <br>
-								http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}
+									We at ABH Appreciate your business with us and hope to hear from you soon.
 
-								`,
+									<br><br>
+									The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+									Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+
+									<br><br>
+									http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}
+
+
+									<br><br>
+
+									If you do not supply this material and want to be removed from the email chain please click the following link <br>
+									http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}
+
+									`,
 					html: `
-								Hello ${vendorName}, <br>
-								<br><br>
+									Hello ${vendorName}, <br>
+									<br><br>
 
-								We at ABH have requested a quote for the following material: ${material}
-								<br><br>
+									We at ABH have requested a quote for the following material: ${material}
+									<br><br>
 
-								${targetPrice}<br>
-								Notes: ${notes}<br><br>
-
-
-								Attached to this email is a link that will allow you to send us your quote. This link will expire in 5 Days or once you submit the form.
+									${targetPrice}<br>
+									Notes: ${notes}<br><br>
 
 
-								<br><br><br><br><br><br>
-
-								We at ABH-Nature Appreciate your business with us and hope to hear from you soon.
-
-								<br><br>
-								The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
-								Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
-								<br><br>
-
-								<a href = "http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}">ABH Invoice Form<a>
+									Attached to this email is a link that will allow you to send us your quote. This link will expire in 5 Days or once you submit the form.
 
 
-								<br><br>
+									<br><br><br><br><br><br>
 
-								If you do not supply this material and want to be removed from the email chain please click the following link <br>
-								List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}">Unsubscribe<a>
-								`
+									We at ABH-Nature Appreciate your business with us and hope to hear from you soon.
+
+									<br><br>
+									The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
+									Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
+									<br><br>
+
+									<a href = "http://app.abhpharma.com/ABH_Invoice_Form/?vend=${vendorName}&tok=${token}">ABH Invoice Form<a>
+
+
+									<br><br>
+
+									If you do not supply this material and want to be removed from the email chain please click the following link <br>
+									List-Unsubscribe: <mailto: emailAddress>, <unsubscribe URL > <a href = "http://app.abhpharma.com/Do_Not_Supply/?vend=${vendorName}&tok=${token}">Unsubscribe<a>
+									`
 				};
 				//localHost:5000
 				//app.abhpharma.com
@@ -382,6 +415,7 @@ module.exports = (imports) => {
 					});
 			}
 		});
+
 		if (noErr == true) {
 			if (newMaterial) {
 				req.flash('success_msg', `Request Has Been Sent TO ALL VENDORS`);
@@ -590,10 +624,10 @@ module.exports = (imports) => {
 					bcrypt.hash('PharmaDebug!54', salt, (err, hash) => {
 						if (err) throw err;
 						let hashKey = {
-                            HashKey: hash,
-                            Material: "Debug Material",
-                            EXP_Date: Date()
-                        }
+							HashKey: hash,
+							Material: 'Debug Material',
+							EXP_Date: Date()
+						};
 						var createVendor = new vendor({
 							VendorName: vendNam,
 							RepName: repName,
@@ -1282,7 +1316,7 @@ module.exports = (imports) => {
 	});
 
 	app.post('/Modify_Category', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
-		      purchase      = 'modCatSub';
+		purchase = 'modCatSub';
 		const { catSearch } = req.body;
 		res.render('purchDashboard', { purchase, catSearch });
 	});
@@ -1309,5 +1343,4 @@ module.exports = (imports) => {
 		res.redirect('/ABH_Purchase/Login');
 		disconnectABHPharmaDB();
 	});
-
-}
+};

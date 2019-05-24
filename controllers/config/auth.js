@@ -7,7 +7,7 @@ function adminEnsureAuthenticated(req, res, next) {
 	res.redirect('/ABH_Admin/Login');
 }
 
-function purchEsureAuthenticated(req, res, next) {
+function purchEnsureAuthenticated(req, res, next) {
 	// console.log('i started');
 	if (req.isAuthenticated()) {
 		return next();
@@ -15,7 +15,7 @@ function purchEsureAuthenticated(req, res, next) {
 	req.flash('error_msg', 'Please log into your Account');
 	res.redirect('/ABH_Purchase/Login');
 }
-function vendEsureAuthenticated(req, res, next) {
+function vendEnsureAuthenticated(req, res, next) {
 	// console.log('i started');
 	if (req.isAuthenticated()) {
 		return next();
@@ -25,7 +25,7 @@ function vendEsureAuthenticated(req, res, next) {
 }
 
 module.exports = {
-	vendEsureAuthenticated: vendEsureAuthenticated,
+	vendEnsureAuthenticated: vendEnsureAuthenticated,
 	adminEnsureAuthenticated: adminEnsureAuthenticated,
-	purchEsureAuthenticated: purchEsureAuthenticated
+	purchEnsureAuthenticated: purchEnsureAuthenticated
 };

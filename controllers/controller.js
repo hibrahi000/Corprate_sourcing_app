@@ -15,11 +15,11 @@ const key                      = require('./config/keys');
 const passport                 = require('passport');
 const LocalStrategy            = require('passport-local').Strategy;
 const adminEnsureAuthenticated = require('./config/auth').adminEnsureAuthenticated;
-const purchEnsureAuthenticated = require('./config/auth').purchEsureAuthenticated;
+const purchEnsureAuthenticated = require('./config/auth').purchEnsureAuthenticated;
 const employee                 = require('./models/Employee').Employee;
 const mat                      = require('./models/Material').Material;
 const vendor                   = require('./models/Vendor').Vendor;
-const receipt                  = require('./models/QuoteRecipts').QuoteReceipt;
+const receipt                  = require('./models/QuoteReceipts').QuoteReceipt;
 const urlencodedParser         = bodyParser.urlencoded({ extended: false });
 const sgMail                   = require('@sendgrid/mail');
 
@@ -29,7 +29,7 @@ let   admin                    = 'dashboard';
 let   purchase                 = 'dashboard';
 let   clicked                  = false;
 
-
+//@param key.SENDGRID_API_KEY  this is my parameter
 sgMail.setApiKey(key.SENDGRID_API_KEY);
 let transporter = sgMail;
 // console.log(key.SENDGRID_API_KEY);

@@ -640,8 +640,7 @@ module.exports = (imports) => {
 						} else {
 							//if not found ...
 							console.log('token not found');
-							console.log(newMaterial);
-							// res.render('404Page');
+							res.render('404Page');
 
 						}
 					}

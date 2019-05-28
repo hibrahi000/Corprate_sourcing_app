@@ -237,7 +237,8 @@ module.exports = (imports) => {
 		const { material, reqType, ammount, units, price, rushOrder, notes, newMat, category } = req.body;
 		let { vEmailList } = req.body;
 		vEmailList = vEmailList.split(',');
-		let newMaterial = newMat === 'on';
+		
+		let newMaterial = newMat === 'Yes';
 		let noErr = true;
 		const testing = false; // this is for simple testing
 		let httpRoute = testing ? 'http://localHost:5000/' : 'http://app.abhpharma.com/';
@@ -267,7 +268,7 @@ module.exports = (imports) => {
 
 		vendor.find({}).then((vDoc) => {
 			let vendArr = vDoc;
-
+			
 			for (let i = 0; i < vEmailList.length; i++) {
 				let vIndex = vendArr.findIndex((doc) => {
 					return doc.Email === vEmailList[i];
@@ -287,7 +288,7 @@ module.exports = (imports) => {
 				if (targetPrice != '') {
 					targetPrice = `Our target price would preferably be ${price} $(USD)`;
 				}
-
+			
 				var token = jwt.sign(
 					{
 						vendorName: vend.VendorName,
@@ -311,6 +312,7 @@ module.exports = (imports) => {
 						expiresIn: '7 days'
 					}
 				);
+				
 				console.log(token);
 				let vendorKeys = [ ...vend.key, token ];
 

@@ -471,6 +471,8 @@ module.exports = (imports) => {
 						//if found ...validate token to see if we need to remove it from db
 
 						console.log(keyIndex);
+						
+
 						if (keyIndex !== -1) {
 							jwt.verify(tok, key.jwtSecret, (err) => {
 								if (err) {
@@ -479,7 +481,7 @@ module.exports = (imports) => {
 									let token = jwt.decode(tok);
 									let {newMaterial,category,material,vendorName} = token
 
-									console.log(token)
+									console.log(newMaterial)
 
 									vdoc.key.splice(keyIndex,1);
 									vendor.findByIdAndUpdate(vdoc._id, {key: vdoc.key}).then(console.log('token was used so now its gone')).catch(err =>{
@@ -607,8 +609,7 @@ module.exports = (imports) => {
 											to: '<Purchasing@abhnature.com>',
 											cc: '<tech@abhpharma.com>', // list of receivers
 											subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
-											text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
-
+											text: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
 
 
 													<br><br>
@@ -616,7 +617,8 @@ module.exports = (imports) => {
 													Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 
 													`,
-											html: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces befor or after the commas <br> 3)Then click save
+
+											html: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
 
 
 
@@ -638,7 +640,9 @@ module.exports = (imports) => {
 						} else {
 							//if not found ...
 							console.log('token not found');
-							res.render('404Page');
+							console.log(newMaterial);
+							// res.render('404Page');
+
 						}
 					}
 				})

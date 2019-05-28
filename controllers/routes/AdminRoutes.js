@@ -250,7 +250,7 @@ module.exports = (imports) =>{
 		req.flash('success_msg', `You have logged out`);
 		admin = 'dashboard';
 		res.redirect('/ABH_Admin/Login');
-		disconnectABHPharmaDB();
+		// disconnectABHPharmaDB();
 	});
 };
 

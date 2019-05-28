@@ -1343,6 +1343,6 @@ module.exports = (imports) => {
 		req.logout();
 		req.flash('success_msg', `You have logged out`);
 		res.redirect('/ABH_Purchase/Login');
-		disconnectABHPharmaDB();
+		// disconnectABHPharmaDB();
 	});
 };

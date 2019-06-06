@@ -22,8 +22,11 @@ const Vendor = mongoose.model(
 			default: null
 		},
 		Email: {
-			type: String,
-			default: null
+			main: {
+				type: String,
+				required: true
+			},
+			cc :[]
 		},
 		Number: {
 			type: String,

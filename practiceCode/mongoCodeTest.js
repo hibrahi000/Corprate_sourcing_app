@@ -10,22 +10,30 @@ mongoose
 	.then(() => console.log('Connected to ABH Pharma DB.....'))
 	.catch((err) => console.log('connection failed'));
 
-var employee = Employee.Employee;
-
-employee.find({ FirstName: 'Hashmat' }, function(err, data) {
-	if (err) throw err;
-	var dat1 = { data };
-	var dbDat = accessDBValue(dat1);
-	console.log(dbDat.Email);
-});
-const userFromDb = employee.findOne({ name: 'Hashmat Ibrahimi' });
-
-function accessDBValue(dbReturn) {
-	var user = JSON.stringify(dbReturn);
-	var start = 9;
-	var end = user.length - 2;
-	var sliceString = user.slice(start, end);
-	return JSON.parse(sliceString);
-}
+const employee = Employee.Employee;
+const vendor = require('../controllers/models/Vendor').Vendor;
+// employee.find({ FirstName: 'Hashmat' }, function(err, data) {
+// 	if (err) throw err;
+// 	var dat1 = { data };
+// 	var dbDat = accessDBValue(dat1);
+// 	console.log(dbDat.Email);
+// });
+// const userFromDb = employee.findOne({ name: 'Hashmat Ibrahimi' });
 
 // console.log(Date() + '------------')
+
+
+
+vendor.find({}).then((doc) => {
+	let vDoc = doc;
+	console.log(vDoc[0].Email);
+	let i = 0;
+	// for (i; i <vDoc.length ; i++) {
+	// 	let email = {
+	// 		main: vDoc[i].Email,
+	// 		cc: []
+	// 	};
+	// 	vendor.findByIdAndUpdate(vDoc[i]._id, { Email: email }).then(() => console.log('update completed '));
+	// }
+
+});

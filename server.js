@@ -7,7 +7,7 @@ const flash = require('connect-flash');
 const sessions = require('cookie-session');
 const key = require('./controllers/config/keys');
 const pass = require('./controllers/config/passport');
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 500
 require('dotenv').config();
 const sgMail = require('@sendgrid/mail');
 var favicon = require('serve-favicon');
@@ -18,13 +18,8 @@ sgMail.setApiKey(key.SENDGRID_API_KEY);
 //passport config
 require('./controllers/config/passport')(passport);
 
-
-
-// //setup template engine
-// app.use(expressLayouts);
+//___/setup template engine
 app.set('view engine', 'ejs');
-
-
 
 //Sessions
 app.use(sessions({

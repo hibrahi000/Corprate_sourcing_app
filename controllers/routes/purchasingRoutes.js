@@ -31,7 +31,7 @@ module.exports = (imports) => {
 	});
 
 	///////////////////////////////ABH PURCHASE SITE/////////////////////
-
+	// ++ This is to load the categories beginning page 
 	app.get('/ABH_Purchase/Dashboard', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		mat.find({}).then((matDoc) => {
 			var categories = new Array();
@@ -43,7 +43,7 @@ module.exports = (imports) => {
 			res.render('purchDashboard', { purchase, categories });
 		});
 	});
-
+	// ++ this is to handle once category has been selected and if new material or only category requests
 	app.post('/Category_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		const { masCat, category } = req.body;
 		console.log(req.body);
@@ -223,12 +223,12 @@ module.exports = (imports) => {
 		} else {
 			req.flash(
 				'error_msg',
-				'The format for the request was invalid please make sure that There are no spaces and words are seperated by dashes and no trailing commas'
+				'The format for the request was invalid please make sure that There are no spaces and words are separated by dashes and no trailing commas'
 			);
 			res.redirect('/ABH_Purchase/Dashboard');
 		}
 	});
-
+	
 	app.get('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		res.redirect('/ABH_Purchase/Dashboard');
 	});
@@ -375,13 +375,15 @@ module.exports = (imports) => {
 					html: `
 									Hello ${vendorName}, <br>
 									<br><br>
-
+									
+									
 									We at ABH have requested a quote for the following material: ${material}
 									<br><br>
 
 									${targetPrice}<br>
 									Notes: ${notes}<br><br>
 
+									<br>
 
 									Attached to this email is a link that will allow you to send us your quote. This link will expire in 5 Days or once you submit the form.
 
@@ -472,7 +474,8 @@ module.exports = (imports) => {
 				const repNam = vendor.RepName;
 				const website = vendor.Website;
 
-				const vendEmail = vendor.Email;
+				const vendEmail = vendor.Email.main;
+				const vendCC = vendor.Email.cc;
 				const vendNum = vendor.Number;
 				const shipCompNam = vendor.shipCompNam;
 				const shipAddress1 = vendor.shipAddress1;
@@ -488,7 +491,7 @@ module.exports = (imports) => {
 					vendNam,
 					repNam,
 					website,
-
+					vendCC,
 					vendEmail,
 					vendNum,
 					shipCompNam,
@@ -509,6 +512,7 @@ module.exports = (imports) => {
 			repName,
 			website,
 			vendEmail,
+			vendEmailCC,
 			vendNum,
 			shipCompNam,
 			shipAddress1,
@@ -527,6 +531,11 @@ module.exports = (imports) => {
 		website = website.toUpperCase();
 		// matSup = matSup.toUpperCase();
 		vendEmail = vendEmail.toUpperCase();
+
+		
+		vendEmailCC = vendEmailCC.toUpperCase();
+		vendEmailCC = vendEmailCC.split(',');
+
 		shipCompNam = shipCompNam.toUpperCase();
 		shipAddress1 = shipAddress1.toUpperCase();
 		shipAddress2 = shipAddress2.toUpperCase();
@@ -544,7 +553,10 @@ module.exports = (imports) => {
 			RepName: repName,
 			Website: website,
 			// Material: matArray,
-			Email: vendEmail,
+			Email: {
+					main: vendEmail,
+					cc : vendEmailCC
+				},
 			Number: vendNum,
 			shipCompNam: shipCompNam,
 			shipAddress1: shipAddress1,

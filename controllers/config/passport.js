@@ -15,6 +15,7 @@ function connectABHPharmaDB(theFunction) {
 }
 
 function passport(passport) {
+	
 	connectABHPharmaDB();
 	passport.use(
 		'adminPass',
@@ -92,7 +93,7 @@ function passport(passport) {
 								} else {
 									console.log('is Purch USER: ' + userName);
 									connectABHPharmaDB();
-									return done(null, empl);
+								return done(null, empl);
 								}
 							});
 						} else {

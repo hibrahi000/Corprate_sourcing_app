@@ -67,7 +67,7 @@ let disconnectABHPharmaDB = () => {
 
 
 
-// ! //This is where we export stuff to the apps
+// !This is where we export stuff to the apps
 
 
 module.exports = (app) => {
@@ -83,4 +83,3 @@ module.exports = (app) => {
 
 }
 
-vendor.findByIdAndUpdate()

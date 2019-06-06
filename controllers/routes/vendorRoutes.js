@@ -18,6 +18,7 @@ module.exports = (imports) => {
 						let keyIndex = vdoc.key.findIndex((key) => {
 							return key === tok;
 						});
+						// keyIndex = 0;
 						//if found ...validate token to see if we need to remove it from db
 						console.log(keyIndex);
 						if (keyIndex !== -1) {
@@ -172,41 +173,50 @@ module.exports = (imports) => {
 									vProfile.shipCountry = shipCountry;
 
 									if (newMaterial === 'true') {
-										let catIndex = vProfile.Categories.findIndex((doc) => {
-											return doc.CategoryName === category;
-										});
-										let matIndex = vProfile.Categories[catIndex].Material.findIndex((mat) => {
-											return mat === material;
-										});
-
+										
+										
 										//updating material database if it is a new material aka mass request so many vendors
 										mat.findOne({ Category: category }).then((doc) => {
 											let matDoc = doc.Material;
+											// console.log(matDoc[0])
 											let matIndex = matDoc.findIndex((mat) => {
 												return mat.MaterialName === material;
 											});
-
-											matDoc.Material[matIndex].Vendors.push(vendorName);
+											
+											matDoc[matIndex].Vendors.push(vendorName);
 											mat
-												.findOneAndUpdate({ Category: category }, { Material: matDoc })
-												.then((res) => {
-													console.log('Material Update Complete');
-												})
-												.catch((err) => {
-													console.log(err);
-												}); ///// This is where we left off
+											.findOneAndUpdate({ Category: category }, { Material: matDoc })
+											.then((res) => {
+												console.log('Material Update Complete');
+											})
+											.catch((err) => {
+												console.log(err);
+											}); ///// This is where we left off
+										});
+										
+										let catIndex = vProfile.Categories.findIndex((doc) => {
+											// console.log(category);
+											// console.log(doc.CategoryName);
+											return doc.CategoryName === category;
 										});
 
 										if (catIndex !== -1) {
+											let matIndex = vProfile.Categories[catIndex].Material.findIndex((mat) => {
+												return mat === material;
+											});
+										
 											if (matIndex !== -1) {
 												vProfile.Categories[catIndex].Materials.push(material);
+											}
+											else{
+												console.log('error there is a problem adding material to vendor')
 											}
 										} else {
 											let newCat = {
 												CategoryName: category,
 												Material: [ material ]
 											};
-											vProfile.Material.push(newMat);
+											vProfile.Categories.push(newCat);
 										}
 										//TODO:		updating vendor material BETA this is just here as a reference  TODO:
 										// vendor.findOne({ VendorName: vendorName }).then((doc) => {
@@ -441,6 +451,7 @@ module.exports = (imports) => {
 							res.render('404Page');
 						}
 					}
+					
 				})
 				.catch((err) => console.log(err));
 		} else {

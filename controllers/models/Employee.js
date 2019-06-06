@@ -27,9 +27,27 @@ const Employee = mongoose.model(
 			type: Boolean,
 			required: true
 		},
-		Scheduel: {
-			type: Array,
-			default: null
+		Schedule: {
+			Monday : {
+				type: String,
+				default :"9 to 5"
+			},
+			Tuesday : {
+				type: String,
+				default :"9 to 5"
+			},
+			Wednesday : {
+				type: String,
+				default :"9 to 5"
+			},
+			Thursday : {
+				type: String,
+				default :"9 to 5"
+			},
+			Friday : {
+				type: String,
+				default :"9 to 5"
+			},
 		},
 		Username: {
 			type: String,

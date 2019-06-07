@@ -31,7 +31,7 @@ module.exports = (imports) => {
 	});
 
 	///////////////////////////////ABH PURCHASE SITE/////////////////////
-	// ++ This is to load the categories beginning page 
+	// ++ This is to load the categories beginning page
 	app.get('/ABH_Purchase/Dashboard', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		mat.find({}).then((matDoc) => {
 			var categories = new Array();
@@ -43,6 +43,7 @@ module.exports = (imports) => {
 			res.render('purchDashboard', { purchase, categories });
 		});
 	});
+
 	// ++ this is to handle once category has been selected and if new material or only category requests
 	app.post('/Category_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		const { masCat, category } = req.body;
@@ -63,23 +64,17 @@ module.exports = (imports) => {
 
 	app.post('/Material_Request', urlencodedParser, purchEnsureAuthenticated, (req, res, next) => {
 		const { category, newMat, masCat } = req.body;
-
+		console.log(`New Material: ${newMat} \nMas Cat: ${masCat}`);
 		let { material } = req.body;
 		material = material.toUpperCase();
-
+		// ^^ possibly change newMaterial to just a ejs if statement in the view  if this isn't used elsewhere
 		let newMaterial = 'No';
 		if (newMat === 'on') {
 			newMaterial = 'Yes';
 		}
-		// let dbQuery = 'noSearch';
-
-		//allow user to add new materials but check for the following:
-
-		// 1) if new material is checked skip the vendor search and go straight to creating a new material
 
 		console.log('masCat:  ' + masCat === 'on');
-		console.log('The material Inputed Was ' + material);
-
+		console.log('The material Inputted Was ' + material);
 		let badComma = material.indexOf(',', material.length - 1) !== -1;
 		let formatPass =
 			material.indexOf(' ') === -1 &&
@@ -88,138 +83,84 @@ module.exports = (imports) => {
 			material.indexOf(',') === -1 &&
 			material.indexOf() === -1;
 
-		if (formatPass === false) {
-			console.log(material + ' is ' + 'INVALID FORMAT');
-		}
-
-		console.log(!badComma + ' Good comma');
-		console.log(formatPass + ' format Pass');
+		console.log('Good comma --> ' + !badComma);
+		console.log('Format Pass --> ' + formatPass);
 
 		if (!badComma && formatPass) {
-			vendor.find({}).then((vendorDoc) => {
-				// console.log(vendorDoc)
-				let vendList = vendorDoc;
-				let vEmailList = new Array();
-				let vendorList = new Array();
-				if (masCat === 'on') {
+			vendor
+				.find({})
+				.then((vendorCollection) => {
 					mat
 						.findOne({ Category: category })
-						.then((doc) => {
-							for (let i = 0; i < vendList.length; i++) {
-								let catArray = vendList[i].Categories;
-								for (let k = 0; k < catArray.length; k++) {
-									if (catArray[k].CategoryName === category) {
-										vEmailList.push(vendList[i].Email);
-									}
-								}
-							}
-							let dbMatArray = doc.Material;
-							let indexMaterialFound = dbMatArray.findIndex((mat) => {
-								return mat.MaterialName === material;
+						.then((materialDoc) => {
+							let vendorList = new Array();
+							let Material = materialDoc.Material;
+							let materialIndex = Material.findIndex((dbMaterial) => {
+								return dbMaterial.MaterialName === material;
 							});
+							// First Check if masCat was checked off
+							if (masCat === 'on') {
+								//now take all the vendors in that category and add them to the list
+								console.log('DOES THIS MATERIAL EXIST (CATEGORY REQ) ? ==> ' + (materialIndex !== -1));
+								if (materialIndex === -1) {
+									req.flash(
+										'error_msg',
+										`The Material: ${material} does not exist within the database if new material please select the option`
+									);
+									res.redirect('/ABH_Purchase/Dashboard');
+								} else {
+									console.log(materialIndex);
+									for (let i = 0; i < Material.length; i++) {
+										let Vendors = Material[i].Vendors;
+										for (let j = 0; j < Vendors.length; j++)
+											//We are adding the vendor at the index to the list for future reference
+											vendorList.push(Vendors[j]);
+									}
+									purchase ='submitReq'
+									res.render('purchDashboard', { purchase, material, newMaterial, vendorList, category });
+								}
+							} else if (newMat === 'on') {
+								//if masCat wasn't checked off we check to see if its a new material
+								// ++ MaterialFound is a boolean value of true or false
 
-							console.log(dbMatArray);
-							console.log(indexMaterialFound);
-							console.log(vEmailList);
-							if (indexMaterialFound === -1) {
-								req.flash(
-									'error_msg',
-									'This Material is Not in the database for this category. If this is a new material uncheck the "Send to all category" and check "This is a new material" '
-								);
-								res.redirect('/ABH_Purchase/Dashboard');
+								console.log('DOES THIS PASS AS A NEW MATERIAL ? ==> ' + (materialIndex === -1));
+
+								if (materialIndex !== -1) {
+									req.flash('error_msg', `The Material: ${material} Already Exists CANNOT SEND MASS EMAIL`);
+									res.redirect('/ABH_Purchase/Dashboard');
+								} else {
+									for (let i = 0; i < vendorCollection.length; i++) {
+										vendorList.push(vendorCollection[i].VendorName);
+									}
+									purchase ='submitReq'
+									res.render('purchDashboard', { purchase, material, newMaterial, vendorList, category });
+								}
 							} else {
-								purchase = 'submitReq';
-								res.render('purchDashboard', { purchase, material, newMaterial, vEmailList, category });
+								//if its a specific request because its specific we already have a array value to set the vendor list
+								console.log('DOES THIS MATERIAL EXIST (SPECIFIC REQ) ? ==> ' + (materialIndex !== -1));
+								if (materialIndex !== -1) {
+									vendorList = Material[materialIndex].Vendors;
+									purchase ='submitReq'
+									res.render('purchDashboard', { purchase, material, newMaterial, vendorList, category });
+								} else {
+									req.flash(
+										'error_msg',
+										`The Material: ${material} does not exist within the database if new material please select the option`
+									);
+									res.redirect('/ABH_Purchase/Dashboard');
+									
+								}
+								// console.log(vendorList[0]);
 							}
+							// console.log(vendorList);
 						})
 						.catch((err) => {
-							console.log(err);
+							throw err;
 						});
-				} else {
-					if (newMat == 'on') {
-						mat
-							.findOne({ Category: category })
-							.then((doc) => {
-								let matArr = doc.Material;
-								let matFound = matArr.findIndex((mat) => {
-									return mat.MaterialName === material;
-								});
-
-								console.log(matFound);
-
-								if (matFound === -1) {
-									for (let i = 0; i < vendList.length; i++) {
-										if (!vendorList.includes(vendList[i].VendorName)) {
-											vendorList.push(vendList[i].VendorName);
-											vEmailList.push(vendList[i].Email);
-										}
-									}
-									console.log(vEmailList.length);
-									purchase = 'submitReq';
-									res.render('purchDashboard', {
-										purchase,
-										material,
-										newMaterial,
-										vEmailList,
-										category
-									});
-								} else {
-									req.flash(
-										'error_msg',
-										'This Material is already in the database so we cannot create a new one please uncheck New Material then proceed with your request'
-									);
-									res.redirect('/ABH_Purchase/Dashboard');
-								}
-							})
-							.catch((err) => {
-								console.log(err);
-							});
-					} else {
-						mat
-							.findOne({ Category: category })
-							.then((doc) => {
-								console.log(doc);
-								console.log('starting test on db search');
-								let matArr = doc.Material;
-								let matIndex = matArr.findIndex((arr) => {
-									return arr.MaterialName === material;
-								});
-								console.log('matIndex= ' + matIndex + ' ' + matIndex === -1);
-								if (matIndex === -1) {
-									console.log('now entering');
-									req.flash(
-										'error_msg',
-										'We cannot find the material You searched for if you would like to send a request for a new material check New Material to Yes.   WARNING: this action will send a request to all of the vendors in the database'
-									);
-									purchase = 'reqQuote';
-									res.redirect('/ABH_Purchase/Dashboard');
-								} else {
-									for (let m = 0; m < matArr[matIndex].Vendors.length; m++) {
-										vendorList.push(matArr[matIndex].Vendors[m]);
-									}
-									for (let i = 0; i < vendorList.length; i++) {
-										let vIndex = vendList.findIndex((doc) => {
-											return doc.VendorName === vendorList[i];
-										});
-										vEmailList.push(vendList[vIndex].Email);
-									}
-									console.log(vEmailList);
-									dbQuery = 'search';
-									purchase = 'submitReq';
-									res.render('purchDashboard', {
-										purchase,
-										material,
-										newMaterial,
-										dbQuery,
-										category,
-										vEmailList
-									});
-								}
-							})
-							.catch();
-					}
-				}
-			});
+				})
+				.catch((err) => {
+					throw err;
+				});
 		} else {
 			req.flash(
 				'error_msg',
@@ -228,15 +169,15 @@ module.exports = (imports) => {
 			res.redirect('/ABH_Purchase/Dashboard');
 		}
 	});
-	
+
 	app.get('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		res.redirect('/ABH_Purchase/Dashboard');
 	});
 
 	app.post('/Purchase_Request', urlencodedParser, purchEnsureAuthenticated, (req, res, next) => {
-		const { material, reqType, ammount, units, price, rushOrder, notes, newMat, category } = req.body;
-		let { vEmailList } = req.body;
-		vEmailList = vEmailList.split(',');
+		const { material, reqType, amount, units, price, rushOrder, notes, newMat, category } = req.body;
+		let { vendorList } = req.body;
+		vendorList = vendorList.split(',');
 		
 		let newMaterial = newMat === 'Yes';
 		let noErr = true;
@@ -244,6 +185,7 @@ module.exports = (imports) => {
 		let httpRoute = testing ? 'http://localHost:5000/' : 'http://app.abhpharma.com/';
 
 		if (newMaterial) {
+			// ^^This updates the material database by adding a material to the array list of materials for that collection
 			mat.findOne({ Category: category }).then((mDoc) => {
 				let matArr = mDoc.Material;
 				matArr.push({
@@ -263,67 +205,73 @@ module.exports = (imports) => {
 					});
 			});
 		}
-		console.log(vEmailList);
+		console.log(vendorList);
 		console.log('------------------');
 
 		vendor.find({}).then((vDoc) => {
-			let vendArr = vDoc;
+			let vendorCollection = vDoc;
 			
-			for (let i = 0; i < vEmailList.length; i++) {
-				let vIndex = vendArr.findIndex((doc) => {
-					return doc.Email === vEmailList[i];
+			for (let i = 0; i < vendorList.length; i++) {
+				let vIndex = vendorCollection.findIndex((doc) => {
+
+					return doc.VendorName === vendorList[i];
 				});
-
-				let vend = vendArr[vIndex];
-				let vendId = vend._id;
-
+				let vendorDoc = vendorCollection[vIndex];
+				console.log(vIndex)
+				console.log('the vendor ' + vendorList[i])
+				console.log(vendorDoc.VendorName);
+				console.log(vendorDoc.Email.main)
+				console.log(vendorDoc.Email.cc);
+				let vendorId = vendorDoc._id;
+				console.log(`id: ${vendorId}`);
 				var orderType = rushOrder;
+				var targetPrice = price;
+
 				if ((orderType = 'on')) {
 					orderType = 'Rush Order';
 				} else {
 					orderType = 'Order';
 				}
 
-				var targetPrice = price;
 				if (targetPrice != '') {
 					targetPrice = `Our target price would preferably be ${price} $(USD)`;
 				}
-			
+
 				var token = jwt.sign(
 					{
-						vendorName: vend.VendorName,
-						shipCompName: vend.shipCompName,
-						shipAddress1: vend.shipAddress1,
-						shipAddress2: vend.ShipAdress2,
-						shipCity: vend.shipCity,
-						shipState: vend.shipState,
-						shipZip: vend.shipZip,
-						shipCountry: vend.shipCountry,
+						vendorName: vendorDoc.VendorName,
+						shipCompName: vendorDoc.shipCompName,
+						shipAddress1: vendorDoc.shipAddress1,
+						shipAddress2: vendorDoc.ShipAddress2,
+						shipCity: vendorDoc.shipCity,
+						shipState: vendorDoc.shipState,
+						shipZip: vendorDoc.shipZip,
+						shipCountry: vendorDoc.shipCountry,
 						newMaterial: newMaterial,
 						rushOrder: rushOrder,
 						targetPrice: targetPrice,
 						material: material,
 						category: category,
 						orderType: orderType,
-						abhRequest: `${orderType} Of ${ammount} ${units}: ${reqType}`
+						abhRequest: `${orderType} Of ${amount} ${units}: ${reqType}`
 					},
 					key.jwtSecret,
 					{
 						expiresIn: '7 days'
 					}
 				);
-				
-				console.log(token);
-				let vendorKeys = [ ...vend.key, token ];
+
+				// console.log(token);
+				let vendorKeys = [ ...vendorDoc.key, token ];
 
 				vendor
-					.findByIdAndUpdate(vendId, { key: vendorKeys })
+					.findByIdAndUpdate(vendorId, { key: vendorKeys })
 					.then(() => console.log('Updated tokens for  Vendor ' + vend.VendorName))
 					.catch((err) => {
 						err ? err : 'no err';
 					});
 
-				var vendorName = vend.VendorName;
+				var vendorName = vendorDoc.VendorName;
 				//  console.log(vend.VendorName);
 				// var shipCompName = vend.shipCompName;
 				//  console.log(shipCompName);
@@ -337,7 +285,8 @@ module.exports = (imports) => {
 
 				const mailOptionsReq = {
 					from: 'ABH Purchase Dept. <Purchasing@abhnature.com>', // sender address
-					to: vEmailList[i], // list of receivers
+					to:	vendorDoc.Email.main, // list of receivers
+					cc: vendorDoc.Email.cc,
 					//${vendorContact[i]},
 					subject: `ABH-Nature Quote Request for ${material} `, // Subject line
 					text: `
@@ -375,8 +324,8 @@ module.exports = (imports) => {
 					html: `
 									Hello ${vendorName}, <br>
 									<br><br>
-									
-									
+
+
 									We at ABH have requested a quote for the following material: ${material}
 									<br><br>
 
@@ -411,10 +360,10 @@ module.exports = (imports) => {
 				transporter
 					.send(mailOptionsReq)
 					.then((info) => {
-						console.log('Sent Email to ' + vEmailList[i]);
+						console.log('Sent Email to ' + vendorList[i]);
 					})
 					.catch((err) => {
-						console.log('there is a err sending to ' + vEmailList[i] + ' code err:', err);
+						console.log('there is a err sending to ' + vendorList[i] + ' code err:', err);
 						noErr = false;
 					});
 			}
@@ -442,7 +391,7 @@ module.exports = (imports) => {
 		}
 	});
 
-	///////////////////////////////////////////////////////////////////////////
+	// ++ Edit vendor Information
 	app.get('/ABH_Purchase/Modify_Vendor', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		vendor
 			.find({})
@@ -532,7 +481,6 @@ module.exports = (imports) => {
 		// matSup = matSup.toUpperCase();
 		vendEmail = vendEmail.toUpperCase();
 
-		
 		vendEmailCC = vendEmailCC.toUpperCase();
 		vendEmailCC = vendEmailCC.split(',');
 
@@ -554,9 +502,9 @@ module.exports = (imports) => {
 			Website: website,
 			// Material: matArray,
 			Email: {
-					main: vendEmail,
-					cc : vendEmailCC
-				},
+				main: vendEmail,
+				cc: vendEmailCC
+			},
 			Number: vendNum,
 			shipCompNam: shipCompNam,
 			shipAddress1: shipAddress1,
@@ -573,7 +521,7 @@ module.exports = (imports) => {
 			.then((vendor) => {
 				// this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
 
-				req.flash('success_msg', `You succesfully updated Vendor: ${vendNam}'s Info`);
+				req.flash('success_msg', `You successfully updated Vendor: ${vendNam}'s Info`);
 				res.redirect('/ABH_Purchase/Modify_Vendor');
 			})
 			.catch((err) => {
@@ -581,7 +529,7 @@ module.exports = (imports) => {
 			});
 	});
 
-	////////////////////////////////////////////////////////////////////////////
+	// ++Add vendor to database 
 	app.get('/ABH_Purchase/Add_Vendor', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		mat.find({}).then((material) => {
 			var materials = [];
@@ -601,8 +549,8 @@ module.exports = (imports) => {
 			vendNam,
 			repName,
 			website,
-
 			vendEmail,
+			vendEmailCC,
 			vendNum,
 			shipCompNam,
 			shipAddress1,
@@ -616,8 +564,8 @@ module.exports = (imports) => {
 		vendNam = vendNam.toUpperCase();
 		repName = repName.toUpperCase();
 		website = website.toUpperCase();
-
 		vendEmail = vendEmail.toUpperCase();
+		vendEmailCC = vendEmailCC.toUpperCase();
 		shipCompNam = shipCompNam.toUpperCase();
 		shipAddress1 = shipAddress1.toUpperCase();
 		shipAddress2 = shipAddress2.toUpperCase();
@@ -645,7 +593,10 @@ module.exports = (imports) => {
 						var createVendor = new vendor({
 							VendorName: vendNam,
 							RepName: repName,
-							Email: vendEmail,
+							Email:{
+								main: vendEmail,
+								cc: vendEmailCC	
+							},
 							Number: vendNum,
 							Website: website,
 							Admin: false,
@@ -687,6 +638,7 @@ module.exports = (imports) => {
 	});
 
 	////////////////////////////////////////////////////////////////////////////TODO:
+	// ++ Modify vendor materials 
 	app.get('/ABH_Purchase/Modify_Material', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		vendor.find({}).then((doc) => {
 			let vendorName = new Array();
@@ -735,6 +687,7 @@ module.exports = (imports) => {
 		}
 	});
 
+	// ++ Add a category to vendor for materials 
 	app.post('/Add_Category_Vendor', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		let { catAddition, vendSearch } = req.body;
 
@@ -799,6 +752,7 @@ module.exports = (imports) => {
 		});
 	});
 
+	// ++Finalize material support and update material and vendor db
 	app.post('/Update_Material_Push', urlencodedParser, purchEnsureAuthenticated, (req, res) => {
 		const { vendSearch, catSearch } = req.body; // these reference the vendors name and category to search for to modify
 		let { materialList, materialListTemp } = req.body; // this is the temporary list to compare to the new list to see what was added and what was removed

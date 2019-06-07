@@ -26,14 +26,11 @@ const vendor = require('../controllers/models/Vendor').Vendor;
 
 vendor.find({}).then((doc) => {
 	let vDoc = doc;
-	console.log(vDoc[0].Email);
 	let i = 0;
 	// for (i; i <vDoc.length ; i++) {
-	// 	let email = {
-	// 		main: vDoc[i].Email,
-	// 		cc: []
-	// 	};
-	// 	vendor.findByIdAndUpdate(vDoc[i]._id, { Email: email }).then(() => console.log('update completed '));
+	// 	vDoc[i].VendorName = vDoc[i].VendorName.split(',').join('');
+	// 	console.log(vDoc[i].VendorName)
+	// 	vendor.findByIdAndUpdate(vDoc[i]._id, {VendorName : vDoc[i].VendorName }).then(() => console.log('update completed '));
 	// }
 
 });

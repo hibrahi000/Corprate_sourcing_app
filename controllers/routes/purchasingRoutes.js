@@ -291,7 +291,9 @@ module.exports = (imports) => {
 					subject: `ABH-Nature Quote Request for ${material} `, // Subject line
 					text: `
 									Hello ${vendorName}, <br>
-									<br><br>
+									ABH has decided to use the following link to source pricing for materials. Should there be any issues please feel free to contact us directly at Purchasing@abhnature.com 
+									<br>
+									<br>
 
 									We at ABH have requested a quote for the following material: ${material}
 									<br><br>
@@ -323,6 +325,7 @@ module.exports = (imports) => {
 									`,
 					html: `
 									Hello ${vendorName}, <br>
+									ABH has decided to use the following link to source pricing for materials. Should there be any issues please feel free to contact us directly at Purchasing@abhnature.com 
 									<br><br>
 
 

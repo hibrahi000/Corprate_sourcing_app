@@ -82,7 +82,7 @@ module.exports = (imports) => {
 			material,
 			abhRequest,
 			itemCode,
-			ammount,
+			amount,
 			measurement,
 			priceIn,
 			priceType,
@@ -278,7 +278,7 @@ module.exports = (imports) => {
 									}
 
 									const mailOptionsVendForm = {
-										from: `${vendorName} <${vProfile.Email}>`, // sender address Purchasing@abhnature.com
+										from: `${vendorName} <${vProfile.Email.main}>`, // sender address Purchasing@abhnature.com
 										to: '<Purchasing@abhnature.com>',
 										cc: '<tech@abhpharma.com>', // list of receivers
 										subject: `${vendorName} Request Submission For ${material}`,
@@ -288,7 +288,7 @@ module.exports = (imports) => {
 													Material: ${material}<br>
 													ABH Requested: ${abhRequest}<br><br>
 													Item Code: ${itemCode} <br>
-													Min Order Quantity: ${ammount}  ${measurement}<br>
+													Min Order Quantity: ${amount}  ${measurement}<br>
 													Price: ${priceIn} USD  ---- ${priceType}<br>
 													In Stock : ${InStock}<br>
 													Date In Stock: ${DateInStock}<br><br><br><br>
@@ -321,7 +321,7 @@ module.exports = (imports) => {
 													Material: ${material}<br>
 													ABH Requested: ${abhRequest}<br><br>
 													Item Code: ${itemCode} <br>
-													Min Order Quantity: ${ammount}  ${measurement}<br>
+													Min Order Quantity: ${amount}  ${measurement}<br>
 													Price: ${priceIn} USD  ---- ${priceType}<br>
 													In Stock : ${InStock}<br>
 													Date In Stock: ${DateInStock}<br><br><br><br>
@@ -368,7 +368,7 @@ module.exports = (imports) => {
 														Material: material,
 														ABH_Request: abhRequest,
 														Item_Code: itemCode,
-														Ammount: ammount + ' ' + measurement,
+														Amount: amount + ' ' + measurement,
 														Price: priceIn,
 														Price_Type: priceType,
 														In_Stock: inStock,
@@ -401,7 +401,7 @@ module.exports = (imports) => {
 												Material: material,
 												ABH_Request: abhRequest,
 												Item_Code: itemCode,
-												Ammount: ammount + ' ' + measurement,
+												Amount: amount + ' ' + measurement,
 												Price: priceIn,
 												Price_Type: priceType,
 												In_Stock: inStock,
@@ -500,10 +500,10 @@ module.exports = (imports) => {
 										console.log(err);
 									});
 
+									let vProfile = vdoc;
 
 									if (newMaterial === false) {
 										mat.findOne({ Category: category }).then((matDoc) => {
-											let vProfile = vdoc;
 											let vCatI = vProfile.Categories.findIndex((doc) => {
 												return doc.CategoryName === category;
 											});
@@ -529,9 +529,9 @@ module.exports = (imports) => {
 											if (mProfile.Material[mMatI].Vendors[0] === undefined) {
 												console.log('is empty');
 												mProfile.Material.splice(mMatI, 1);
-
+												
 												const mailOptionsVendUnsubscibeNewDel = {
-													from: `${vendorName} <${vProfile.Email}>`, // sender address
+													from: `${vendorName} <${vProfile.Email.main}>`, // sender address
 													to: ' <tech@abhpharma.com>,<Purchasing@abhnature.com>', // list of receivers
 													subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
 													text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Material<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 4)Then click save
@@ -542,7 +542,7 @@ module.exports = (imports) => {
 												Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 
 												`,
-													html: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Material<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 4)Then click save
+													html: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we don't have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Material<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 4)Then click save
 
 
 												<br><br>
@@ -559,7 +559,7 @@ module.exports = (imports) => {
 												});
 											} else {
 												const mailOptionsVendUnsubscibeNew = {
-													from: `${vendorName} <${vdoc.Email}>`, // sender address
+													from: `${vendorName} <${vdoc.Email.main}>`, // sender address
 													to: '<Purchasing@abhnature.com>',
 													cc: '<tech@abhpharma.com>', // list of receivers
 													subject: `${vendorName} Unsubscription For ${material}`,
@@ -585,7 +585,7 @@ module.exports = (imports) => {
 												transporter.send(mailOptionsVendUnsubscibeNew, function(err, info) {
 													if (err) console.log('Couldnt send email' + err);
 													else null;
-													// console.log(info);
+													console.log('Unsubscribe Material Notification Sent');
 													res.render('vendor/materialRemoved');
 												});
 											}
@@ -616,7 +616,7 @@ module.exports = (imports) => {
 
 										console.log('else');
 										const mailOptionsUnsubscribe = {
-											from: `${vendorName} <${vdoc.Email}>`, // sender address
+											from: `${vendorName} <${vdoc.Email.main}>`, // sender address
 											to: '<Purchasing@abhnature.com>',
 											cc: '<tech@abhpharma.com>', // list of receivers
 											subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,

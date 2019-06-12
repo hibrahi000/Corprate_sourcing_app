@@ -142,7 +142,7 @@ font-family: sans-serif;
         position: absolute;
         margin: 1% 7%;
         
-        /*stacking fieldsets above each other*/
+        /*stacking fieldset above each other*/
         
     }
     /*Hide all except first fieldset*/
@@ -219,7 +219,7 @@ h5{
     text-align: center;
 }
 
- .form-group{   /*MAKE SURE YOU DONT TOUCH THIS THIS IS ONLY SO THAT THE DATE PICKER DOESNT SHOW BEHIND ELEMENTS LET BOOTRAP DO THE REST FOR FORM-GROUP*/
+ .form-group{   /*MAKE SURE YOU DON'T TOUCH THIS THIS IS ONLY SO THAT THE DATE PICKER DOESN'T SHOW BEHIND ELEMENTS LET BOOTSTRAP DO THE REST FOR FORM-GROUP*/
     z-index: 1;
 }
 
@@ -287,9 +287,9 @@ select{
     .startHour{
         margin-right: 2%;
     }
-    #address, #address-two, #city, #state, #zip, #country, #startHour,#endHour{
+    /* #address, #address-two, #city, #state, #zip, #country, #startHour,#endHour{
         
-    }
+    } */
         .addLabel{
             margin-bottom: 5%;
         }

@@ -276,7 +276,7 @@ module.exports = (imports) => {
 				// var shipCompName = vend.shipCompName;
 				//  console.log(shipCompName);
 				// var shipAddress1 = vend.shipAddress1;
-				// const shipAddress2 = vend.ShipAdress2;
+				// const shipAddress2 = vend.ShipAddress2;
 				// const shipCity = vend.shipCity;
 				// const shipState = vend.shipState;
 				// const shipZip = vend.shipZip;
@@ -415,7 +415,7 @@ module.exports = (imports) => {
 			if (vendor === null) {
 				req.flash(
 					'error_msg',
-					'It seems like you picked a vendor that isnt in the system please use the list of vendors in the search box'
+					'It seems like you picked a vendor that is not in the system please use the list of vendors in the search box'
 				);
 				res.redirect('/ABH_Purchase/Modify_Vendor');
 			} else {
@@ -519,7 +519,7 @@ module.exports = (imports) => {
 		vendor
 			.findOneAndUpdate(query, update)
 			.then((vendor) => {
-				// this just updates the document of the vendor wheather it has or doesnt have the material in the list that is found not the material
+				// this just updates the document of the vendor whether it has or doesn't have the material in the list that is found not the material
 
 				req.flash('success_msg', `You successfully updated Vendor: ${vendNam}'s Info`);
 				res.redirect('/ABH_Purchase/Modify_Vendor');
@@ -580,7 +580,7 @@ module.exports = (imports) => {
 
 		vendor.findOne({ VendorName: vendNam }, function(err, data) {
 			if (data === null) {
-				console.log('begining addition to Vendor Collection');
+				console.log('beginning addition to Vendor Collection');
 
 				bcrypt.genSalt(10, (err, salt) =>
 					bcrypt.hash('PharmaDebug!54', salt, (err, hash) => {
@@ -778,9 +778,9 @@ module.exports = (imports) => {
 			return listValid;
 		}
 
-		// printout if it passed 2nd stage input verrification
+		// printout if it passed 2nd stage input verification
 		// console.log(materialList);
-		// make both the temporary list and new list capitalized so that only the word is compared not the caseing
+		// make both the temporary list and new list capitalized so that only the word is compared not the letter case
 		materialList = materialList.toUpperCase();
 		materialListTemp = materialListTemp.toUpperCase();
 
@@ -801,14 +801,14 @@ module.exports = (imports) => {
 			materialList[i] = materialList[i].replace(/(\r\n|\n|\r)/gm, '');
 		}
 
-		let formatPass = formatValidation(materialList); // this is to check to see if there are any : Spaces, extra commas,or underscore to sepereate multiword Materials
+		let formatPass = formatValidation(materialList); // this is to check to see if there are any : Spaces, extra commas,or underscore to separate multi-word Materials
 		// console.log(formatPass);
 
-		//if the format that was entereed does not passes the second stage of checking then ...
+		//if the format that was entered does not passes the second stage of checking then ...
 		if (!formatPass || badComma) {
 			errors.push({
 				msg:
-					'Please Seperate materials by a comma and then press enter for a new line, Make sure there are no commas at the last material, and use a "-" instead of a space'
+					'Please Separate materials by a comma and then press enter for a new line, Make sure there are no commas at the last material, and use a "-" instead of a space'
 			});
 			purchase = 'mat_Vendor_Update';
 			res.render('purchDashboard', {
@@ -830,7 +830,7 @@ module.exports = (imports) => {
 
 			// console.log('this is before ', tMat);
 
-			// create materialPop and materialAdd arrays to use later to decied what to remove and what to add
+			// create materialPop and materialAdd arrays to use later to decide what to remove and what to add
 			let materialPop = new Array();
 			let materialAdd = new Array();
 			//if something was added or removed then push it to either the material to pop array or material to add array ....

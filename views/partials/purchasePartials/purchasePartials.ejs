@@ -6,7 +6,7 @@
                 <h1 id="sectionName"><em>Request Quote</em> <br><br> </h1>
 
                 <h1 class="title" class="fs-title">Category</h1>
-                <input type="text" class="inputField" name="category" placeholder="Alpha...." / required pattern="^[^,]\S+[^,]$" title="Make Sure there are no Spaces after the commas and if there are spaces inside the material seperate by using hyphens ex Alpha-GPC-50% And No commas at the beggining or end of the list" list="catList">
+                <input type="text" class="inputField" name="category" placeholder="Alpha...." / required pattern="^[^,]\S+[^,]$" title="Make Sure there are no Spaces after the commas and if there are spaces inside the material separate by using hyphens ex Alpha-GPC-50% And No commas at the beginning or end of the list" list="catList">
                 <datalist id="catList">
                         <% for(let i =0; i < categories.length; i++){ %>
                                 <option value= "<%- categories[i].Category %>" >
@@ -40,7 +40,7 @@
                 <input type="text" class="inputField" name="category" value="<%= category %>" readonly />
 
                 <h1 class="title" class="fs-title">Material</h2>
-                <input type="text" class="inputField" name="material" placeholder="Alpha...." / required  title="Make Sure there are no Spaces after the commas and if there are spaces inside the material seperate by using hyphens ex Alpha-GPC-50% And No commas at the beggining or end of the list" list="matList">
+                <input type="text" class="inputField" name="material" placeholder="Alpha...." / required  title="Make Sure there are no Spaces after the commas and if there are spaces inside the material separate by using hyphens ex Alpha-GPC-50% And No commas at the beginning or end of the list" list="matList">
 
                 <datalist id="matList">
                         <%for(let i=0; i< matList.length; i++){%>

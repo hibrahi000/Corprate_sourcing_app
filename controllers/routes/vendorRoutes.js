@@ -23,25 +23,22 @@ module.exports = (imports) => {
 						console.log(keyIndex);
 						if (keyIndex !== -1) {
 							jwt.verify(tok, key.jwtSecret, (err) => {
-
-								//this is to clean up the already existing jwt that have expired 
-								vdoc.key.forEach(element => {
-									jwt.verify(element,key.jwtSecret, (err) => {
-										if(err) {
-											let tokIndex = vdoc.key.findIndex(token => {
+								//this is to clean up the already existing jwt that have expired
+								vdoc.key.forEach((element) => {
+									jwt.verify(element, key.jwtSecret, (err) => {
+										if (err) {
+											let tokIndex = vdoc.key.findIndex((token) => {
 												return token === element;
-											})
-											if(tokIndex !== -1){
-												vdoc.key.splice(tokIndex,1);
+											});
+											if (tokIndex !== -1) {
+												vdoc.key.splice(tokIndex, 1);
 												vendor.findByIdAndUpdate(vdoc._id, { key: vdoc.key }).then(() => {
 													console.log('cleaning up expired tokens');
 												});
 											}
 										}
-									})
+									});
 								});
-
-
 
 								if (err) {
 									vdoc.key.splice(keyIndex, 1);
@@ -54,12 +51,7 @@ module.exports = (imports) => {
 									let token = jwt.decode(tok);
 									res.render('vendor/vendorFill', { qs: token, tok: tok, vendorName: vend });
 								}
-
-
 							});
-
-
-
 						} else {
 							//if not found ...
 							console.log('token not found');
@@ -151,16 +143,6 @@ module.exports = (imports) => {
 									console.log('validation error in vendor form POST');
 									res.render('404Page');
 								} else {
-									vdoc.key.splice(keyIndex, 1);
-									vendor
-										.findByIdAndUpdate(vdoc._id, { key: vdoc.key })
-										.then(() => {
-											console.log('submition was sent removing token');
-										})
-										.catch((err) => {
-											console.log('issue with removal of token');
-											console.log(err);
-										});
 									let vProfile = vdoc;
 									vProfile.PayType = payType;
 									vProfile.PayTerms = payTerms;
@@ -173,8 +155,6 @@ module.exports = (imports) => {
 									vProfile.shipCountry = shipCountry;
 
 									if (newMaterial === 'true') {
-										
-										
 										//updating material database if it is a new material aka mass request so many vendors
 										mat.findOne({ Category: category }).then((doc) => {
 											let matDoc = doc.Material;
@@ -182,18 +162,18 @@ module.exports = (imports) => {
 											let matIndex = matDoc.findIndex((mat) => {
 												return mat.MaterialName === material;
 											});
-											
+
 											matDoc[matIndex].Vendors.push(vendorName);
 											mat
-											.findOneAndUpdate({ Category: category }, { Material: matDoc })
-											.then((res) => {
-												console.log('Material Update Complete');
-											})
-											.catch((err) => {
-												console.log(err);
-											}); ///// This is where we left off
+												.findOneAndUpdate({ Category: category }, { Material: matDoc })
+												.then((res) => {
+													console.log('Material Update Complete');
+												})
+												.catch((err) => {
+													console.log(err);
+												}); ///// This is where we left off
 										});
-										
+
 										let catIndex = vProfile.Categories.findIndex((doc) => {
 											// console.log(category);
 											// console.log(doc.CategoryName);
@@ -204,12 +184,11 @@ module.exports = (imports) => {
 											let matIndex = vProfile.Categories[catIndex].Material.findIndex((mat) => {
 												return mat === material;
 											});
-										
+
 											if (matIndex !== -1) {
 												vProfile.Categories[catIndex].Materials.push(material);
-											}
-											else{
-												console.log('error there is a problem adding material to vendor')
+											} else {
+												console.log('error there is a problem adding material to vendor');
 											}
 										} else {
 											let newCat = {
@@ -249,7 +228,7 @@ module.exports = (imports) => {
 										vendor
 											.findOneAndUpdate({ VendorName: vendorName }, vUpdate)
 											.then((doc) => {
-												console.log('update successfull');
+												console.log('update successful');
 											})
 											.catch((err) => {
 												console.log(err);
@@ -270,7 +249,7 @@ module.exports = (imports) => {
 										vendor
 											.findOneAndUpdate({ VendorName: vendorName }, vUpdate)
 											.then((doc) => {
-												console.log('update successfull');
+												console.log('update successful');
 											})
 											.catch((err) => {
 												console.log(err);
@@ -279,7 +258,7 @@ module.exports = (imports) => {
 
 									const mailOptionsVendForm = {
 										from: `${vendorName} <${vProfile.Email.main}>`, // sender address Purchasing@abhnature.com
-										to: '<Purchasing@abhnature.com>',
+										to: '<purchasing@abhnature.com>',
 										cc: '<tech@abhpharma.com>', // list of receivers
 										subject: `${vendorName} Request Submission For ${material}`,
 										text: `
@@ -352,38 +331,48 @@ module.exports = (imports) => {
 													`
 									};
 
-									//this has the receipt functionallty
+									//this has the receipt functionality
 									receipt.find({}).then((receiptDoc) => {
 										let rDoc = receiptDoc;
 										let rIndex = rDoc.findIndex((rec) => {
 											return rec.VendorName === vendorName;
 										});
+
 										if (rIndex === -1) {
 											var createReceipt = receipt({
 												VendorName: vendorName,
-
-												Receipt: [
+												Category: [
 													{
-														Category: category,
-														Material: material,
-														ABH_Request: abhRequest,
-														Item_Code: itemCode,
-														Amount: amount + ' ' + measurement,
-														Price: priceIn,
-														Price_Type: priceType,
-														In_Stock: inStock,
-														Date_In_Stock: dateInStock,
-														PayType: payType,
-														PayTerms: payTerms,
-														ShippingDate: shippingDate,
-														Shipping_Company_Name: shipCompName,
-														Ship_Address1: shipAddress1,
-														Ship_Address2: shipAddress2,
-														Ship_City: shipCity,
-														Ship_State: shipState,
-														Ship_Zip: shipZip,
-														Ship_Country: shipCountry,
-														Notes: notes
+														CategoryName: category,
+														Material: [
+															{
+																MaterialName: material,
+																Receipt: [
+																	{
+																		Category: category,
+																		Material: material,
+																		ABH_Request: abhRequest,
+																		Item_Code: itemCode,
+																		Amount: `${amount} ${measurement}`,
+																		Price: priceIn,
+																		Price_Type: priceType,
+																		In_Stock: inStock,
+																		Date_In_Stock: dateInStock,
+																		PayType: payType,
+																		PayTerms: payTerms,
+																		ShippingDate: shippingDate,
+																		Shipping_Company_Name: shipCompName,
+																		Ship_Address1: shipAddress1,
+																		Ship_Address2: shipAddress2,
+																		Ship_City: shipCity,
+																		Ship_State: shipState,
+																		Ship_Zip: shipZip,
+																		Ship_Country: shipCountry,
+																		Notes: notes
+																	}
+																]
+															}
+														]
 													}
 												]
 											});
@@ -396,12 +385,13 @@ module.exports = (imports) => {
 												}
 											});
 										} else {
+											// ++ the newReceipt variable is created using the values inputted by the vendor for later use.
 											let newReceipt = {
 												Category: category,
 												Material: material,
 												ABH_Request: abhRequest,
 												Item_Code: itemCode,
-												Amount: amount + ' ' + measurement,
+												Amount: `${amount} ${measurement}`,
 												Price: priceIn,
 												Price_Type: priceType,
 												In_Stock: inStock,
@@ -418,14 +408,47 @@ module.exports = (imports) => {
 												Ship_Country: shipCountry,
 												Notes: notes
 											};
+											let DBCategory = rDoc[rIndex].Category;
+											let categoryIndex = DBCategory.findIndex((Category) => {
+												return Category.CategoryName === category;
+											});
+											// ^^Check to see if the category exists in the receipt collection
+											if (categoryIndex === -1) {
+												// ^^ if doesn't exist then create the category with the material with the reciept in it
+												let newCategory = {
+													CategoryName: category,
+													Material: [
+														{
+															MaterialName: material,
+															Receipt: [ newReceipt ]
+														}
+													]
+												};
+												DBCategory.push(newCategory);
+											} else {
+												// ^^ if it does check to see if material exist
 
-											console.log(rDoc[rIndex]);
-											rDoc[rIndex].Receipt.push(newReceipt);
+												let DBMaterial = DBCategory[categoryIndex].Material;
+												let materialIndex = DBMaterial.findIndex((Material) => {
+													return Material.MaterialName === material;
+												});
+
+												if (materialIndex === -1) {
+													// ^^ if the material doesn't exist then we create one with the name and the receipt in it
+													let newMaterial = {
+														MaterialName: material,
+														Receipt: [ newReceipt ]
+													};
+													DBMaterial.push(newMaterial);
+												} else {
+													// ^^ if all the organization elements exist then just the new receipt to the array for records
+													let DBReceipt = DBMaterial[materialIndex].Receipt;
+													DBReceipt.push(newReceipt);
+												}
+											}
+											console.log(rDoc);
 											receipt
-												.findOneAndUpdate(
-													{ VendorName: vendorName },
-													{ Receipt: rDoc[rIndex].Receipt }
-												)
+												.findOneAndUpdate({ VendorName: vendorName }, { Category: DBCategory })
 												.then((doc) => {
 													console.log('vendor exists so added rec to db');
 												})
@@ -443,6 +466,17 @@ module.exports = (imports) => {
 											res.redirect('https://abhpharma.com/');
 										}
 									});
+
+									vdoc.key.splice(keyIndex, 1);
+									vendor
+										.findByIdAndUpdate(vdoc._id, { key: vdoc.key })
+										.then(() => {
+											console.log('submission was sent removing token');
+										})
+										.catch((err) => {
+											console.log('issue with removal of token');
+											console.log(err);
+										});
 								}
 							});
 						} else {
@@ -451,7 +485,6 @@ module.exports = (imports) => {
 							res.render('404Page');
 						}
 					}
-					
 				})
 				.catch((err) => console.log(err));
 		} else {
@@ -463,8 +496,6 @@ module.exports = (imports) => {
 		const { tok, vend } = req.query;
 
 		console.log('recieved request to remove');
-
-
 
 		if (tok !== undefined && vend !== undefined) {
 			vendor
@@ -482,7 +513,6 @@ module.exports = (imports) => {
 						//if found ...validate token to see if we need to remove it from db
 
 						console.log(keyIndex);
-						
 
 						if (keyIndex !== -1) {
 							jwt.verify(tok, key.jwtSecret, (err) => {
@@ -490,17 +520,18 @@ module.exports = (imports) => {
 									res.render('404Page');
 								} else {
 									let token = jwt.decode(tok);
-									let {newMaterial,category,material,vendorName} = token
+									let { newMaterial, category, material, vendorName } = token;
 
-									console.log(newMaterial)
+									console.log(newMaterial);
 
-									vdoc.key.splice(keyIndex,1);
-									vendor.findByIdAndUpdate(vdoc._id, {key: vdoc.key}).then(console.log('token was used so now its gone')).catch(err =>{
-										console.log('there is a error updating token');
-										console.log(err);
-									});
-
-									let vProfile = vdoc;
+									vdoc.key.splice(keyIndex, 1);
+									vendor
+										.findByIdAndUpdate(vdoc._id, { key: vdoc.key })
+										.then(console.log('token was used so now its gone'))
+										.catch((err) => {
+											console.log('there is a error updating token');
+											console.log(err);
+										});
 
 									if (newMaterial === false) {
 										mat.findOne({ Category: category }).then((matDoc) => {
@@ -533,8 +564,8 @@ module.exports = (imports) => {
 												const mailOptionsVendUnsubscibeNewDel = {
 													from: `${vendorName} <${vProfile.Email.main}>`, // sender address
 													to: ' <tech@abhpharma.com>,<Purchasing@abhnature.com>', // list of receivers
-													subject: `${vendorName} Unsubscription For ${material} ---MATERIAL REMOVED---`,
-													text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we dont have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Material<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 4)Then click save
+													subject: `${vendorName} Unsubscribed For ${material} ---MATERIAL REMOVED---`,
+													text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, we do not have any vendors that support it so it was removed from the database. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Material<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 4)Then click save
 
 
 												<br><br>
@@ -551,7 +582,7 @@ module.exports = (imports) => {
 
 												`
 												};
-												transporter.send(mailOptionsVendUnsubscibeNewDel, function(err, info) {
+												transporter.send(mailOptionsVendUnsubscirbeNewDel, function(err, info) {
 													if (err) console.log('Couldnt send email' + err);
 													else null;
 													// console.log(info);
@@ -562,8 +593,8 @@ module.exports = (imports) => {
 													from: `${vendorName} <${vdoc.Email.main}>`, // sender address
 													to: '<Purchasing@abhnature.com>',
 													cc: '<tech@abhpharma.com>', // list of receivers
-													subject: `${vendorName} Unsubscription For ${material}`,
-													text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 4)Then click save
+													subject: `${vendorName} Unsubscribe For ${material}`,
+													text: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 4)Then click save
 
 
 
@@ -572,7 +603,7 @@ module.exports = (imports) => {
 											The information contained in this communication is confidential, may be privileged and is intended for the exclusive use of the above named addressee(s). If you are not the intended recipient(s), you are expressly prohibited from copying, distributing, disseminating, or in any other way using any information contained within this communication. If you have received this communication in error please contact the sender by telephone or by response via mail. We have taken precautions to minimize the risk of transmitting software viruses, but we advise you to carry out your own virus checks on any attachment to this message. We cannot accept liability for any loss or damage caused by software virus. <br>
 											Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 											`,
-													html: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 4)Then click save
+													html: `Since ${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}. <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Select the category that the material belongs in<br> 3)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 4)Then click save
 
 
 
@@ -582,7 +613,7 @@ module.exports = (imports) => {
 											Located At: 131 Heartland Boulevard, Edgewood, New York, U.S Phone:866-282-4729
 											`
 												};
-												transporter.send(mailOptionsVendUnsubscibeNew, function(err, info) {
+												transporter.send(mailOptionsVendUnsubscirbeNew, function(err, info) {
 													if (err) console.log('Couldnt send email' + err);
 													else null;
 													console.log('Unsubscribe Material Notification Sent');
@@ -591,7 +622,10 @@ module.exports = (imports) => {
 											}
 
 											mat
-												.findOneAndUpdate({ Category: category }, { Material: mProfile.Material })
+												.findOneAndUpdate(
+													{ Category: category },
+													{ Material: mProfile.Material }
+												)
 												.then((doc) => {
 													console.log('Updated Database');
 												})
@@ -620,7 +654,7 @@ module.exports = (imports) => {
 											to: '<Purchasing@abhnature.com>',
 											cc: '<tech@abhpharma.com>', // list of receivers
 											subject: `${vendorName} Request Removal From Email Chain For New Material: ${material}`,
-											text: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+											text: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 3)Then click save
 
 
 													<br><br>
@@ -629,7 +663,7 @@ module.exports = (imports) => {
 
 													`,
 
-											html: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma seperated AND no spaces before or after the commas <br> 3)Then click save
+											html: `${vendorName} requested to be removed from the email chain for material: ${material} in category ${category}, <br><br> If the vendor contacts you to undo this change you can always re-add the material in the <em>Modify Vendor<em> Page in the purchase app. All you will have to do is: <br> 1) search for the vendors name<br>2)Add the material ** Spaces should be replaced with dashes and multiple materials should be comma separated AND no spaces before or after the commas <br> 3)Then click save
 
 
 
@@ -652,7 +686,6 @@ module.exports = (imports) => {
 							//if not found ...
 							console.log('token not found');
 							res.render('404Page');
-
 						}
 					}
 				})
@@ -660,11 +693,6 @@ module.exports = (imports) => {
 		} else {
 			res.render('404Page');
 		}
-
-
-
-
-
 	});
 	app.post('/Do_Not_Supply', urlencodedParser, (req, res) => {
 		res.render('404Page');

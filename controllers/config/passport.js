@@ -70,7 +70,7 @@ function passport(passport) {
 						console.log('entering passport !empl');
 						return done(null, false, { message: 'Invalid username or password' });
 					}
-					console.log('userfound');
+					console.log('user found');
 					//match password
 					bcrypt.compare(password, empl.Password, (err, isMatch) => {
 						if (err) throw err;

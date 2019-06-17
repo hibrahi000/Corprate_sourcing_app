@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "nodemon server.js",
-		"testCode": "nodemon practiceCode/practiceFile1.js"
+		"testCode": "nodemon practiceCode/practiceFile1.js",
+		"Developer-Messages" : "node ./controllers/config/confidential/devMessages/dev.js "
 	},
 	"keywords": [
 		"ABH",

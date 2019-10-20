@@ -1,17 +1,16 @@
 {
-	"name": "abh_node",
+	"name": "Corprate_sourcing_app",
 	"version": "1.0.0",
-	"description": "ABH Vendor/Purchase automation system",
+	"description": "corprate automation sourcing system",
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "nodemon server.js",
-		"testCode": "nodemon practiceCode/practiceFile1.js",
-		"Developer-Messages" : "node ./controllers/config/confidential/devMessages/dev.js "
+		"testCode": "nodemon practiceCode/practiceFile1.js"
 	},
 	"keywords": [
-		"ABH",
-		"Purchase-APP"
+		"Corprate",
+		"Sourcing-APP"
 	],
 	"author": "Hashmat Ibrahimi",
 	"license": "ISC",
